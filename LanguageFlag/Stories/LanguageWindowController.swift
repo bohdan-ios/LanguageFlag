@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Combine
 
 @propertyWrapper
 struct ScheduledTimer {
@@ -35,18 +36,31 @@ final class LanguageWindowController: NSWindowController {
     // MARK: - Variables
     var screenRect: NSRect?
     @ScheduledTimer private var timer: Timer?
+    private let preferences = UserPreferences.shared
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Life cycle
     override func windowDidLoad() {
         super.windowDidLoad()
+
         configureWindow()
         configureContentViewController()
         addObserver()
+        observePreferencesChanges()
     }
-    
+
     // MARK: - Deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
+        cancellables.removeAll()
+    }
+
+    // MARK: - Public Methods
+    /// Shows a preview of the window with current preferences
+    func showPreview() {
+        timer?.invalidate()
+        runShowWindowAnimation()
+        scheduleTimer()
     }
 }
 
@@ -78,22 +92,60 @@ extension LanguageWindowController {
 extension LanguageWindowController {
 
     private func configureWindow() {
-        guard let screenRect = screenRect ?? NSScreen.main?.visibleFrame else { return }
-
-        let rect = createRect(in: screenRect)
-        window = LanguageWindow(contentRect: rect)
-        window?.setFrame(rect, display: true)
+        // 1. Determine the screen reliably
+        // If 'main' is nil (common at launch), use the first available screen.
+        let targetScreen = NSScreen.main ?? NSScreen.screens.first
+        
+        guard let currentScreen = targetScreen else {
+            print("❌ No screen found")
+            return
+        }
+        
+        // 2. Create the window instance (start with a zero rect, we will update it immediately)
+        // We initialize with .zero because updateWindowFrame will do the math.
+        window = LanguageWindow(contentRect: .zero)
+        
+        // 3. Force an immediate update to set the correct frame
+        updateWindowFrame()
     }
 
     private func createRect(in screen: CGRect) -> CGRect {
-        let posX: CGFloat = screen.minX + (screen.width - LanguageViewController.width) / 2
-        let posY: CGFloat = screen.minY + (screen.height * 0.25)
-        let rect = NSRect(x: posX,
-                          y: posY,
-                          width: LanguageViewController.width,
-                          height: LanguageViewController.height)
+        let dimensions = preferences.windowSize.dimensions
+        let position = calculatePosition(for: preferences.displayPosition, in: screen, size: dimensions)
 
-        return rect
+        return NSRect(x: position.x,
+                      y: position.y,
+                      width: dimensions.width,
+                      height: dimensions.height)
+    }
+
+    private func calculatePosition(for position: DisplayPosition,
+                                   in screen: CGRect,
+                                   size: (width: CGFloat, height: CGFloat)) -> (x: CGFloat, y: CGFloat) {
+        let x: CGFloat
+        let y: CGFloat
+
+        // Calculate X position
+        switch position {
+        case .topLeft, .centerLeft, .bottomLeft:
+            x = screen.minX + 50
+        case .topCenter, .center, .bottomCenter:
+            x = screen.minX + (screen.width - size.width) / 2
+        case .topRight, .centerRight, .bottomRight:
+            x = screen.maxX - size.width - 50
+        }
+
+        // Calculate Y position
+        switch position {
+        case .topLeft, .topCenter, .topRight:
+            y = screen.maxY - size.height - 50
+        case .centerLeft, .center, .centerRight:
+            y = screen.minY + (screen.height - size.height) / 2
+        case .bottomLeft, .bottomCenter, .bottomRight:
+            y = screen.minY + 50
+        }
+
+        return (x, y)
     }
 
     private func configureContentViewController() {
@@ -118,21 +170,108 @@ extension LanguageWindowController {
                                                name: .capsLockChanged,
                                                object: nil)
     }
-    
+
+    private func observePreferencesChanges() {
+        // Observe opacity changes
+        preferences.$opacity
+            .dropFirst() // Skip initial value
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newOpacity in
+                self?.window?.alphaValue = CGFloat(newOpacity)
+            }
+            .store(in: &cancellables)
+
+        // Observe window size changes
+        preferences.$windowSize
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateWindowFrame()
+            }
+            .store(in: &cancellables)
+
+        // Observe display position changes
+        preferences.$displayPosition
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateWindowFrame()
+            }
+            .store(in: &cancellables)
+
+        // Observe animation duration changes
+        preferences.$animationDuration
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.restartAnimation()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateWindowFrame() {
+        guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
+
+        let visibleFrame = screen.visibleFrame
+        
+        let rect = createRect(in: visibleFrame)
+        
+        // Set the frame.
+        // Note: animate: false for the first setup to prevent visual jumping
+        let shouldAnimate = window?.isVisible ?? false
+        window?.setFrame(rect, display: true, animate: shouldAnimate)
+    }
+
+    private func restartAnimation() {
+        // If window is currently visible, restart the animation with new duration
+        guard let window = window, window.alphaValue > 0 else { return }
+
+        // Hide the window quickly
+        runHideWindowAnimation()
+
+        // After a brief delay, show it again with the new animation duration
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.showPreview()
+        }
+    }
+
     private func scheduleTimer() {
         timer = Timer(
-            timeInterval: 1,
+            timeInterval: preferences.displayDuration,
             target: self,
             selector: #selector(hideApplication),
             userInfo: nil,
             repeats: false)
     }
-    
+
     private func runShowWindowAnimation() {
-        window?.fadeIn(duration: 0.3)
+        let duration = preferences.animationDuration
+
+        // Set opacity before animation if window is being shown for first time
+        if window?.alphaValue == 0 {
+            window?.alphaValue = CGFloat(preferences.opacity)
+        }
+
+        switch preferences.animationStyle {
+        case .fade:
+            window?.fadeIn(duration: duration)
+        case .slide:
+            window?.slideIn(duration: duration)
+        case .scale:
+            window?.scaleIn(duration: duration)
+        }
     }
 
     private func runHideWindowAnimation() {
-        window?.fadeOut(duration: 0.4)
+        let duration = preferences.animationDuration
+
+        switch preferences.animationStyle {
+        case .fade:
+            window?.fadeOut(duration: duration)
+        case .slide:
+            window?.slideOut(duration: duration)
+        case .scale:
+            window?.scaleOut(duration: duration)
+        }
     }
 }

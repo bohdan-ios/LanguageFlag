@@ -20,6 +20,10 @@
 		B46337AA2F0763BA0072D0B5 /* LayoutImageProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337A92F0763BA0072D0B5 /* LayoutImageProtocols.swift */; };
 		B46337AD2F0763C70072D0B5 /* NSWindow+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337AC2F0763C70072D0B5 /* NSWindow+Animation.swift */; };
 		B46337AE2F0763C70072D0B5 /* NSScreen+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337AB2F0763C70072D0B5 /* NSScreen+Identifier.swift */; };
+		B46337B22F076C0F0072D0B5 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B12F076C0F0072D0B5 /* UserPreferences.swift */; };
+		B46337B32F076C0F0072D0B5 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B02F076C0F0072D0B5 /* KeyboardShortcuts.swift */; };
+		B46337B72F076C230072D0B5 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B52F076C230072D0B5 /* PreferencesWindowController.swift */; };
+		B46337B82F076C230072D0B5 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B42F076C230072D0B5 /* PreferencesView.swift */; };
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 		D87B3EC22683AACF00EC96D2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B3EC12683AACF00EC96D2 /* main.swift */; };
 		D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E506129B5394F000A3AB5 /* StatusBarManager.swift */; };
@@ -46,6 +50,10 @@
 		B46337A92F0763BA0072D0B5 /* LayoutImageProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutImageProtocols.swift; sourceTree = "<group>"; };
 		B46337AB2F0763C70072D0B5 /* NSScreen+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+Identifier.swift"; sourceTree = "<group>"; };
 		B46337AC2F0763C70072D0B5 /* NSWindow+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSWindow+Animation.swift"; sourceTree = "<group>"; };
+		B46337B02F076C0F0072D0B5 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
+		B46337B12F076C0F0072D0B5 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
+		B46337B42F076C230072D0B5 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		B46337B52F076C230072D0B5 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		D87B3EC12683AACF00EC96D2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D87E506129B5394F000A3AB5 /* StatusBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarManager.swift; sourceTree = "<group>"; };
 		D893F1C229ACE19C0022EF46 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -118,6 +126,7 @@
 		40E0C9A8244B7EF50012F409 /* LanguageFlag */ = {
 			isa = PBXGroup;
 			children = (
+				B46337B62F076C230072D0B5 /* Preferences */,
 				40E0C9B3244B7EF60012F409 /* LanguageFlag.entitlements */,
 				40C655DE244C421D00BBA413 /* Application */,
 				40C655E0244C423500BBA413 /* Stories */,
@@ -135,6 +144,15 @@
 				40E0C9BA244B7F030012F409 /* Carbon.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B46337B62F076C230072D0B5 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				B46337B42F076C230072D0B5 /* PreferencesView.swift */,
+				B46337B52F076C230072D0B5 /* PreferencesWindowController.swift */,
+			);
+			path = Preferences;
 			sourceTree = "<group>";
 		};
 		D8E267B726A7123B008B3689 /* Extensions */ = {
@@ -165,6 +183,8 @@
 		D8EB1E2729AF613700812827 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B46337B02F076C0F0072D0B5 /* KeyboardShortcuts.swift */,
+				B46337B12F076C0F0072D0B5 /* UserPreferences.swift */,
 				D8EB1E2829AF615100812827 /* KeyboardLayoutNotification.swift */,
 			);
 			path = Models;
@@ -287,6 +307,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				40E0C9AC244B7EF50012F409 /* LanguageViewController.swift in Sources */,
+				B46337B22F076C0F0072D0B5 /* UserPreferences.swift in Sources */,
+				B46337B32F076C0F0072D0B5 /* KeyboardShortcuts.swift in Sources */,
+				B46337B72F076C230072D0B5 /* PreferencesWindowController.swift in Sources */,
+				B46337B82F076C230072D0B5 /* PreferencesView.swift in Sources */,
 				B43DD3512D12739D00438CFB /* ScreenManager.swift in Sources */,
 				D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */,
 				D8E267B626A70EE6008B3689 /* LayoutImageContainer.swift in Sources */,
@@ -446,7 +470,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11;
 				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.localmaster.languageflag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -475,7 +499,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11;
 				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.localmaster.languageflag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
