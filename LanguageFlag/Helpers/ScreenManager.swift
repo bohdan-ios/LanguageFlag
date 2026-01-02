@@ -15,6 +15,17 @@ class ScreenManager {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    // MARK: - Public Methods
+    /// Shows a preview of the language indicator with current settings
+    func showPreview() {
+        ensureWindowControllersForAllScreens()
+
+        // Trigger the window display on all screens
+        for controller in windowControllers.values {
+            controller.showPreview()
+        }
+    }
 }
 
 // MARK: - Private
@@ -28,12 +39,25 @@ extension ScreenManager {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(previewRequested),
+            name: .preferencesPreviewRequested,
+            object: nil
+        )
     }
 
     /// Handles screen parameter changes and refreshes windows.
     @objc
     private func screenParametersDidChange() {
         ensureWindowControllersForAllScreens()
+    }
+
+    /// Handles preference preview requests.
+    @objc
+    private func previewRequested() {
+        showPreview()
     }
 
     /// Ensures window controllers exist for all screens (lazy loading).
@@ -62,7 +86,7 @@ extension ScreenManager {
     /// Creates a window controller for a specific screen.
     private func createWindowController(for screen: NSScreen) -> LanguageWindowController {
         let windowController = LanguageWindowController()
-        windowController.screenRect = screen.frame
+        windowController.screenRect = screen.visibleFrame
         windowController.windowDidLoad()
 
         return windowController

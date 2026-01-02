@@ -8,14 +8,22 @@
 
 import Carbon
 import Cocoa
+import Combine
 
 class LanguageViewController: NSViewController {
 
     // MARK: - Variables
-    static let height: CGFloat = 155
-    static let width: CGFloat = 250
     private let layoutImageContainer = LayoutImageContainer.shared
     private var previousModel: KeyboardLayoutNotification?
+    private let preferences = UserPreferences.shared
+    private var cancellables = Set<AnyCancellable>()
+
+    // Size constraints that need to be updated
+    private var widthConstraint: NSLayoutConstraint?
+    private var heightConstraint: NSLayoutConstraint?
+    private var visualEffectWidthConstraint: NSLayoutConstraint?
+    private var visualEffectHeightConstraint: NSLayoutConstraint?
+    private var flagImageWidthConstraint: NSLayoutConstraint?
 
     // MARK: - UI Components
     private let visualEffectView: NSVisualEffectView = {
@@ -72,11 +80,13 @@ class LanguageViewController: NSViewController {
         super.viewDidLoad()
         setupUI()
         addObserver()
+        observePreferencesChanges()
     }
 
     // MARK: - Deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
+        cancellables.removeAll()
     }
 }
 
@@ -119,19 +129,28 @@ extension LanguageViewController {
     }
 
     private func setupConstraints() {
+        let dimensions = preferences.windowSize.dimensions
+
+        // Create size constraints and store references
+        visualEffectWidthConstraint = visualEffectView.widthAnchor.constraint(equalToConstant: dimensions.width)
+        visualEffectHeightConstraint = visualEffectView.heightAnchor.constraint(equalToConstant: dimensions.height)
+        widthConstraint = view.widthAnchor.constraint(equalToConstant: dimensions.width)
+        heightConstraint = view.heightAnchor.constraint(equalToConstant: dimensions.height)
+        flagImageWidthConstraint = flagImageView.widthAnchor.constraint(equalToConstant: dimensions.width * 0.92)
+
         NSLayoutConstraint.activate([
             // Visual effect view fills the entire view
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            visualEffectView.widthAnchor.constraint(equalToConstant: Self.width),
-            visualEffectView.heightAnchor.constraint(equalToConstant: Self.height),
+            visualEffectWidthConstraint!,
+            visualEffectHeightConstraint!,
 
             // Flag image at the top
             flagImageView.centerXAnchor.constraint(equalTo: visualEffectView.centerXAnchor),
             flagImageView.topAnchor.constraint(equalTo: visualEffectView.topAnchor),
-            flagImageView.widthAnchor.constraint(equalToConstant: 230),
+            flagImageWidthConstraint!,
             flagImageView.widthAnchor.constraint(equalTo: flagImageView.heightAnchor, multiplier: 16.0 / 9.0),
 
             // Big label in the center
@@ -144,8 +163,8 @@ extension LanguageViewController {
             languageNameLabel.topAnchor.constraint(equalTo: flagImageView.bottomAnchor, constant: -6),
 
             // View size constraints
-            view.heightAnchor.constraint(equalToConstant: Self.height),
-            view.widthAnchor.constraint(equalToConstant: Self.width),
+            heightConstraint!,
+            widthConstraint!,
         ])
     }
 
@@ -170,6 +189,26 @@ extension LanguageViewController {
                                                selector: #selector(capsLockChanged),
                                                name: .capsLockChanged,
                                                object: nil)
+    }
+
+    private func observePreferencesChanges() {
+        preferences.$windowSize
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newSize in
+                self?.updateViewSize(to: newSize.dimensions)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateViewSize(to dimensions: (width: CGFloat, height: CGFloat)) {
+        widthConstraint?.constant = dimensions.width
+        heightConstraint?.constant = dimensions.height
+        visualEffectWidthConstraint?.constant = dimensions.width
+        visualEffectHeightConstraint?.constant = dimensions.height
+        flagImageWidthConstraint?.constant = dimensions.width * 0.92
+
+        view.layoutSubtreeIfNeeded()
     }
 }
 

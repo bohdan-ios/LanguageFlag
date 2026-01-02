@@ -5,6 +5,7 @@ final class LanguageWindow: NSWindow {
     // MARK: - Init
     init(contentRect: NSRect) {
         super.init(contentRect: contentRect, styleMask: .borderless, backing: .buffered, defer: false)
+
         configureAppearance()
     }
     

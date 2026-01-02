@@ -9,6 +9,7 @@ final class StatusBarManager {
     private let layoutImageContainer: LayoutImageContainer
     private let menuBuilder: StatusBarMenuBuilder
     private var previousModel: KeyboardLayoutNotification?
+    private lazy var preferencesWindowController = PreferencesWindowController()
 
     // MARK: - Initialization
     init(
@@ -18,7 +19,7 @@ final class StatusBarManager {
         self.layoutImageContainer = layoutImageContainer
         self.menuBuilder = menuBuilder
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        
+
         setupStatusBar()
         addObservers()
     }
@@ -37,6 +38,7 @@ private extension StatusBarManager {
         // Build and assign the menu
         let menu = menuBuilder.buildMenu(
             launchAtLoginAction: #selector(toggleLaunchAtLogin),
+            preferencesAction: #selector(openPreferences),
             exitAction: #selector(exitApplication),
             target: self
         )
@@ -99,6 +101,12 @@ private extension StatusBarManager {
         sender?.state = LaunchAtLogin.isEnabled ? .on : .off
     }
 
+    /// Opens the preferences window.
+    @objc
+    func openPreferences() {
+        preferencesWindowController.show()
+    }
+
     /// Exits the application.
     @objc
     func exitApplication() {
@@ -114,24 +122,51 @@ private extension StatusBarManager {
         let iconSize = NSSize(width: 24, height: 24)
 
         if let keyboardLayout = keyboardLayout {
-            statusItem.button?.image = layoutImageContainer.getFlagItem(for: keyboardLayout, size: iconSize)
+            let flagImage = layoutImageContainer.getFlagItem(for: keyboardLayout, size: iconSize)
+            statusItem.button?.image = flagImage ?? createDefaultIcon(size: iconSize)
             statusItem.button?.title = ""
         } else {
-            statusItem.button?.image = nil
-            statusItem.button?.title = "💂‍♀️"
+            statusItem.button?.image = createDefaultIcon(size: iconSize)
+            statusItem.button?.title = ""
         }
     }
     
     func updateStatusBarIcon(for model: KeyboardLayoutNotification) {
         let iconSize = NSSize(width: 24, height: 24)
-        statusItem.button?.image = layoutImageContainer.getFlagItem(for: model.keyboardLayout,
-                                                                        size: iconSize,
-                                                                        isCapsLock: isCapsLockOn())
-        statusItem.button?.title = ""
+        
+        let flagImage = layoutImageContainer.getFlagItem(for: model.keyboardLayout, size: iconSize)
+        
+        if let flagImage {
+            statusItem.button?.image = flagImage
+            statusItem.button?.title = ""
+        } else {
+            statusItem.button?.image = createDefaultIcon(size: iconSize)
+            statusItem.button?.title = ""
+        }
     }
     
     func isCapsLockOn() -> Bool {
         let flags = CGEventSource.flagsState(.combinedSessionState)
         return flags.contains(.maskAlphaShift)
+    }
+    
+    func createDefaultIcon(size: NSSize) -> NSImage {
+        // Create an image using a drawing handler for better resolution scaling
+        NSImage(size: size, flipped: false) { rect in
+            let emoji = "💂‍♀️" as NSString
+            let fontSize = size.height * 0.75 // Adjust scale to fit nicely
+            let font = NSFont.systemFont(ofSize: fontSize)
+            let attributes: [NSAttributedString.Key: Any] = [.font: font]
+            
+            // Calculate center position
+            let stringSize = emoji.size(withAttributes: attributes)
+            let point = NSPoint(
+                x: rect.midX - stringSize.width / 2,
+                y: rect.midY - stringSize.height / 2
+            )
+            
+            emoji.draw(at: point, withAttributes: attributes)
+            return true
+        }
     }
 }
