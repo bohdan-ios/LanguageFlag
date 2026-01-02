@@ -11,14 +11,22 @@ import Cocoa
 @propertyWrapper
 struct ScheduledTimer {
 
-    private var timer: Timer = Timer()
-    var wrappedValue: Timer {
+    private var timer: Timer?
+
+    var wrappedValue: Timer? {
         get { timer }
         set {
-            timer.invalidate()
+            timer?.invalidate()
             timer = newValue
-            RunLoop.main.add(timer, forMode: .common)
+            if let newValue {
+                RunLoop.main.add(newValue, forMode: .common)
+            }
         }
+    }
+
+    mutating func invalidate() {
+        timer?.invalidate()
+        timer = nil
     }
 }
 
@@ -26,7 +34,7 @@ final class LanguageWindowController: NSWindowController {
 
     // MARK: - Variables
     var screenRect: NSRect?
-    @ScheduledTimer private var timer: Timer
+    @ScheduledTimer private var timer: Timer?
 
     // MARK: - Life cycle
     override func windowDidLoad() {
@@ -47,21 +55,21 @@ extension LanguageWindowController {
 
     @objc
     private func keyboardLayoutChanged(notification: NSNotification) {
-        timer.invalidate()
+        timer?.invalidate()
         runShowWindowAnimation()
         scheduleTimer()
     }
-    
+
     @objc
     private func capsLockChanged(notification: NSNotification) {
-        timer.invalidate()
+        timer?.invalidate()
         runShowWindowAnimation()
         scheduleTimer()
     }
 
     @objc
     private func hideApplication() {
-        timer.invalidate()
+        timer?.invalidate()
         runHideWindowAnimation()
     }
 }
@@ -79,18 +87,17 @@ extension LanguageWindowController {
 
     private func createRect(in screen: CGRect) -> CGRect {
         let posX: CGFloat = screen.minX + (screen.width - LanguageViewController.width) / 2
-        let posY: CGFloat = screen.minY + screen.height * 0.16
-        let rect = NSRect(x: posX, y: posY, width: LanguageViewController.width, height: LanguageViewController.height)
+        let posY: CGFloat = screen.minY + (screen.height * 0.25)
+        let rect = NSRect(x: posX,
+                          y: posY,
+                          width: LanguageViewController.width,
+                          height: LanguageViewController.height)
 
         return rect
     }
 
     private func configureContentViewController() {
-        let mainStoryboard = NSStoryboard.init(name: "Main", bundle: nil)
-
-        guard let flagVC = mainStoryboard.instantiateController(withIdentifier: "flagController") as? LanguageViewController else {
-            return
-        }
+        let flagVC = LanguageViewController()
 
         window?.contentViewController = flagVC
         let cornerRadius: CGFloat = 16
@@ -122,19 +129,10 @@ extension LanguageWindowController {
     }
     
     private func runShowWindowAnimation() {
-        window?.orderFrontRegardless()
-        NSAnimationContext.runAnimationGroup { (context) -> Void in
-            context.duration = 0.3
-            window?.contentView?.animator().alphaValue = 1
-            window?.animator().alphaValue = 1
-        }
+        window?.fadeIn(duration: 0.3)
     }
-    
+
     private func runHideWindowAnimation() {
-        NSAnimationContext.runAnimationGroup { (context) -> Void in
-            context.duration = 0.4
-            window?.animator().alphaValue = 0
-            window?.contentView?.animator().alphaValue = 0
-        }
+        window?.fadeOut(duration: 0.4)
     }
 }

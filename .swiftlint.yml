@@ -1,0 +1,111 @@
+# SwiftLint Configuration for LanguageFlag
+
+# Enabled Rules
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - explicit_init
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - multiline_arguments
+  - multiline_parameters
+  - operator_usage_whitespace
+  - overridden_super_call
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - unneeded_parentheses_in_closure_argument
+  - vertical_whitespace_closing_braces
+  - yoda_condition
+
+# Disabled Rules
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - trailing_comma
+
+# File Settings
+included:
+  - LanguageFlag
+
+excluded:
+  - Carthage
+  - Pods
+  - .build
+  - DerivedData
+
+# Rule Configurations
+
+# Vertical Whitespace
+vertical_whitespace:
+  max_empty_lines: 2
+
+# Type Body Length
+type_body_length:
+  warning: 300
+  error: 400
+
+# File Length
+file_length:
+  warning: 500
+  error: 1000
+
+# Function Body Length
+function_body_length:
+  warning: 50
+  error: 100
+
+# Identifier Name
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - x
+    - y
+
+# Force Unwrapping
+force_unwrapping:
+  severity: warning
+
+# Cyclomatic Complexity
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+# Vertical Whitespace Before Closing Braces
+vertical_whitespace_closing_braces:
+  severity: warning
+
+# Custom Rules
+custom_rules:
+  # One blank line after class/struct/enum/protocol declaration
+  vertical_whitespace_after_type_declaration:
+    name: "Vertical Whitespace After Type Declaration"
+    regex: '(class|struct|enum|protocol)\s+\w+[^{]*\{(?!\n\n)\n\s*\S'
+    message: "There should be exactly one blank line after class/struct/enum/protocol declaration"
+    severity: warning
+
+  # No blank line after opening brace for types
+  no_blank_line_after_type_opening_brace:
+    name: "No Blank Line After Type Opening Brace"
+    regex: '(class|struct|enum|protocol)\s+\w+[^{]*\{\n\s*\n\s*\n'
+    match_kinds:
+      - keyword
+    message: "There should be no more than one blank line after opening brace of type declaration"
+    severity: warning
+
+  # No multiple consecutive blank lines
+  no_multiple_blank_lines:
+    name: "No Multiple Consecutive Blank Lines"
+    regex: '\n\n\n+'
+    message: "There should not be more than one consecutive blank line"
+    severity: warning
+
+# Reporter
+reporter: "xcode"

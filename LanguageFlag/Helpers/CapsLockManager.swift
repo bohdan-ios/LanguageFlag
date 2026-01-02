@@ -2,18 +2,17 @@ import Cocoa
 import Carbon
 
 class CapsLockManager {
-    
+
     // MARK: - Variables
     private(set) var isCapsLockEnabled: Bool = false
     
     // MARK: - Init
     init() {
-        setupCapsLockObserver()
-        isCapsLockEnabled = isCapsLockOn()
     }
     
     func isCapsLockOn() -> Bool {
         let flags = CGEventSource.flagsState(.combinedSessionState)
+
         return flags.contains(.maskAlphaShift)
     }
 }
@@ -32,6 +31,7 @@ extension CapsLockManager {
     /// Handles Caps Lock state changes.
     private func handleCapsLockStateChange(event: NSEvent) {
         let capsLockEnabled = isCapsLockOn()
+
         if isCapsLockEnabled != capsLockEnabled {
             isCapsLockEnabled = capsLockEnabled
             notifyCapsLockStateChanged(newCapsLockEnabled: capsLockEnabled)

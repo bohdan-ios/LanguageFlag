@@ -11,17 +11,22 @@ import LaunchAtLogin
 import Carbon
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    
+
     // MARK: - Variables
-    private var languageWindowControllerArray = [LanguageWindowController]()
     private var statusBarManager: StatusBarManager?
-    private var screenManager: ScreenManager!
-    private var notificationManager: NotificationManager!
+    private let screenManager: ScreenManager
+    private let notificationManager: NotificationManager
+
+    // MARK: - Initialization
+    override init() {
+        self.screenManager = ScreenManager()
+        self.notificationManager = NotificationManager()
+
+        super.init()
+    }
 
     // MARK: - Life cycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusBarManager = StatusBarManager()
-        screenManager = ScreenManager()
-        notificationManager = NotificationManager()
     }
 }

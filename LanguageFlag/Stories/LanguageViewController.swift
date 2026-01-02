@@ -17,18 +17,63 @@ class LanguageViewController: NSViewController {
     private let layoutImageContainer = LayoutImageContainer.shared
     private var previousModel: KeyboardLayoutNotification?
 
-    // MARK: - IBOutlets
-    @IBOutlet private weak var bigLabel: NSTextField!
-    @IBOutlet private weak var flagImageView: NSImageView!
-    @IBOutlet private weak var languageNameLabel: NSTextField!
+    // MARK: - UI Components
+    private let visualEffectView: NSVisualEffectView = {
+        let view = NSVisualEffectView()
+        view.blendingMode = .behindWindow
+        view.material = .toolTip
+        view.state = .active
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let bigLabel: NSTextField = {
+        let label = NSTextField(labelWithString: "")
+        label.font = .systemFont(ofSize: 21)
+        label.alignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.cell?.wraps = true
+        return label
+    }()
+
+    private let flagImageView: NSImageView = {
+        let imageView = NSImageView()
+        imageView.imageScaling = .scaleProportionallyDown
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
+    private let languageNameLabel: NSTextField = {
+        let label = NSTextField(labelWithString: "")
+        label.font = .systemFont(ofSize: 16)
+        label.alignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    // MARK: - Initialization
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Life cycle
+    override func loadView() {
+        view = NSView()
+        view.wantsLayer = true
+        setupViewHierarchy()
+        setupConstraints()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         addObserver()
     }
-    
+
     // MARK: - Deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -63,17 +108,48 @@ extension LanguageViewController {
     }
 }
 
-// MARK: - Private
+// MARK: - Setup
 extension LanguageViewController {
 
-    private func setupUI() {
+    private func setupViewHierarchy() {
+        view.addSubview(visualEffectView)
+        visualEffectView.addSubview(flagImageView)
+        visualEffectView.addSubview(bigLabel)
+        visualEffectView.addSubview(languageNameLabel)
+    }
+
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
+            // Visual effect view fills the entire view
+            visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            visualEffectView.widthAnchor.constraint(equalToConstant: Self.width),
+            visualEffectView.heightAnchor.constraint(equalToConstant: Self.height),
+
+            // Flag image at the top
+            flagImageView.centerXAnchor.constraint(equalTo: visualEffectView.centerXAnchor),
+            flagImageView.topAnchor.constraint(equalTo: visualEffectView.topAnchor),
+            flagImageView.widthAnchor.constraint(equalToConstant: 230),
+            flagImageView.widthAnchor.constraint(equalTo: flagImageView.heightAnchor, multiplier: 16.0 / 9.0),
+
+            // Big label in the center
+            bigLabel.centerYAnchor.constraint(equalTo: visualEffectView.centerYAnchor),
+            bigLabel.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor, constant: 16),
+            bigLabel.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -16),
+
+            // Language name label below flag image
+            languageNameLabel.centerXAnchor.constraint(equalTo: visualEffectView.centerXAnchor),
+            languageNameLabel.topAnchor.constraint(equalTo: flagImageView.bottomAnchor, constant: -6),
+
+            // View size constraints
             view.heightAnchor.constraint(equalToConstant: Self.height),
             view.widthAnchor.constraint(equalToConstant: Self.width),
         ])
+    }
 
-        bigLabel.cell?.wraps = true
-        
+    private func setupUI() {
         let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
         let model = KeyboardLayoutNotification(keyboardLayout: currentLayout.name,
                                                isCapsLockEnabled: false,
@@ -95,7 +171,11 @@ extension LanguageViewController {
                                                name: .capsLockChanged,
                                                object: nil)
     }
-    
+}
+
+// MARK: - Image Updates
+extension LanguageViewController {
+
     private func changeFlagImage(keyboardLayout: String,
                                  isCapsLockEnabled: Bool,
                                  iconRef: IconRef?) {

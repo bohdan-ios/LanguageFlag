@@ -1,14 +1,19 @@
 import Cocoa
 
 class ScreenManager {
-    
+
     // MARK: - Variables
-    private var languageWindowControllers = [LanguageWindowController]()
-    
+    private var windowControllers: [String: LanguageWindowController] = [:]
+
     // MARK: - Init
     init() {
         setupObservers()
-        createLanguageWindows()
+        ensureWindowControllersForAllScreens()
+    }
+
+    // MARK: - Deinit
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -24,27 +29,42 @@ extension ScreenManager {
             object: nil
         )
     }
-    
+
     /// Handles screen parameter changes and refreshes windows.
     @objc
     private func screenParametersDidChange() {
-        refreshLanguageWindows()
+        ensureWindowControllersForAllScreens()
     }
-    
-    /// Creates windows for all screens.
-    private func createLanguageWindows() {
-        languageWindowControllers = NSScreen.screens.map { screen in
-            let windowController = LanguageWindowController()
-            windowController.screenRect = screen.frame
-            windowController.windowDidLoad()
-            return windowController
+
+    /// Ensures window controllers exist for all screens (lazy loading).
+    private func ensureWindowControllersForAllScreens() {
+        let currentScreens = NSScreen.screens
+        let currentScreenIds = Set(currentScreens.map { $0.identifier })
+        let existingScreenIds = Set(windowControllers.keys)
+
+        // Remove controllers for screens that no longer exist
+        let removedScreenIds = existingScreenIds.subtracting(currentScreenIds)
+        for screenId in removedScreenIds {
+            windowControllers[screenId]?.close()
+            windowControllers.removeValue(forKey: screenId)
+        }
+
+        // Add controllers for new screens
+        for screen in currentScreens {
+            let screenId = screen.identifier
+
+            if windowControllers[screenId] == nil {
+                windowControllers[screenId] = createWindowController(for: screen)
+            }
         }
     }
-    
-    /// Refreshes language windows by recreating them.
-    private func refreshLanguageWindows() {
-        languageWindowControllers.forEach { $0.close() }
-        languageWindowControllers.removeAll()
-        createLanguageWindows()
+
+    /// Creates a window controller for a specific screen.
+    private func createWindowController(for screen: NSScreen) -> LanguageWindowController {
+        let windowController = LanguageWindowController()
+        windowController.screenRect = screen.frame
+        windowController.windowDidLoad()
+
+        return windowController
     }
 }
