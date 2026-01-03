@@ -70,6 +70,12 @@ final class LanguageWindowController: NSWindowController {
         runShowWindowAnimation()
         scheduleTimer()
     }
+
+    /// Updates the window frame based on the current screenRect
+    /// Called when screen parameters change (e.g., Dock moves to another screen)
+    func updateWindowFrameIfNeeded() {
+        updateWindowFrame()
+    }
 }
 
 // MARK: - Actions
