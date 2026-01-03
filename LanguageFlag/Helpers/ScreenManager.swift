@@ -73,11 +73,16 @@ extension ScreenManager {
             windowControllers.removeValue(forKey: screenId)
         }
 
-        // Add controllers for new screens
+        // Add or update controllers for all screens
         for screen in currentScreens {
             let screenId = screen.identifier
 
-            if windowControllers[screenId] == nil {
+            if let existingController = windowControllers[screenId] {
+                // Update the screenRect for existing controller (Dock may have moved)
+                existingController.screenRect = screen.visibleFrame
+                existingController.updateWindowFrameIfNeeded()
+            } else {
+                // Create new controller for new screen
                 windowControllers[screenId] = createWindowController(for: screen)
             }
         }

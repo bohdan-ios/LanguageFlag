@@ -13,6 +13,7 @@ final class LanguageWindow: NSWindow {
     private func configureAppearance() {
         isOpaque = false
         backgroundColor = .clear
-        level = .floating
+        // Use statusBar level to stay above the Dock
+        level = .statusBar
     }
 }
