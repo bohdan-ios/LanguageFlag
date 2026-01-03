@@ -24,6 +24,9 @@
 		B46337B32F076C0F0072D0B5 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B02F076C0F0072D0B5 /* KeyboardShortcuts.swift */; };
 		B46337B72F076C230072D0B5 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B52F076C230072D0B5 /* PreferencesWindowController.swift */; };
 		B46337B82F076C230072D0B5 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B42F076C230072D0B5 /* PreferencesView.swift */; };
+		B46337BA2F0860F40072D0B5 /* LayoutAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B92F0860F40072D0B5 /* LayoutAnalytics.swift */; };
+		B46337BD2F0863910072D0B5 /* LayoutGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337BB2F0863910072D0B5 /* LayoutGroup.swift */; };
+		B46337BE2F0863910072D0B5 /* SmartLayoutSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */; };
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 		D87B3EC22683AACF00EC96D2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B3EC12683AACF00EC96D2 /* main.swift */; };
 		D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E506129B5394F000A3AB5 /* StatusBarManager.swift */; };
@@ -54,6 +57,9 @@
 		B46337B12F076C0F0072D0B5 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
 		B46337B42F076C230072D0B5 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		B46337B52F076C230072D0B5 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
+		B46337B92F0860F40072D0B5 /* LayoutAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutAnalytics.swift; sourceTree = "<group>"; };
+		B46337BB2F0863910072D0B5 /* LayoutGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutGroup.swift; sourceTree = "<group>"; };
+		B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartLayoutSuggestions.swift; sourceTree = "<group>"; };
 		D87B3EC12683AACF00EC96D2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D87E506129B5394F000A3AB5 /* StatusBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarManager.swift; sourceTree = "<group>"; };
 		D893F1C229ACE19C0022EF46 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -99,6 +105,7 @@
 		40C655E0244C423500BBA413 /* Stories */ = {
 			isa = PBXGroup;
 			children = (
+				B46337B62F076C230072D0B5 /* Preferences */,
 				D8E651AD29AC013C002F47B9 /* LanguageWindow.swift */,
 				40C655E1244C425800BBA413 /* LanguageWindowController.swift */,
 				40E0C9AB244B7EF50012F409 /* LanguageViewController.swift */,
@@ -126,7 +133,6 @@
 		40E0C9A8244B7EF50012F409 /* LanguageFlag */ = {
 			isa = PBXGroup;
 			children = (
-				B46337B62F076C230072D0B5 /* Preferences */,
 				40E0C9B3244B7EF60012F409 /* LanguageFlag.entitlements */,
 				40C655DE244C421D00BBA413 /* Application */,
 				40C655E0244C423500BBA413 /* Stories */,
@@ -183,6 +189,9 @@
 		D8EB1E2729AF613700812827 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B46337BB2F0863910072D0B5 /* LayoutGroup.swift */,
+				B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */,
+				B46337B92F0860F40072D0B5 /* LayoutAnalytics.swift */,
 				B46337B02F076C0F0072D0B5 /* KeyboardShortcuts.swift */,
 				B46337B12F076C0F0072D0B5 /* UserPreferences.swift */,
 				D8EB1E2829AF615100812827 /* KeyboardLayoutNotification.swift */,
@@ -316,9 +325,12 @@
 				D8E267B626A70EE6008B3689 /* LayoutImageContainer.swift in Sources */,
 				D8EB1E2929AF615100812827 /* KeyboardLayoutNotification.swift in Sources */,
 				D87B3EC22683AACF00EC96D2 /* main.swift in Sources */,
+				B46337BA2F0860F40072D0B5 /* LayoutAnalytics.swift in Sources */,
 				B43DD3532D1273C600438CFB /* NotificationManager.swift in Sources */,
 				B46337AA2F0763BA0072D0B5 /* LayoutImageProtocols.swift in Sources */,
 				B43DD34F2D12736400438CFB /* CapsLockManager.swift in Sources */,
+				B46337BD2F0863910072D0B5 /* LayoutGroup.swift in Sources */,
+				B46337BE2F0863910072D0B5 /* SmartLayoutSuggestions.swift in Sources */,
 				D8E267AE26A6F30A008B3689 /* TISInputSource+GetProperty.swift in Sources */,
 				B46337AD2F0763C70072D0B5 /* NSWindow+Animation.swift in Sources */,
 				B46337AE2F0763C70072D0B5 /* NSScreen+Identifier.swift in Sources */,
@@ -470,7 +482,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11;
+				MACOSX_DEPLOYMENT_TARGET = 12;
 				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.localmaster.languageflag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -499,7 +511,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11;
+				MACOSX_DEPLOYMENT_TARGET = 12;
 				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.localmaster.languageflag;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -8,6 +8,7 @@
 
 import Cocoa
 import Combine
+import Carbon
 
 @propertyWrapper
 struct ScheduledTimer {
@@ -35,8 +36,10 @@ final class LanguageWindowController: NSWindowController {
 
     // MARK: - Variables
     var screenRect: NSRect?
+
     @ScheduledTimer private var timer: Timer?
     private let preferences = UserPreferences.shared
+    private let analytics = LayoutAnalytics.shared
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Life cycle
@@ -47,10 +50,15 @@ final class LanguageWindowController: NSWindowController {
         configureContentViewController()
         addObserver()
         observePreferencesChanges()
+        initializeAnalytics()
+
+        // Set the correct frame after everything is configured
+        updateWindowFrame()
     }
 
     // MARK: - Deinit
     deinit {
+        analytics.stopTracking()
         NotificationCenter.default.removeObserver(self)
         cancellables.removeAll()
     }
@@ -69,6 +77,11 @@ extension LanguageWindowController {
 
     @objc
     private func keyboardLayoutChanged(notification: NSNotification) {
+        // Track layout change for analytics
+        if let model = notification.object as? KeyboardLayoutNotification {
+            analytics.startTracking(layout: model.keyboardLayout)
+        }
+
         timer?.invalidate()
         runShowWindowAnimation()
         scheduleTimer()
@@ -92,21 +105,15 @@ extension LanguageWindowController {
 extension LanguageWindowController {
 
     private func configureWindow() {
-        // 1. Determine the screen reliably
-        // If 'main' is nil (common at launch), use the first available screen.
-        let targetScreen = NSScreen.main ?? NSScreen.screens.first
-        
-        guard let currentScreen = targetScreen else {
-            print("❌ No screen found")
+        // 1. Use screenRect if set by ScreenManager, otherwise fall back to main screen
+        guard let targetRect = screenRect else {
+            print("❌ No screen rect provided")
             return
         }
-        
-        // 2. Create the window instance (start with a zero rect, we will update it immediately)
-        // We initialize with .zero because updateWindowFrame will do the math.
+
+        // 2. Create the window instance with a zero rect initially
+        // We'll set the correct frame after the content view controller is configured
         window = LanguageWindow(contentRect: .zero)
-        
-        // 3. Force an immediate update to set the correct frame
-        updateWindowFrame()
     }
 
     private func createRect(in screen: CGRect) -> CGRect {
@@ -164,11 +171,17 @@ extension LanguageWindowController {
                                                selector: #selector(keyboardLayoutChanged),
                                                name: .keyboardLayoutChanged,
                                                object: nil)
-        
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(capsLockChanged),
                                                name: .capsLockChanged,
                                                object: nil)
+    }
+
+    private func initializeAnalytics() {
+        // Start tracking the current layout
+        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
+        analytics.startTracking(layout: currentLayout.name)
     }
 
     private func observePreferencesChanges() {
@@ -210,12 +223,11 @@ extension LanguageWindowController {
     }
 
     private func updateWindowFrame() {
-        guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
+        // Use the screenRect that was set by ScreenManager for this specific screen
+        guard let targetRect = screenRect else { return }
 
-        let visibleFrame = screen.visibleFrame
-        
-        let rect = createRect(in: visibleFrame)
-        
+        let rect = createRect(in: targetRect)
+
         // Set the frame.
         // Note: animate: false for the first setup to prevent visual jumping
         let shouldAnimate = window?.isVisible ?? false
