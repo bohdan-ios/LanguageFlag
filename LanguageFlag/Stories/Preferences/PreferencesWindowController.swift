@@ -24,7 +24,14 @@ final class PreferencesWindowController: NSWindowController {
     }
 
     func show() {
-        window?.makeKeyAndOrderFront(nil)
+        guard let window = window else { return }
+
+        // Load the window if not already loaded
+        if !window.isVisible {
+            window.center()
+        }
+
+        window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 }

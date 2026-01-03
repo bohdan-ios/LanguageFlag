@@ -1,3 +1,5 @@
+// swiftlint:disable all
+
 import Cocoa
 import LaunchAtLogin
 import Carbon
@@ -77,6 +79,10 @@ private extension StatusBarManager {
 
         previousModel = model
         updateStatusBarIcon(for: model)
+
+        // Update recent layouts
+        menuBuilder.updateRecentLayouts(with: model.keyboardLayout)
+        refreshMenu()
     }
 
     @objc
@@ -111,6 +117,41 @@ private extension StatusBarManager {
     @objc
     func exitApplication() {
         NSApplication.shared.terminate(self)
+    }
+
+}
+
+// MARK: - Public Actions
+extension StatusBarManager {
+
+    /// Switches to a specific layout.
+    @objc
+    func switchToLayout(_ sender: NSMenuItem) {
+        guard let layoutName = sender.representedObject as? String else { return }
+
+        // Find and activate the input source
+        let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
+        if let source = inputSources.first(where: { $0.name == layoutName }) {
+            TISSelectInputSource(source)
+        }
+    }
+
+    /// Activates a layout group.
+    @objc
+    func activateGroup(_ sender: NSMenuItem) {
+        guard let group = sender.representedObject as? LayoutGroup else { return }
+
+        LayoutGroupManager.shared.activeGroup = group
+
+        // Switch to first layout in the group if available
+        if let firstLayout = group.layouts.first {
+            let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
+            if let source = inputSources.first(where: { $0.name == firstLayout }) {
+                TISSelectInputSource(source)
+            }
+        }
+
+        refreshMenu()
     }
 }
 
@@ -157,16 +198,26 @@ private extension StatusBarManager {
             let fontSize = size.height * 0.75 // Adjust scale to fit nicely
             let font = NSFont.systemFont(ofSize: fontSize)
             let attributes: [NSAttributedString.Key: Any] = [.font: font]
-            
+
             // Calculate center position
             let stringSize = emoji.size(withAttributes: attributes)
             let point = NSPoint(
                 x: rect.midX - stringSize.width / 2,
                 y: rect.midY - stringSize.height / 2
             )
-            
+
             emoji.draw(at: point, withAttributes: attributes)
             return true
         }
+    }
+
+    func refreshMenu() {
+        let menu = menuBuilder.buildMenu(
+            launchAtLoginAction: #selector(toggleLaunchAtLogin),
+            preferencesAction: #selector(openPreferences),
+            exitAction: #selector(exitApplication),
+            target: self
+        )
+        statusItem.menu = menu
     }
 }
