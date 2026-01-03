@@ -27,6 +27,7 @@
 		B46337BA2F0860F40072D0B5 /* LayoutAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337B92F0860F40072D0B5 /* LayoutAnalytics.swift */; };
 		B46337BD2F0863910072D0B5 /* LayoutGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337BB2F0863910072D0B5 /* LayoutGroup.swift */; };
 		B46337BE2F0863910072D0B5 /* SmartLayoutSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */; };
+		B46337C12F0998D60072D0B5 /* MaterialView in Frameworks */ = {isa = PBXBuildFile; productRef = B46337C02F0998D60072D0B5 /* MaterialView */; };
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 		D87B3EC22683AACF00EC96D2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B3EC12683AACF00EC96D2 /* main.swift */; };
 		D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E506129B5394F000A3AB5 /* StatusBarManager.swift */; };
@@ -75,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B46337C12F0998D60072D0B5 /* MaterialView in Frameworks */,
 				D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */,
 				40E0C9BB244B7F030012F409 /* Carbon.framework in Frameworks */,
 			);
@@ -219,6 +221,7 @@
 			name = LanguageFlag;
 			packageProductDependencies = (
 				D829E662283B700300AEA0A0 /* LaunchAtLogin */,
+				B46337C02F0998D60072D0B5 /* MaterialView */,
 			);
 			productName = TestMac;
 			productReference = 40E0C9A6244B7EF50012F409 /* LanguageFlag.app */;
@@ -250,6 +253,7 @@
 			mainGroup = 40E0C99D244B7EF50012F409;
 			packageReferences = (
 				D829E661283B700300AEA0A0 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
+				B46337BF2F0998D60072D0B5 /* XCRemoteSwiftPackageReference "MaterialView" */,
 			);
 			productRefGroup = 40E0C9A7244B7EF50012F409 /* Products */;
 			projectDirPath = "";
@@ -544,6 +548,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B46337BF2F0998D60072D0B5 /* XCRemoteSwiftPackageReference "MaterialView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OskarGroth/MaterialView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		D829E661283B700300AEA0A0 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin";
@@ -555,6 +567,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B46337C02F0998D60072D0B5 /* MaterialView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B46337BF2F0998D60072D0B5 /* XCRemoteSwiftPackageReference "MaterialView" */;
+			productName = MaterialView;
+		};
 		D829E662283B700300AEA0A0 /* LaunchAtLogin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D829E661283B700300AEA0A0 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;

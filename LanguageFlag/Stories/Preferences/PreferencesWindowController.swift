@@ -15,7 +15,7 @@ final class PreferencesWindowController: NSWindowController {
         let window = NSWindow(contentViewController: hostingController)
 
         window.title = "LanguageFlag Preferences"
-        window.styleMask = [.titled, .closable, .miniaturizable]
+        window.styleMask = [.titled, .closable, .miniaturizable, .hudWindow]
         window.center()
         window.setFrameAutosaveName("PreferencesWindow")
         window.isReleasedWhenClosed = false

@@ -1,19 +1,25 @@
 import Cocoa
+import QuartzCore
+import Combine
 
 class ScreenManager {
 
     // MARK: - Variables
     private var windowControllers: [String: LanguageWindowController] = [:]
+    private var cancellables = Set<AnyCancellable>()
+    private let preferences = UserPreferences.shared
 
     // MARK: - Init
     init() {
         setupObservers()
         ensureWindowControllersForAllScreens()
+        observePreferencesChanges()
     }
 
     // MARK: - Deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
+        cancellables.removeAll()
     }
 
     // MARK: - Public Methods
@@ -74,16 +80,31 @@ extension ScreenManager {
         }
 
         // Add or update controllers for all screens
+        var controllersToUpdate: [LanguageWindowController] = []
+
         for screen in currentScreens {
             let screenId = screen.identifier
 
             if let existingController = windowControllers[screenId] {
                 // Update the screenRect for existing controller (Dock may have moved)
                 existingController.screenRect = screen.visibleFrame
-                existingController.updateWindowFrameIfNeeded()
+                controllersToUpdate.append(existingController)
             } else {
                 // Create new controller for new screen
                 windowControllers[screenId] = createWindowController(for: screen)
+            }
+        }
+
+        // Update all frames simultaneously using CATransaction to batch animations
+        if !controllersToUpdate.isEmpty {
+            DispatchQueue.main.async {
+                CATransaction.begin()
+
+                for controller in controllersToUpdate {
+                    controller.updateWindowFrameIfNeeded()
+                }
+
+                CATransaction.commit()
             }
         }
     }
@@ -95,5 +116,42 @@ extension ScreenManager {
         windowController.windowDidLoad()
 
         return windowController
+    }
+
+    /// Observes preference changes that affect all windows
+    private func observePreferencesChanges() {
+        // Observe display position changes
+        preferences.$displayPosition
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateAllWindowFrames()
+            }
+            .store(in: &cancellables)
+
+        // Observe window size changes
+        preferences.$windowSize
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateAllWindowFrames()
+            }
+            .store(in: &cancellables)
+    }
+
+    /// Updates all window frames simultaneously
+    private func updateAllWindowFrames() {
+        let controllers = Array(windowControllers.values)
+
+        guard !controllers.isEmpty else { return }
+
+        // Update all frames simultaneously using CATransaction
+        CATransaction.begin()
+
+        for controller in controllers {
+            controller.updateWindowFrameIfNeeded()
+        }
+
+        CATransaction.commit()
     }
 }

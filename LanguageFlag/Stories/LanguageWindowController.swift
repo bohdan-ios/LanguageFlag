@@ -200,23 +200,8 @@ extension LanguageWindowController {
             }
             .store(in: &cancellables)
 
-        // Observe window size changes
-        preferences.$windowSize
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.updateWindowFrame()
-            }
-            .store(in: &cancellables)
-
-        // Observe display position changes
-        preferences.$displayPosition
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.updateWindowFrame()
-            }
-            .store(in: &cancellables)
+        // Note: Window size and display position changes are now handled centrally
+        // by ScreenManager to ensure simultaneous updates across all displays
 
         // Observe animation duration changes
         preferences.$animationDuration
@@ -231,13 +216,19 @@ extension LanguageWindowController {
     private func updateWindowFrame() {
         // Use the screenRect that was set by ScreenManager for this specific screen
         guard let targetRect = screenRect else { return }
+        guard let window = window else { return }
 
-        let rect = createRect(in: targetRect)
+        let newRect = createRect(in: targetRect)
 
-        // Set the frame.
-        // Note: animate: false for the first setup to prevent visual jumping
-        let shouldAnimate = window?.isVisible ?? false
-        window?.setFrame(rect, display: true, animate: shouldAnimate)
+        // Animate the frame change using Core Animation
+        // This works within CATransaction for synchronization across all windows
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.3
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            context.allowsImplicitAnimation = true
+
+            window.animator().setFrame(newRect, display: true)
+        }
     }
 
     private func restartAnimation() {
