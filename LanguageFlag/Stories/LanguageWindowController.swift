@@ -138,24 +138,28 @@ extension LanguageWindowController {
         let x: CGFloat
         let y: CGFloat
 
+        // Use percentage-based padding for better multi-monitor support
+        let horizontalPadding = min(50, screen.width * 0.05) // 5% or 50px, whichever is smaller
+        let verticalPadding = min(50, screen.height * 0.05)   // 5% or 50px, whichever is smaller
+
         // Calculate X position
         switch position {
         case .topLeft, .centerLeft, .bottomLeft:
-            x = screen.minX + 50
+            x = screen.minX + horizontalPadding
         case .topCenter, .center, .bottomCenter:
             x = screen.minX + (screen.width - size.width) / 2
         case .topRight, .centerRight, .bottomRight:
-            x = screen.maxX - size.width - 50
+            x = screen.maxX - size.width - horizontalPadding
         }
 
         // Calculate Y position
         switch position {
         case .topLeft, .topCenter, .topRight:
-            y = screen.maxY - size.height - 50
+            y = screen.maxY - size.height - verticalPadding
         case .centerLeft, .center, .centerRight:
             y = screen.minY + (screen.height - size.height) / 2
         case .bottomLeft, .bottomCenter, .bottomRight:
-            y = screen.minY + 50
+            y = screen.minY + verticalPadding
         }
 
         return (x, y)
@@ -261,13 +265,27 @@ extension LanguageWindowController {
             window?.alphaValue = CGFloat(preferences.opacity)
         }
 
+        // For slide, scale, and pixelate animations, we need to ensure the window frame is set
+        // to the correct target position before the animation starts
+        if preferences.animationStyle == .slide || preferences.animationStyle == .scale || preferences.animationStyle == .pixelate {
+            guard let targetRect = screenRect, let window = window else { return }
+            let targetFrame = createRect(in: targetRect)
+
+            // Store the target frame temporarily
+            window.setFrame(targetFrame, display: false, animate: false)
+        }
+
         switch preferences.animationStyle {
         case .fade:
             window?.fadeIn(duration: duration)
         case .slide:
-            window?.slideIn(duration: duration)
+            let direction = getSlideDirection()
+            let maxDistance = getMaxSlideDistance(for: direction)
+            window?.slideIn(duration: duration, direction: direction, maxDistance: maxDistance)
         case .scale:
             window?.scaleIn(duration: duration)
+        case .pixelate:
+            window?.pixelateIn(duration: duration)
         }
     }
 
@@ -278,9 +296,96 @@ extension LanguageWindowController {
         case .fade:
             window?.fadeOut(duration: duration)
         case .slide:
-            window?.slideOut(duration: duration)
+            let direction = getSlideDirection()
+            let maxDistance = getMaxSlideDistance(for: direction)
+            window?.slideOut(duration: duration, direction: direction, maxDistance: maxDistance) { [weak self] in
+                // After slide out completes, reset window to correct position and hide it
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
         case .scale:
-            window?.scaleOut(duration: duration)
+            window?.scaleOut(duration: duration) { [weak self] in
+                // After scale out completes, reset window to correct position and hide it
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .pixelate:
+            window?.pixelateOut(duration: duration) { [weak self] in
+                // After pixelate out completes, reset window to correct position and hide it
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        }
+    }
+
+    /// Determines the slide direction based on the window's position relative to screen edges
+    /// Windows slide towards the nearest edge to avoid appearing on adjacent monitors
+    private func getSlideDirection() -> SlideDirection {
+        guard let screenRect = screenRect, let window = window else {
+            return .down // Default fallback
+        }
+
+        let windowFrame = window.frame
+
+        // Calculate distances to each edge
+        let distanceToTop = screenRect.maxY - windowFrame.maxY
+        let distanceToBottom = windowFrame.minY - screenRect.minY
+        let distanceToLeft = windowFrame.minX - screenRect.minX
+        let distanceToRight = screenRect.maxX - windowFrame.maxX
+
+        // Find the minimum distance
+        let minDistance = min(distanceToTop, distanceToBottom, distanceToLeft, distanceToRight)
+
+        // Slide towards the nearest edge
+        if minDistance == distanceToTop {
+            return .up
+        } else if minDistance == distanceToBottom {
+            return .down
+        } else if minDistance == distanceToLeft {
+            return .left
+        } else {
+            return .right
+        }
+    }
+
+    /// Calculates the maximum slide distance to prevent window from appearing on adjacent monitors
+    /// Uses min(distance to edge, window dimension) to stay within screen bounds
+    /// Adds a small extra distance only if there's enough space
+    private func getMaxSlideDistance(for direction: SlideDirection) -> CGFloat {
+        guard let screenRect = screenRect, let window = window else {
+            return 0
+        }
+
+        let windowFrame = window.frame
+
+        switch direction {
+        case .up:
+            let distanceToEdge = screenRect.maxY - windowFrame.maxY
+            let baseDistance = min(distanceToEdge, windowFrame.height)
+            // Add extra distance only if we have room beyond the window height
+            let extraDistance = max(0, distanceToEdge - windowFrame.height)
+            return baseDistance + min(extraDistance, 50)
+        case .down:
+            let distanceToEdge = windowFrame.minY - screenRect.minY
+            let baseDistance = min(distanceToEdge, windowFrame.height)
+            let extraDistance = max(0, distanceToEdge - windowFrame.height)
+            return baseDistance + min(extraDistance, 50)
+        case .left:
+            let distanceToEdge = windowFrame.minX - screenRect.minX
+            let baseDistance = min(distanceToEdge, windowFrame.width)
+            let extraDistance = max(0, distanceToEdge - windowFrame.width)
+            return baseDistance + min(extraDistance, 50)
+        case .right:
+            let distanceToEdge = screenRect.maxX - windowFrame.maxX
+            let baseDistance = min(distanceToEdge, windowFrame.width)
+            let extraDistance = max(0, distanceToEdge - windowFrame.width)
+            return baseDistance + min(extraDistance, 50)
         }
     }
 }
