@@ -28,6 +28,12 @@ protocol Animatable {
     func energyPortalOut(duration: TimeInterval, completion: (() -> Void)?)
     func digitalMaterializeIn(duration: TimeInterval, completion: (() -> Void)?)
     func digitalMaterializeOut(duration: TimeInterval, completion: (() -> Void)?)
+    func liquidRippleIn(duration: TimeInterval, completion: (() -> Void)?)
+    func liquidRippleOut(duration: TimeInterval, completion: (() -> Void)?)
+    func inkDiffusionIn(duration: TimeInterval, completion: (() -> Void)?)
+    func inkDiffusionOut(duration: TimeInterval, completion: (() -> Void)?)
+    func vhsGlitchIn(duration: TimeInterval, completion: (() -> Void)?)
+    func vhsGlitchOut(duration: TimeInterval, completion: (() -> Void)?)
     func rotateIn(duration: TimeInterval, completion: (() -> Void)?)
     func rotateOut(duration: TimeInterval, completion: (() -> Void)?)
     func swingIn(duration: TimeInterval, completion: (() -> Void)?)
@@ -1243,6 +1249,602 @@ extension NSWindow: Animatable {
         // Set final states
         bloomFilter?.setValue(1.0, forKey: kCIInputIntensityKey)
         colorFilter?.setValue(0.3, forKey: "inputBrightness")
+    }
+
+    // MARK: - Liquid Ripple Animations
+    func liquidRippleIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Circular splash distortion from center
+        let splashFilter = CIFilter(name: "CICircleSplashDistortion")
+        splashFilter?.setDefaults()
+        let centerX = layer.bounds.width / 2
+        let centerY = layer.bounds.height / 2
+        splashFilter?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+        splashFilter?.setValue(150.0, forKey: kCIInputRadiusKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.3, forKey: "inputSaturation")
+        colorFilter?.setValue(0.1, forKey: "inputBrightness")
+
+        layer.filters = [splashFilter!, colorFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeOut))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate splash radius from large to zero (ripple collapses inward)
+        let splashAnimation = CABasicAnimation(keyPath: "filters.CICircleSplashDistortion.inputRadius")
+        splashAnimation.fromValue = 150.0
+        splashAnimation.toValue = 0.0
+        splashAnimation.duration = duration
+        layer.add(splashAnimation, forKey: "splash")
+
+        // Animate saturation to normal
+        let satAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        satAnimation.fromValue = 1.3
+        satAnimation.toValue = 1.0
+        satAnimation.duration = duration
+        layer.add(satAnimation, forKey: "sat")
+
+        // Animate brightness to normal
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.1
+        brightAnimation.toValue = 0.0
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "bright")
+
+        CATransaction.commit()
+
+        splashFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        contentView.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            contentView.animator().alphaValue = 1
+        }
+    }
+
+    func liquidRippleOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        let splashFilter = CIFilter(name: "CICircleSplashDistortion")
+        splashFilter?.setDefaults()
+        let centerX = layer.bounds.width / 2
+        let centerY = layer.bounds.height / 2
+        splashFilter?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+        splashFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        layer.filters = [splashFilter!, colorFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate splash radius from zero to large (ripple expands outward)
+        let splashAnimation = CABasicAnimation(keyPath: "filters.CICircleSplashDistortion.inputRadius")
+        splashAnimation.fromValue = 0.0
+        splashAnimation.toValue = 150.0
+        splashAnimation.duration = duration
+        layer.add(splashAnimation, forKey: "splash")
+
+        // Animate saturation up
+        let satAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        satAnimation.fromValue = 1.0
+        satAnimation.toValue = 1.3
+        satAnimation.duration = duration
+        layer.add(satAnimation, forKey: "sat")
+
+        // Animate brightness up
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.0
+        brightAnimation.toValue = 0.1
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "bright")
+
+        CATransaction.commit()
+
+        splashFilter?.setValue(150.0, forKey: kCIInputRadiusKey)
+        colorFilter?.setValue(1.3, forKey: "inputSaturation")
+        colorFilter?.setValue(0.1, forKey: "inputBrightness")
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            contentView.animator().alphaValue = 0
+        }
+    }
+
+    // MARK: - Ink Diffusion Animations
+    func inkDiffusionIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Morphology and blur for ink spread effect
+        let morphologyFilter = CIFilter(name: "CIMorphologyMaximum")
+        morphologyFilter?.setDefaults()
+        morphologyFilter?.setValue(10.0, forKey: kCIInputRadiusKey)
+
+        let blurFilter = CIFilter(name: "CIGaussianBlur")
+        blurFilter?.setDefaults()
+        blurFilter?.setValue(15.0, forKey: kCIInputRadiusKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.5, forKey: "inputContrast")
+
+        layer.filters = [morphologyFilter!, blurFilter!, colorFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeOut))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate morphology from large to normal
+        let morphAnimation = CABasicAnimation(keyPath: "filters.CIMorphologyMaximum.inputRadius")
+        morphAnimation.fromValue = 10.0
+        morphAnimation.toValue = 0.0
+        morphAnimation.duration = duration
+        layer.add(morphAnimation, forKey: "morph")
+
+        // Animate blur from strong to none
+        let blurAnimation = CABasicAnimation(keyPath: "filters.CIGaussianBlur.inputRadius")
+        blurAnimation.fromValue = 15.0
+        blurAnimation.toValue = 0.0
+        blurAnimation.duration = duration
+        layer.add(blurAnimation, forKey: "blur")
+
+        // Animate contrast to normal
+        let contrastAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputContrast")
+        contrastAnimation.fromValue = 1.5
+        contrastAnimation.toValue = 1.0
+        contrastAnimation.duration = duration
+        layer.add(contrastAnimation, forKey: "contrast")
+
+        CATransaction.commit()
+
+        morphologyFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+        blurFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+        colorFilter?.setValue(1.0, forKey: "inputContrast")
+
+        contentView.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            contentView.animator().alphaValue = 1
+        }
+    }
+
+    func inkDiffusionOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        let morphologyFilter = CIFilter(name: "CIMorphologyMaximum")
+        morphologyFilter?.setDefaults()
+        morphologyFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+
+        let blurFilter = CIFilter(name: "CIGaussianBlur")
+        blurFilter?.setDefaults()
+        blurFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.0, forKey: "inputContrast")
+
+        layer.filters = [morphologyFilter!, blurFilter!, colorFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate morphology from normal to large
+        let morphAnimation = CABasicAnimation(keyPath: "filters.CIMorphologyMaximum.inputRadius")
+        morphAnimation.fromValue = 0.0
+        morphAnimation.toValue = 10.0
+        morphAnimation.duration = duration
+        layer.add(morphAnimation, forKey: "morph")
+
+        // Animate blur from none to strong
+        let blurAnimation = CABasicAnimation(keyPath: "filters.CIGaussianBlur.inputRadius")
+        blurAnimation.fromValue = 0.0
+        blurAnimation.toValue = 15.0
+        blurAnimation.duration = duration
+        layer.add(blurAnimation, forKey: "blur")
+
+        // Animate contrast up
+        let contrastAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputContrast")
+        contrastAnimation.fromValue = 1.0
+        contrastAnimation.toValue = 1.5
+        contrastAnimation.duration = duration
+        layer.add(contrastAnimation, forKey: "contrast")
+
+        CATransaction.commit()
+
+        morphologyFilter?.setValue(10.0, forKey: kCIInputRadiusKey)
+        blurFilter?.setValue(15.0, forKey: kCIInputRadiusKey)
+        colorFilter?.setValue(1.5, forKey: "inputContrast")
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            contentView.animator().alphaValue = 0
+        }
+    }
+
+    // MARK: - VHS Glitch Animations
+    func vhsGlitchIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // VHS aesthetic: grain, blur, posterization, color shift, chromatic aberration
+
+        // Random noise for grain texture
+        let noiseFilter = CIFilter(name: "CIRandomGenerator")
+        noiseFilter?.setDefaults()
+
+        // Blur for low-res VHS look
+        let blurFilter = CIFilter(name: "CIGaussianBlur")
+        blurFilter?.setDefaults()
+        blurFilter?.setValue(3.0, forKey: kCIInputRadiusKey)
+
+        // Color posterization for color banding
+        let posterizeFilter = CIFilter(name: "CIColorPosterize")
+        posterizeFilter?.setDefaults()
+        posterizeFilter?.setValue(12.0, forKey: "inputLevels")
+
+        // Color controls for desaturated VHS look
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(0.7, forKey: "inputSaturation")
+        colorFilter?.setValue(-0.1, forKey: "inputBrightness")
+        colorFilter?.setValue(0.9, forKey: "inputContrast")
+
+        // Motion blur for tracking distortion effect
+        let motionFilter = CIFilter(name: "CIMotionBlur")
+        motionFilter?.setDefaults()
+        motionFilter?.setValue(10.0, forKey: kCIInputRadiusKey)
+        motionFilter?.setValue(0.0, forKey: kCIInputAngleKey)
+
+        // Create scanline overlay layer (horizontal gray lines)
+        let scanlineLayer = CALayer()
+        scanlineLayer.frame = layer.bounds
+
+        // Create scanline pattern image
+        let scanlineImage = createScanlinePattern(size: layer.bounds.size)
+        scanlineLayer.contents = scanlineImage
+        scanlineLayer.opacity = 0.3
+        layer.addSublayer(scanlineLayer)
+
+        // Create noise overlay layer (random dots)
+        let noiseLayer = CALayer()
+        noiseLayer.frame = layer.bounds
+        let noiseImage = createNoisePattern(size: layer.bounds.size)
+        noiseLayer.contents = noiseImage
+        noiseLayer.opacity = 0.15
+        layer.addSublayer(noiseLayer)
+
+        layer.filters = [blurFilter!, posterizeFilter!, colorFilter!, motionFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeOut))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            // Remove scanline and noise layers
+            scanlineLayer.removeFromSuperlayer()
+            noiseLayer.removeFromSuperlayer()
+            completion?()
+        }
+
+        // Animate scanline and noise opacity out
+        let scanlineOpacityAnimation = CABasicAnimation(keyPath: "opacity")
+        scanlineOpacityAnimation.fromValue = 0.3
+        scanlineOpacityAnimation.toValue = 0.0
+        scanlineOpacityAnimation.duration = duration
+        scanlineLayer.add(scanlineOpacityAnimation, forKey: "scanlineOpacity")
+        scanlineLayer.opacity = 0.0
+
+        let noiseOpacityAnimation = CABasicAnimation(keyPath: "opacity")
+        noiseOpacityAnimation.fromValue = 0.15
+        noiseOpacityAnimation.toValue = 0.0
+        noiseOpacityAnimation.duration = duration
+        noiseLayer.add(noiseOpacityAnimation, forKey: "noiseOpacity")
+        noiseLayer.opacity = 0.0
+
+        // Animate blur from VHS softness to sharp
+        let blurAnimation = CABasicAnimation(keyPath: "filters.CIGaussianBlur.inputRadius")
+        blurAnimation.fromValue = 3.0
+        blurAnimation.toValue = 0.0
+        blurAnimation.duration = duration
+        layer.add(blurAnimation, forKey: "blur")
+
+        // Animate posterize from color banding to full color
+        let posterizeAnimation = CABasicAnimation(keyPath: "filters.CIColorPosterize.inputLevels")
+        posterizeAnimation.fromValue = 12.0
+        posterizeAnimation.toValue = 256.0
+        posterizeAnimation.duration = duration
+        layer.add(posterizeAnimation, forKey: "posterize")
+
+        // Animate saturation to normal
+        let satAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        satAnimation.fromValue = 0.7
+        satAnimation.toValue = 1.0
+        satAnimation.duration = duration
+        layer.add(satAnimation, forKey: "sat")
+
+        // Animate brightness to normal
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = -0.1
+        brightAnimation.toValue = 0.0
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "bright")
+
+        // Animate contrast to normal
+        let contrastAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputContrast")
+        contrastAnimation.fromValue = 0.9
+        contrastAnimation.toValue = 1.0
+        contrastAnimation.duration = duration
+        layer.add(contrastAnimation, forKey: "contrast")
+
+        // Animate motion blur (tracking distortion) from strong to none
+        let motionAnimation = CABasicAnimation(keyPath: "filters.CIMotionBlur.inputRadius")
+        motionAnimation.fromValue = 10.0
+        motionAnimation.toValue = 0.0
+        motionAnimation.duration = duration
+        layer.add(motionAnimation, forKey: "motion")
+
+        CATransaction.commit()
+
+        blurFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+        posterizeFilter?.setValue(256.0, forKey: "inputLevels")
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+        colorFilter?.setValue(1.0, forKey: "inputContrast")
+        motionFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+
+        contentView.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            contentView.animator().alphaValue = 1
+        }
+    }
+
+    func vhsGlitchOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // VHS aesthetic filters starting from normal state
+        let blurFilter = CIFilter(name: "CIGaussianBlur")
+        blurFilter?.setDefaults()
+        blurFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+
+        let posterizeFilter = CIFilter(name: "CIColorPosterize")
+        posterizeFilter?.setDefaults()
+        posterizeFilter?.setValue(256.0, forKey: "inputLevels")
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+        colorFilter?.setValue(1.0, forKey: "inputContrast")
+
+        let motionFilter = CIFilter(name: "CIMotionBlur")
+        motionFilter?.setDefaults()
+        motionFilter?.setValue(0.0, forKey: kCIInputRadiusKey)
+        motionFilter?.setValue(0.0, forKey: kCIInputAngleKey)
+
+        // Create scanline overlay layer (horizontal gray lines)
+        let scanlineLayer = CALayer()
+        scanlineLayer.frame = layer.bounds
+        let scanlineImage = createScanlinePattern(size: layer.bounds.size)
+        scanlineLayer.contents = scanlineImage
+        scanlineLayer.opacity = 0.0
+        layer.addSublayer(scanlineLayer)
+
+        // Create noise overlay layer (random dots)
+        let noiseLayer = CALayer()
+        noiseLayer.frame = layer.bounds
+        let noiseImage = createNoisePattern(size: layer.bounds.size)
+        noiseLayer.contents = noiseImage
+        noiseLayer.opacity = 0.0
+        layer.addSublayer(noiseLayer)
+
+        layer.filters = [blurFilter!, posterizeFilter!, colorFilter!, motionFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            scanlineLayer.removeFromSuperlayer()
+            noiseLayer.removeFromSuperlayer()
+            completion?()
+        }
+
+        // Animate scanline and noise opacity in
+        let scanlineOpacityAnimation = CABasicAnimation(keyPath: "opacity")
+        scanlineOpacityAnimation.fromValue = 0.0
+        scanlineOpacityAnimation.toValue = 0.3
+        scanlineOpacityAnimation.duration = duration
+        scanlineLayer.add(scanlineOpacityAnimation, forKey: "scanlineOpacity")
+        scanlineLayer.opacity = 0.3
+
+        let noiseOpacityAnimation = CABasicAnimation(keyPath: "opacity")
+        noiseOpacityAnimation.fromValue = 0.0
+        noiseOpacityAnimation.toValue = 0.15
+        noiseOpacityAnimation.duration = duration
+        noiseLayer.add(noiseOpacityAnimation, forKey: "noiseOpacity")
+        noiseLayer.opacity = 0.15
+
+        // Animate blur from sharp to VHS softness
+        let blurAnimation = CABasicAnimation(keyPath: "filters.CIGaussianBlur.inputRadius")
+        blurAnimation.fromValue = 0.0
+        blurAnimation.toValue = 3.0
+        blurAnimation.duration = duration
+        layer.add(blurAnimation, forKey: "blur")
+
+        // Animate posterize from full color to color banding
+        let posterizeAnimation = CABasicAnimation(keyPath: "filters.CIColorPosterize.inputLevels")
+        posterizeAnimation.fromValue = 256.0
+        posterizeAnimation.toValue = 12.0
+        posterizeAnimation.duration = duration
+        layer.add(posterizeAnimation, forKey: "posterize")
+
+        // Animate saturation down for VHS look
+        let satAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        satAnimation.fromValue = 1.0
+        satAnimation.toValue = 0.7
+        satAnimation.duration = duration
+        layer.add(satAnimation, forKey: "sat")
+
+        // Animate brightness down
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.0
+        brightAnimation.toValue = -0.1
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "bright")
+
+        // Animate contrast down
+        let contrastAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputContrast")
+        contrastAnimation.fromValue = 1.0
+        contrastAnimation.toValue = 0.9
+        contrastAnimation.duration = duration
+        layer.add(contrastAnimation, forKey: "contrast")
+
+        // Animate motion blur (tracking distortion) from none to strong
+        let motionAnimation = CABasicAnimation(keyPath: "filters.CIMotionBlur.inputRadius")
+        motionAnimation.fromValue = 0.0
+        motionAnimation.toValue = 10.0
+        motionAnimation.duration = duration
+        layer.add(motionAnimation, forKey: "motion")
+
+        CATransaction.commit()
+
+        blurFilter?.setValue(3.0, forKey: kCIInputRadiusKey)
+        posterizeFilter?.setValue(12.0, forKey: "inputLevels")
+        colorFilter?.setValue(0.7, forKey: "inputSaturation")
+        colorFilter?.setValue(-0.1, forKey: "inputBrightness")
+        colorFilter?.setValue(0.9, forKey: "inputContrast")
+        motionFilter?.setValue(10.0, forKey: kCIInputRadiusKey)
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            contentView.animator().alphaValue = 0
+        }
+    }
+
+    // MARK: - Helper Functions for VHS Effect
+
+    /// Creates a scanline pattern image with horizontal gray lines
+    private func createScanlinePattern(size: CGSize) -> CGImage? {
+        let width = Int(size.width)
+        let height = Int(size.height)
+        let scanlineHeight: Int = 2  // Height of each scanline
+        let scanlineSpacing: Int = 4  // Spacing between scanlines
+
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let bitmapInfo = CGImageAlphaInfo.none.rawValue
+
+        guard let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: width,
+            space: colorSpace,
+            bitmapInfo: bitmapInfo
+        ) else { return nil }
+
+        // Fill with transparent
+        context.setFillColor(gray: 1.0, alpha: 1.0)
+        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+
+        // Draw horizontal scanlines
+        context.setFillColor(gray: 0.3, alpha: 1.0)  // Dark gray lines
+        for y in stride(from: 0, to: height, by: scanlineSpacing) {
+            context.fill(CGRect(x: 0, y: y, width: width, height: scanlineHeight))
+        }
+
+        return context.makeImage()
+    }
+
+    /// Creates a noise pattern image with random dots
+    private func createNoisePattern(size: CGSize) -> CGImage? {
+        let width = Int(size.width)
+        let height = Int(size.height)
+        let noiseDensity: Float = 0.15  // 15% of pixels will be noise
+
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let bitmapInfo = CGImageAlphaInfo.none.rawValue
+
+        guard let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: width,
+            space: colorSpace,
+            bitmapInfo: bitmapInfo
+        ) else { return nil }
+
+        // Fill with transparent
+        context.setFillColor(gray: 1.0, alpha: 1.0)
+        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+
+        // Add random noise dots
+        for _ in 0..<Int(Float(width * height) * noiseDensity) {
+            let x = Int.random(in: 0..<width)
+            let y = Int.random(in: 0..<height)
+            let brightness = CGFloat.random(in: 0.2...0.8)  // Random gray value
+
+            context.setFillColor(gray: brightness, alpha: 1.0)
+            context.fill(CGRect(x: x, y: y, width: 1, height: 1))
+        }
+
+        return context.makeImage()
     }
 
 }
