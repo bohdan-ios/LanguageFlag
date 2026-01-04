@@ -20,6 +20,12 @@ protocol Animatable {
     func flipOut(duration: TimeInterval, completion: (() -> Void)?)
     func bounceIn(duration: TimeInterval, completion: (() -> Void)?)
     func bounceOut(duration: TimeInterval, completion: (() -> Void)?)
+    func rotateIn(duration: TimeInterval, completion: (() -> Void)?)
+    func rotateOut(duration: TimeInterval, completion: (() -> Void)?)
+    func swingIn(duration: TimeInterval, completion: (() -> Void)?)
+    func swingOut(duration: TimeInterval, completion: (() -> Void)?)
+    func elasticIn(duration: TimeInterval, completion: (() -> Void)?)
+    func elasticOut(duration: TimeInterval, completion: (() -> Void)?)
 }
 
 extension NSWindow: Animatable {
@@ -504,5 +510,264 @@ extension NSWindow: Animatable {
             self.animator().setFrame(endFrame, display: true)
             self.animator().alphaValue = 0
         }, completionHandler: completion)
+    }
+
+    // MARK: - Rotate Animations
+    func rotateIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Set anchor point to center for rotation
+        let originalFrame = layer.frame
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        layer.frame = originalFrame
+
+        // Ensure window is visible
+        self.orderFrontRegardless()
+        self.alphaValue = 0
+
+        // Create rotation animation (0 to 360 degrees)
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.fromValue = 0
+        rotationAnimation.toValue = CGFloat.pi * 2 // 360 degrees
+        rotationAnimation.duration = duration
+        rotationAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock(completion)
+        layer.add(rotationAnimation, forKey: "rotate")
+        CATransaction.commit()
+
+        // Fade in simultaneously
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            self.animator().alphaValue = 1
+        })
+    }
+
+    func rotateOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Set anchor point to center for rotation
+        let originalFrame = layer.frame
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        layer.frame = originalFrame
+
+        // Create rotation animation (0 to 360 degrees)
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.fromValue = 0
+        rotationAnimation.toValue = CGFloat.pi * 2 // 360 degrees
+        rotationAnimation.duration = duration
+        rotationAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            // Reset transform
+            layer.transform = CATransform3DIdentity
+            layer.anchorPoint = CGPoint(x: 0, y: 0)
+            layer.frame = originalFrame
+            completion?()
+        }
+        layer.add(rotationAnimation, forKey: "rotate")
+        CATransaction.commit()
+
+        // Fade out simultaneously
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            self.animator().alphaValue = 0
+        })
+    }
+
+    // MARK: - Swing Animations
+    func swingIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Set anchor point to top for swing (like a pendulum)
+        let originalFrame = layer.frame
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.0) // Anchor at top center
+        layer.frame = originalFrame
+
+        // Ensure window is visible
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        // Create swing animation with keyframes
+        let swingAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        swingAnimation.duration = duration
+        // Swing from left, overshoot right, settle in center
+        swingAnimation.values = [
+            -CGFloat.pi / 3,  // Start: -60 degrees (left)
+            CGFloat.pi / 6,   // Swing to: +30 degrees (right)
+            -CGFloat.pi / 12, // Back to: -15 degrees (left)
+            CGFloat.pi / 24,  // Small swing: +7.5 degrees (right)
+            0                 // Settle: 0 degrees (center)
+        ]
+        swingAnimation.keyTimes = [0.0, 0.4, 0.65, 0.85, 1.0]
+        swingAnimation.timingFunctions = [
+            CAMediaTimingFunction(name: .easeOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut)
+        ]
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock(completion)
+        layer.add(swingAnimation, forKey: "swing")
+        CATransaction.commit()
+
+        // Set final state
+        layer.transform = CATransform3DIdentity
+    }
+
+    func swingOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Set anchor point to top for swing
+        let originalFrame = layer.frame
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.frame = originalFrame
+
+        // Create swing out animation
+        let swingAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        swingAnimation.duration = duration
+        // Start centered, swing increasingly until disappearing
+        swingAnimation.values = [
+            0,                    // Start: center
+            CGFloat.pi / 12,      // Small swing right
+            -CGFloat.pi / 6,      // Larger swing left
+            CGFloat.pi / 3        // Final swing right and away
+        ]
+        swingAnimation.keyTimes = [0.0, 0.3, 0.6, 1.0]
+        swingAnimation.timingFunctions = [
+            CAMediaTimingFunction(name: .easeIn),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeIn)
+        ]
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            // Reset transform
+            layer.transform = CATransform3DIdentity
+            layer.anchorPoint = CGPoint(x: 0, y: 0)
+            layer.frame = originalFrame
+            completion?()
+        }
+        layer.add(swingAnimation, forKey: "swing")
+        CATransaction.commit()
+
+        // Fade out simultaneously
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            self.animator().alphaValue = 0
+        })
+    }
+
+    // MARK: - Elastic Animations
+    func elasticIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Ensure window is visible
+        self.orderFrontRegardless()
+        self.alphaValue = 0
+
+        // Create elastic scale animation with overshoot
+        let scaleAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
+        scaleAnimation.duration = duration
+        // Elastic effect: undershoot, overshoot, settle
+        scaleAnimation.values = [
+            0.0,   // Start tiny
+            0.7,   // Grow quickly
+            1.3,   // Overshoot (elastic bounce)
+            0.9,   // Pull back
+            1.05,  // Small overshoot
+            0.98,  // Pull back slightly
+            1.0    // Settle at normal size
+        ]
+        scaleAnimation.keyTimes = [0.0, 0.3, 0.5, 0.65, 0.8, 0.9, 1.0]
+        scaleAnimation.timingFunctions = [
+            CAMediaTimingFunction(name: .easeOut),
+            CAMediaTimingFunction(name: .linear),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut)
+        ]
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock(completion)
+        layer.add(scaleAnimation, forKey: "elastic")
+        CATransaction.commit()
+
+        // Fade in simultaneously
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = duration * 0.5 // Fade in faster than elastic animation
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            self.animator().alphaValue = 1
+        })
+
+        // Set final state
+        layer.transform = CATransform3DIdentity
+    }
+
+    func elasticOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Create elastic scale out animation
+        let scaleAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
+        scaleAnimation.duration = duration
+        // Reverse elastic: slight grow, then shrink with overshoot
+        scaleAnimation.values = [
+            1.0,   // Start normal
+            1.05,  // Slight grow
+            0.95,  // Pull back
+            1.1,   // Overshoot grow
+            0.7,   // Shrink fast
+            0.3,   // Almost gone
+            0.0    // Disappear
+        ]
+        scaleAnimation.keyTimes = [0.0, 0.15, 0.3, 0.45, 0.65, 0.85, 1.0]
+        scaleAnimation.timingFunctions = [
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeIn),
+            CAMediaTimingFunction(name: .easeIn),
+            CAMediaTimingFunction(name: .easeIn),
+            CAMediaTimingFunction(name: .easeIn)
+        ]
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            layer.transform = CATransform3DIdentity
+            completion?()
+        }
+        layer.add(scaleAnimation, forKey: "elastic")
+        CATransaction.commit()
+
+        // Fade out simultaneously
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            self.animator().alphaValue = 0
+        })
     }
 }
