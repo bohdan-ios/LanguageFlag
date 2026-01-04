@@ -28,6 +28,8 @@
 		B46337BD2F0863910072D0B5 /* LayoutGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337BB2F0863910072D0B5 /* LayoutGroup.swift */; };
 		B46337BE2F0863910072D0B5 /* SmartLayoutSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */; };
 		B46337C12F0998D60072D0B5 /* MaterialView in Frameworks */ = {isa = PBXBuildFile; productRef = B46337C02F0998D60072D0B5 /* MaterialView */; };
+		B46337C52F0AEAA40072D0B5 /* HologramFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */; };
+		B46337C62F0AEAA40072D0B5 /* Pixelate.metal in Sources */ = {isa = PBXBuildFile; fileRef = B46337C32F0AEAA40072D0B5 /* Pixelate.metal */; };
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 		D87B3EC22683AACF00EC96D2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B3EC12683AACF00EC96D2 /* main.swift */; };
 		D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E506129B5394F000A3AB5 /* StatusBarManager.swift */; };
@@ -61,6 +63,8 @@
 		B46337B92F0860F40072D0B5 /* LayoutAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutAnalytics.swift; sourceTree = "<group>"; };
 		B46337BB2F0863910072D0B5 /* LayoutGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutGroup.swift; sourceTree = "<group>"; };
 		B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartLayoutSuggestions.swift; sourceTree = "<group>"; };
+		B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HologramFilter.swift; sourceTree = "<group>"; };
+		B46337C32F0AEAA40072D0B5 /* Pixelate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Pixelate.metal; sourceTree = "<group>"; };
 		D87B3EC12683AACF00EC96D2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D87E506129B5394F000A3AB5 /* StatusBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarManager.swift; sourceTree = "<group>"; };
 		D893F1C229ACE19C0022EF46 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -135,6 +139,7 @@
 		40E0C9A8244B7EF50012F409 /* LanguageFlag */ = {
 			isa = PBXGroup;
 			children = (
+				B46337C42F0AEAA40072D0B5 /* Shaders */,
 				40E0C9B3244B7EF60012F409 /* LanguageFlag.entitlements */,
 				40C655DE244C421D00BBA413 /* Application */,
 				40C655E0244C423500BBA413 /* Stories */,
@@ -161,6 +166,15 @@
 				B46337B52F076C230072D0B5 /* PreferencesWindowController.swift */,
 			);
 			path = Preferences;
+			sourceTree = "<group>";
+		};
+		B46337C42F0AEAA40072D0B5 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */,
+				B46337C32F0AEAA40072D0B5 /* Pixelate.metal */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 		D8E267B726A7123B008B3689 /* Extensions */ = {
@@ -343,6 +357,8 @@
 				40C655E2244C425800BBA413 /* LanguageWindowController.swift in Sources */,
 				40E0C9AA244B7EF50012F409 /* AppDelegate.swift in Sources */,
 				40E94A3F244D0230001E93E1 /* NotificationName.swift in Sources */,
+				B46337C52F0AEAA40072D0B5 /* HologramFilter.swift in Sources */,
+				B46337C62F0AEAA40072D0B5 /* Pixelate.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
