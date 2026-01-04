@@ -66,6 +66,9 @@ enum AnimationStyle: String, Codable, CaseIterable {
     case hologram = "Hologram"
     case energyPortal = "Energy Portal"
     case digitalMaterialize = "Digital Materialize"
+    case liquidRipple = "Liquid Ripple"
+    case inkDiffusion = "Ink Diffusion"
+    case vhsGlitch = "VHS Glitch"
 
     var description: String {
         rawValue

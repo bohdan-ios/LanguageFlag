@@ -267,7 +267,7 @@ extension LanguageWindowController {
 
         // For certain animations, we need to ensure the window frame is set
         // to the correct target position before the animation starts
-        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic, .hologram, .energyPortal, .digitalMaterialize]
+        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic, .hologram, .energyPortal, .digitalMaterialize, .liquidRipple, .inkDiffusion, .vhsGlitch]
         if needsFrameSetup.contains(preferences.animationStyle) {
             guard let targetRect = screenRect, let window = window else { return }
             let targetFrame = createRect(in: targetRect)
@@ -305,6 +305,12 @@ extension LanguageWindowController {
             window?.energyPortalIn(duration: duration)
         case .digitalMaterialize:
             window?.digitalMaterializeIn(duration: duration)
+        case .liquidRipple:
+            window?.liquidRippleIn(duration: duration)
+        case .inkDiffusion:
+            window?.inkDiffusionIn(duration: duration)
+        case .vhsGlitch:
+            window?.vhsGlitchIn(duration: duration)
         }
     }
 
@@ -387,6 +393,27 @@ extension LanguageWindowController {
             }
         case .digitalMaterialize:
             window?.digitalMaterializeOut(duration: duration) { [weak self] in
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .liquidRipple:
+            window?.liquidRippleOut(duration: duration) { [weak self] in
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .inkDiffusion:
+            window?.inkDiffusionOut(duration: duration) { [weak self] in
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .vhsGlitch:
+            window?.vhsGlitchOut(duration: duration) { [weak self] in
                 guard let self = self, let targetRect = self.screenRect else { return }
                 let targetFrame = self.createRect(in: targetRect)
                 self.window?.setFrame(targetFrame, display: false, animate: false)
