@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,6 +30,8 @@
 		B46337C12F0998D60072D0B5 /* MaterialView in Frameworks */ = {isa = PBXBuildFile; productRef = B46337C02F0998D60072D0B5 /* MaterialView */; };
 		B46337C52F0AEAA40072D0B5 /* HologramFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */; };
 		B46337C62F0AEAA40072D0B5 /* Pixelate.metal in Sources */ = {isa = PBXBuildFile; fileRef = B46337C32F0AEAA40072D0B5 /* Pixelate.metal */; };
+		B46349302F0AFAD100337505 /* AnimationEffectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B463492D2F0AFAD100337505 /* AnimationEffectHelpers.swift */; };
+		B46349312F0AFAD100337505 /* PixelateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B463492E2F0AFAD100337505 /* PixelateRenderer.swift */; };
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 		D87B3EC22683AACF00EC96D2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B3EC12683AACF00EC96D2 /* main.swift */; };
 		D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E506129B5394F000A3AB5 /* StatusBarManager.swift */; };
@@ -65,6 +67,8 @@
 		B46337BC2F0863910072D0B5 /* SmartLayoutSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartLayoutSuggestions.swift; sourceTree = "<group>"; };
 		B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HologramFilter.swift; sourceTree = "<group>"; };
 		B46337C32F0AEAA40072D0B5 /* Pixelate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Pixelate.metal; sourceTree = "<group>"; };
+		B463492D2F0AFAD100337505 /* AnimationEffectHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationEffectHelpers.swift; sourceTree = "<group>"; };
+		B463492E2F0AFAD100337505 /* PixelateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelateRenderer.swift; sourceTree = "<group>"; };
 		D87B3EC12683AACF00EC96D2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D87E506129B5394F000A3AB5 /* StatusBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarManager.swift; sourceTree = "<group>"; };
 		D893F1C229ACE19C0022EF46 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -74,6 +78,10 @@
 		D8E651AD29AC013C002F47B9 /* LanguageWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageWindow.swift; sourceTree = "<group>"; };
 		D8EB1E2829AF615100812827 /* KeyboardLayoutNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutNotification.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B463493C2F0AFDAD00337505 /* Animations */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Animations; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		40E0C9A3244B7EF50012F409 /* Frameworks */ = {
@@ -139,6 +147,7 @@
 		40E0C9A8244B7EF50012F409 /* LanguageFlag */ = {
 			isa = PBXGroup;
 			children = (
+				B463493C2F0AFDAD00337505 /* Animations */,
 				B46337C42F0AEAA40072D0B5 /* Shaders */,
 				40E0C9B3244B7EF60012F409 /* LanguageFlag.entitlements */,
 				40C655DE244C421D00BBA413 /* Application */,
@@ -191,6 +200,8 @@
 		D8E267B826A712C8008B3689 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				B463492D2F0AFAD100337505 /* AnimationEffectHelpers.swift */,
+				B463492E2F0AFAD100337505 /* PixelateRenderer.swift */,
 				B46337A92F0763BA0072D0B5 /* LayoutImageProtocols.swift */,
 				B43DD34E2D12736400438CFB /* CapsLockManager.swift */,
 				D8E267B526A70EE6008B3689 /* LayoutImageContainer.swift */,
@@ -231,6 +242,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B463493C2F0AFDAD00337505 /* Animations */,
 			);
 			name = LanguageFlag;
 			packageProductDependencies = (
@@ -341,6 +355,8 @@
 				B43DD3512D12739D00438CFB /* ScreenManager.swift in Sources */,
 				D87E506229B5394F000A3AB5 /* StatusBarManager.swift in Sources */,
 				D8E267B626A70EE6008B3689 /* LayoutImageContainer.swift in Sources */,
+				B46349302F0AFAD100337505 /* AnimationEffectHelpers.swift in Sources */,
+				B46349312F0AFAD100337505 /* PixelateRenderer.swift in Sources */,
 				D8EB1E2929AF615100812827 /* KeyboardLayoutNotification.swift in Sources */,
 				D87B3EC22683AACF00EC96D2 /* main.swift in Sources */,
 				B46337BA2F0860F40072D0B5 /* LayoutAnalytics.swift in Sources */,
