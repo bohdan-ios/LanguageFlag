@@ -265,9 +265,10 @@ extension LanguageWindowController {
             window?.alphaValue = CGFloat(preferences.opacity)
         }
 
-        // For slide, scale, and pixelate animations, we need to ensure the window frame is set
+        // For certain animations, we need to ensure the window frame is set
         // to the correct target position before the animation starts
-        if preferences.animationStyle == .slide || preferences.animationStyle == .scale || preferences.animationStyle == .pixelate {
+        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip]
+        if needsFrameSetup.contains(preferences.animationStyle) {
             guard let targetRect = screenRect, let window = window else { return }
             let targetFrame = createRect(in: targetRect)
 
@@ -286,6 +287,12 @@ extension LanguageWindowController {
             window?.scaleIn(duration: duration)
         case .pixelate:
             window?.pixelateIn(duration: duration)
+        case .blur:
+            window?.blurIn(duration: duration)
+        case .flip:
+            window?.flipIn(duration: duration)
+        case .bounce:
+            window?.bounceIn(duration: duration)
         }
     }
 
@@ -316,6 +323,24 @@ extension LanguageWindowController {
         case .pixelate:
             window?.pixelateOut(duration: duration) { [weak self] in
                 // After pixelate out completes, reset window to correct position and hide it
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .blur:
+            window?.blurOut(duration: duration)
+        case .flip:
+            window?.flipOut(duration: duration) { [weak self] in
+                // After flip out completes, reset window to correct position and hide it
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .bounce:
+            window?.bounceOut(duration: duration) { [weak self] in
+                // After bounce out completes, reset window to correct position and hide it
                 guard let self = self, let targetRect = self.screenRect else { return }
                 let targetFrame = self.createRect(in: targetRect)
                 self.window?.setFrame(targetFrame, display: false, animate: false)
