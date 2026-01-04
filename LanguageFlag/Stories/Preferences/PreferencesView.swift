@@ -167,12 +167,20 @@ struct AppearancePreferencesView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Animation Style")
                             .font(.headline)
-                        Picker("", selection: $preferences.animationStyle) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 8)], spacing: 8) {
                             ForEach(AnimationStyle.allCases, id: \.self) { style in
-                                Text(style.description).tag(style)
+                                Button(action: { preferences.animationStyle = style }) {
+                                    Text(style.description)
+                                        .font(.caption)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 6)
+                                        .background(preferences.animationStyle == style ? Color.accentColor : Color.gray.opacity(0.15))
+                                        .foregroundColor(preferences.animationStyle == style ? .white : .primary)
+                                        .cornerRadius(6)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
-                        .pickerStyle(.segmented)
                         Text("How the indicator appears and disappears")
                             .font(.caption)
                             .foregroundColor(.secondary)

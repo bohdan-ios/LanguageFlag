@@ -267,7 +267,7 @@ extension LanguageWindowController {
 
         // For certain animations, we need to ensure the window frame is set
         // to the correct target position before the animation starts
-        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic]
+        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic, .hologram]
         if needsFrameSetup.contains(preferences.animationStyle) {
             guard let targetRect = screenRect, let window = window else { return }
             let targetFrame = createRect(in: targetRect)
@@ -293,6 +293,8 @@ extension LanguageWindowController {
             window?.flipIn(duration: duration)
         case .bounce:
             window?.bounceIn(duration: duration)
+        case .hologram:
+            window?.hologramIn(duration: duration)
         case .rotate:
             window?.rotateIn(duration: duration)
         case .swing:
@@ -364,6 +366,13 @@ extension LanguageWindowController {
             }
         case .elastic:
             window?.elasticOut(duration: duration)
+        case .hologram:
+            window?.hologramOut(duration: duration) { [weak self] in
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
         }
     }
 

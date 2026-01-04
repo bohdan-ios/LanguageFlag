@@ -20,6 +20,8 @@ protocol Animatable {
     func flipOut(duration: TimeInterval, completion: (() -> Void)?)
     func bounceIn(duration: TimeInterval, completion: (() -> Void)?)
     func bounceOut(duration: TimeInterval, completion: (() -> Void)?)
+    func hologramIn(duration: TimeInterval, completion: (() -> Void)?)
+    func hologramOut(duration: TimeInterval, completion: (() -> Void)?)
     func rotateIn(duration: TimeInterval, completion: (() -> Void)?)
     func rotateOut(duration: TimeInterval, completion: (() -> Void)?)
     func swingIn(duration: TimeInterval, completion: (() -> Void)?)
@@ -770,4 +772,167 @@ extension NSWindow: Animatable {
             self.animator().alphaValue = 0
         })
     }
+    
+    // MARK: - Hologram Animations
+    func hologramIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Use combination of built-in CI Filters for hologram effect
+        // 1. Color controls for cyan tint
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.5, forKey: "inputSaturation")  // Boost saturation
+        colorFilter?.setValue(0.3, forKey: "inputBrightness")  // Brighten
+
+        // 2. Hue adjust for cyan/blue tint
+        let hueFilter = CIFilter(name: "CIHueAdjust")
+        hueFilter?.setDefaults()
+        hueFilter?.setValue(3.5, forKey: "inputAngle")  // Shift towards cyan
+
+        // 3. Pixelate for digital glitch effect
+        let pixelFilter = CIFilter(name: "CIPixellate")
+        pixelFilter?.setDefaults()
+        pixelFilter?.setValue(8.0, forKey: kCIInputScaleKey)  // Start pixelated
+
+        layer.filters = [colorFilter!, hueFilter!, pixelFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeOut))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate pixelation from glitchy to normal
+        let pixelAnimation = CABasicAnimation(keyPath: "filters.CIPixellate.inputScale")
+        pixelAnimation.fromValue = 8.0
+        pixelAnimation.toValue = 1.0
+        pixelAnimation.duration = duration
+        pixelAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        layer.add(pixelAnimation, forKey: "hologramPixel")
+
+        // Animate saturation from boosted to normal
+        let saturationAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        saturationAnimation.fromValue = 1.5
+        saturationAnimation.toValue = 1.0
+        saturationAnimation.duration = duration
+        saturationAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        layer.add(saturationAnimation, forKey: "hologramSaturation")
+
+        // Animate brightness from bright to normal
+        let brightnessAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightnessAnimation.fromValue = 0.3
+        brightnessAnimation.toValue = 0.0
+        brightnessAnimation.duration = duration
+        brightnessAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        layer.add(brightnessAnimation, forKey: "hologramBrightness")
+
+        // Animate hue from cyan to normal
+        let hueAnimation = CABasicAnimation(keyPath: "filters.CIHueAdjust.inputAngle")
+        hueAnimation.fromValue = 3.5
+        hueAnimation.toValue = 0.0
+        hueAnimation.duration = duration
+        hueAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        layer.add(hueAnimation, forKey: "hologramHue")
+
+        CATransaction.commit()
+
+        // Update filter values for final state
+        pixelFilter?.setValue(1.0, forKey: kCIInputScaleKey)
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+        hueFilter?.setValue(0.0, forKey: "inputAngle")
+
+        // Fade in simultaneously with flicker effect
+        contentView.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            contentView.animator().alphaValue = 1
+        }
+    }
+
+    func hologramOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Use combination of built-in CI Filters for hologram effect
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        let hueFilter = CIFilter(name: "CIHueAdjust")
+        hueFilter?.setDefaults()
+        hueFilter?.setValue(0.0, forKey: "inputAngle")
+
+        let pixelFilter = CIFilter(name: "CIPixellate")
+        pixelFilter?.setDefaults()
+        pixelFilter?.setValue(1.0, forKey: kCIInputScaleKey)
+
+        layer.filters = [colorFilter!, hueFilter!, pixelFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate pixelation from normal to glitchy
+        let pixelAnimation = CABasicAnimation(keyPath: "filters.CIPixellate.inputScale")
+        pixelAnimation.fromValue = 1.0
+        pixelAnimation.toValue = 8.0
+        pixelAnimation.duration = duration
+        pixelAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        layer.add(pixelAnimation, forKey: "hologramPixel")
+
+        // Animate saturation from normal to boosted
+        let saturationAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        saturationAnimation.fromValue = 1.0
+        saturationAnimation.toValue = 1.5
+        saturationAnimation.duration = duration
+        saturationAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        layer.add(saturationAnimation, forKey: "hologramSaturation")
+
+        // Animate brightness from normal to bright
+        let brightnessAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightnessAnimation.fromValue = 0.0
+        brightnessAnimation.toValue = 0.3
+        brightnessAnimation.duration = duration
+        brightnessAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        layer.add(brightnessAnimation, forKey: "hologramBrightness")
+
+        // Animate hue from normal to cyan
+        let hueAnimation = CABasicAnimation(keyPath: "filters.CIHueAdjust.inputAngle")
+        hueAnimation.fromValue = 0.0
+        hueAnimation.toValue = 3.5
+        hueAnimation.duration = duration
+        hueAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        layer.add(hueAnimation, forKey: "hologramHue")
+
+        CATransaction.commit()
+
+        // Update filter values for final state
+        pixelFilter?.setValue(8.0, forKey: kCIInputScaleKey)
+        colorFilter?.setValue(1.5, forKey: "inputSaturation")
+        colorFilter?.setValue(0.3, forKey: "inputBrightness")
+        hueFilter?.setValue(3.5, forKey: "inputAngle")
+
+        // Fade out simultaneously
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            contentView.animator().alphaValue = 0
+        }
+    }
+
 }
