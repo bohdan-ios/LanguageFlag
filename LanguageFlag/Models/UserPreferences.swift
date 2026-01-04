@@ -60,6 +60,9 @@ enum AnimationStyle: String, Codable, CaseIterable {
     case blur = "Blur"
     case flip = "Flip"
     case bounce = "Bounce"
+    case rotate = "Rotate"
+    case swing = "Swing"
+    case elastic = "Elastic"
 
     var description: String {
         rawValue
