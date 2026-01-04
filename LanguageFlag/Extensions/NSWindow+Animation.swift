@@ -1,3 +1,5 @@
+// swiftlint:disable all
+
 import Cocoa
 
 enum SlideDirection {
@@ -22,6 +24,10 @@ protocol Animatable {
     func bounceOut(duration: TimeInterval, completion: (() -> Void)?)
     func hologramIn(duration: TimeInterval, completion: (() -> Void)?)
     func hologramOut(duration: TimeInterval, completion: (() -> Void)?)
+    func energyPortalIn(duration: TimeInterval, completion: (() -> Void)?)
+    func energyPortalOut(duration: TimeInterval, completion: (() -> Void)?)
+    func digitalMaterializeIn(duration: TimeInterval, completion: (() -> Void)?)
+    func digitalMaterializeOut(duration: TimeInterval, completion: (() -> Void)?)
     func rotateIn(duration: TimeInterval, completion: (() -> Void)?)
     func rotateOut(duration: TimeInterval, completion: (() -> Void)?)
     func swingIn(duration: TimeInterval, completion: (() -> Void)?)
@@ -933,6 +939,310 @@ extension NSWindow: Animatable {
             context.timingFunction = CAMediaTimingFunction(name: .easeIn)
             contentView.animator().alphaValue = 0
         }
+    }
+
+    // MARK: - Energy Portal Animations
+    func energyPortalIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Energy portal effect with vortex and radial blur
+        let twirlFilter = CIFilter(name: "CITwirlDistortion")
+        twirlFilter?.setDefaults()
+        let centerX = layer.bounds.width / 2
+        let centerY = layer.bounds.height / 2
+        twirlFilter?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+        twirlFilter?.setValue(150.0, forKey: kCIInputRadiusKey)
+        twirlFilter?.setValue(CGFloat.pi * 3, forKey: kCIInputAngleKey) // Start with strong twist
+
+        let zoomFilter = CIFilter(name: "CIZoomBlur")
+        zoomFilter?.setDefaults()
+        zoomFilter?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+        zoomFilter?.setValue(30.0, forKey: kCIInputAmountKey) // Start with strong zoom
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.8, forKey: "inputSaturation") // Boost colors
+        colorFilter?.setValue(0.2, forKey: "inputBrightness")
+
+        layer.filters = [twirlFilter!, zoomFilter!, colorFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeOut))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate twirl from strong to zero
+        let twirlAnimation = CABasicAnimation(keyPath: "filters.CITwirlDistortion.inputAngle")
+        twirlAnimation.fromValue = CGFloat.pi * 3
+        twirlAnimation.toValue = 0.0
+        twirlAnimation.duration = duration
+        layer.add(twirlAnimation, forKey: "portalTwirl")
+
+        // Animate zoom blur from strong to zero
+        let zoomAnimation = CABasicAnimation(keyPath: "filters.CIZoomBlur.inputAmount")
+        zoomAnimation.fromValue = 30.0
+        zoomAnimation.toValue = 0.0
+        zoomAnimation.duration = duration
+        layer.add(zoomAnimation, forKey: "portalZoom")
+
+        // Animate saturation to normal
+        let satAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        satAnimation.fromValue = 1.8
+        satAnimation.toValue = 1.0
+        satAnimation.duration = duration
+        layer.add(satAnimation, forKey: "portalSat")
+
+        // Animate brightness to normal
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.2
+        brightAnimation.toValue = 0.0
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "portalBright")
+
+        CATransaction.commit()
+
+        // Set final states
+        twirlFilter?.setValue(0.0, forKey: kCIInputAngleKey)
+        zoomFilter?.setValue(0.0, forKey: kCIInputAmountKey)
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        // Fade in
+        contentView.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            contentView.animator().alphaValue = 1
+        }
+    }
+
+    func energyPortalOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        let twirlFilter = CIFilter(name: "CITwirlDistortion")
+        twirlFilter?.setDefaults()
+        let centerX = layer.bounds.width / 2
+        let centerY = layer.bounds.height / 2
+        twirlFilter?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+        twirlFilter?.setValue(150.0, forKey: kCIInputRadiusKey)
+        twirlFilter?.setValue(0.0, forKey: kCIInputAngleKey)
+
+        let zoomFilter = CIFilter(name: "CIZoomBlur")
+        zoomFilter?.setDefaults()
+        zoomFilter?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+        zoomFilter?.setValue(0.0, forKey: kCIInputAmountKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(1.0, forKey: "inputSaturation")
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        layer.filters = [twirlFilter!, zoomFilter!, colorFilter!]
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeIn))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            completion?()
+        }
+
+        // Animate to strong twirl
+        let twirlAnimation = CABasicAnimation(keyPath: "filters.CITwirlDistortion.inputAngle")
+        twirlAnimation.fromValue = 0.0
+        twirlAnimation.toValue = CGFloat.pi * 3
+        twirlAnimation.duration = duration
+        layer.add(twirlAnimation, forKey: "portalTwirl")
+
+        // Animate to strong zoom
+        let zoomAnimation = CABasicAnimation(keyPath: "filters.CIZoomBlur.inputAmount")
+        zoomAnimation.fromValue = 0.0
+        zoomAnimation.toValue = 30.0
+        zoomAnimation.duration = duration
+        layer.add(zoomAnimation, forKey: "portalZoom")
+
+        // Animate saturation up
+        let satAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputSaturation")
+        satAnimation.fromValue = 1.0
+        satAnimation.toValue = 1.8
+        satAnimation.duration = duration
+        layer.add(satAnimation, forKey: "portalSat")
+
+        // Animate brightness up
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.0
+        brightAnimation.toValue = 0.2
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "portalBright")
+
+        CATransaction.commit()
+
+        // Set final states
+        twirlFilter?.setValue(CGFloat.pi * 3, forKey: kCIInputAngleKey)
+        zoomFilter?.setValue(30.0, forKey: kCIInputAmountKey)
+        colorFilter?.setValue(1.8, forKey: "inputSaturation")
+        colorFilter?.setValue(0.2, forKey: "inputBrightness")
+
+        // Fade out
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            contentView.animator().alphaValue = 0
+        }
+    }
+
+    // MARK: - Digital Materialize Animations
+    func digitalMaterializeIn(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        self.orderFrontRegardless()
+        self.alphaValue = 1
+
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        // Digital scanline effect with bloom for glow
+        let bloomFilter = CIFilter(name: "CIBloom")
+        bloomFilter?.setDefaults()
+        bloomFilter?.setValue(1.0, forKey: kCIInputIntensityKey)
+        bloomFilter?.setValue(10.0, forKey: kCIInputRadiusKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(0.3, forKey: "inputBrightness")
+
+        layer.filters = [bloomFilter!, colorFilter!]
+
+        // Create gradient mask for scanline effect
+        let maskLayer = CAGradientLayer()
+        maskLayer.frame = layer.bounds
+        maskLayer.colors = [
+            NSColor.clear.cgColor,
+            NSColor.white.cgColor,
+            NSColor.white.cgColor
+        ]
+        maskLayer.locations = [0.95, 1.0, 1.0] // Start at bottom
+        maskLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        maskLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+
+        layer.mask = maskLayer
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .linear))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            layer.mask = nil
+            completion?()
+        }
+
+        // Animate mask from bottom to top (build up)
+        let maskAnimation = CABasicAnimation(keyPath: "locations")
+        maskAnimation.fromValue = [0.95, 1.0, 1.0]  // Start at bottom
+        maskAnimation.toValue = [0.0, 0.0, 0.05]    // End at top
+        maskAnimation.duration = duration
+        maskLayer.add(maskAnimation, forKey: "scanline")
+        maskLayer.locations = [0.0, 0.0, 0.05]
+
+        // Animate bloom intensity down
+        let bloomAnimation = CABasicAnimation(keyPath: "filters.CIBloom.inputIntensity")
+        bloomAnimation.fromValue = 1.0
+        bloomAnimation.toValue = 0.0
+        bloomAnimation.duration = duration
+        layer.add(bloomAnimation, forKey: "bloom")
+
+        // Animate brightness to normal
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.3
+        brightAnimation.toValue = 0.0
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "brightness")
+
+        CATransaction.commit()
+
+        // Set final states
+        bloomFilter?.setValue(0.0, forKey: kCIInputIntensityKey)
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        // Show immediately (mask handles visibility)
+        contentView.alphaValue = 1
+    }
+
+    func digitalMaterializeOut(duration: TimeInterval, completion: (() -> Void)? = nil) {
+        guard let contentView = self.contentView else { return }
+        contentView.wantsLayer = true
+        guard let layer = contentView.layer else { return }
+
+        let bloomFilter = CIFilter(name: "CIBloom")
+        bloomFilter?.setDefaults()
+        bloomFilter?.setValue(0.0, forKey: kCIInputIntensityKey)
+        bloomFilter?.setValue(10.0, forKey: kCIInputRadiusKey)
+
+        let colorFilter = CIFilter(name: "CIColorControls")
+        colorFilter?.setDefaults()
+        colorFilter?.setValue(0.0, forKey: "inputBrightness")
+
+        layer.filters = [bloomFilter!, colorFilter!]
+
+        // Create gradient mask for scanline effect
+        let maskLayer = CAGradientLayer()
+        maskLayer.frame = layer.bounds
+        maskLayer.colors = [
+            NSColor.clear.cgColor,
+            NSColor.white.cgColor,
+            NSColor.white.cgColor
+        ]
+        maskLayer.locations = [0.0, 0.0, 0.05] // Start fully visible
+        maskLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        maskLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+
+        layer.mask = maskLayer
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .linear))
+        CATransaction.setCompletionBlock {
+            layer.filters = nil
+            layer.mask = nil
+            completion?()
+        }
+
+        // Animate mask from top to bottom (dematerialize)
+        let maskAnimation = CABasicAnimation(keyPath: "locations")
+        maskAnimation.fromValue = [0.0, 0.0, 0.05]   // Start at top (visible)
+        maskAnimation.toValue = [0.95, 1.0, 1.0]     // End at bottom (hidden)
+        maskAnimation.duration = duration
+        maskLayer.add(maskAnimation, forKey: "scanline")
+        maskLayer.locations = [0.95, 1.0, 1.0]
+
+        // Animate bloom intensity up
+        let bloomAnimation = CABasicAnimation(keyPath: "filters.CIBloom.inputIntensity")
+        bloomAnimation.fromValue = 0.0
+        bloomAnimation.toValue = 1.0
+        bloomAnimation.duration = duration
+        layer.add(bloomAnimation, forKey: "bloom")
+
+        // Animate brightness up
+        let brightAnimation = CABasicAnimation(keyPath: "filters.CIColorControls.inputBrightness")
+        brightAnimation.fromValue = 0.0
+        brightAnimation.toValue = 0.3
+        brightAnimation.duration = duration
+        layer.add(brightAnimation, forKey: "brightness")
+
+        CATransaction.commit()
+
+        // Set final states
+        bloomFilter?.setValue(1.0, forKey: kCIInputIntensityKey)
+        colorFilter?.setValue(0.3, forKey: "inputBrightness")
     }
 
 }

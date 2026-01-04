@@ -267,7 +267,7 @@ extension LanguageWindowController {
 
         // For certain animations, we need to ensure the window frame is set
         // to the correct target position before the animation starts
-        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic, .hologram]
+        let needsFrameSetup: [AnimationStyle] = [.slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic, .hologram, .energyPortal, .digitalMaterialize]
         if needsFrameSetup.contains(preferences.animationStyle) {
             guard let targetRect = screenRect, let window = window else { return }
             let targetFrame = createRect(in: targetRect)
@@ -301,9 +301,14 @@ extension LanguageWindowController {
             window?.swingIn(duration: duration)
         case .elastic:
             window?.elasticIn(duration: duration)
+        case .energyPortal:
+            window?.energyPortalIn(duration: duration)
+        case .digitalMaterialize:
+            window?.digitalMaterializeIn(duration: duration)
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func runHideWindowAnimation() {
         let duration = preferences.animationDuration
 
@@ -368,6 +373,20 @@ extension LanguageWindowController {
             window?.elasticOut(duration: duration)
         case .hologram:
             window?.hologramOut(duration: duration) { [weak self] in
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .energyPortal:
+            window?.energyPortalOut(duration: duration) { [weak self] in
+                guard let self = self, let targetRect = self.screenRect else { return }
+                let targetFrame = self.createRect(in: targetRect)
+                self.window?.setFrame(targetFrame, display: false, animate: false)
+                self.window?.orderOut(nil)
+            }
+        case .digitalMaterialize:
+            window?.digitalMaterializeOut(duration: duration) { [weak self] in
                 guard let self = self, let targetRect = self.screenRect else { return }
                 let targetFrame = self.createRect(in: targetRect)
                 self.window?.setFrame(targetFrame, display: false, animate: false)
