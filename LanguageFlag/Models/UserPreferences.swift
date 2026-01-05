@@ -34,6 +34,7 @@ enum WindowSize: String, Codable, CaseIterable {
     case small = "Small"
     case medium = "Medium"
     case large = "Large"
+    case extraLarge = "Extra Large"
 
     var dimensions: (width: CGFloat, height: CGFloat) {
         switch self {
@@ -43,6 +44,8 @@ enum WindowSize: String, Codable, CaseIterable {
             return (250, 155)
         case .large:
             return (300, 186)
+        case .extraLarge:
+            return (350, 217)
         }
     }
 

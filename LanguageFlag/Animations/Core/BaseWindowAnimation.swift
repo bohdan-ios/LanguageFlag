@@ -34,7 +34,7 @@ class BaseWindowAnimation {
         }
         
         window.orderFrontRegardless()
-        window.alphaValue = 1
+        window.alphaValue = CGFloat(UserPreferences.shared.opacity)
     }
     
     // MARK: - Filter Application
