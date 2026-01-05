@@ -2,8 +2,10 @@ import Cocoa
 
 extension NSScreen {
 
-    /// Returns a unique identifier for the screen based on its frame
+    /// Returns a unique, stable identifier for the screen using CGDirectDisplayID
     var identifier: String {
-        "\(frame.origin.x)-\(frame.origin.y)-\(frame.width)-\(frame.height)"
+        let screenNumber = deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID ?? 0
+
+        return "\(screenNumber)"
     }
 }
