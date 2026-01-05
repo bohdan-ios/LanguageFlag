@@ -24,7 +24,7 @@ class ScaleAnimation: BaseWindowAnimation, WindowAnimation {
             context.duration = duration
             context.timingFunction = AnimationTiming.easeOut
             window.animator().setFrame(originalFrame, display: true)
-            window.animator().alphaValue = 1
+            window.animator().alphaValue = CGFloat(UserPreferences.shared.opacity)
         }, completionHandler: completion)
     }
     

@@ -34,7 +34,7 @@ class SlideAnimation: BaseWindowAnimation, WindowAnimation {
             context.duration = duration
             context.timingFunction = AnimationTiming.easeOut
             window.animator().setFrame(currentFrame, display: true)
-            window.animator().alphaValue = 1
+            window.animator().alphaValue = CGFloat(UserPreferences.shared.opacity)
         }, completionHandler: completion)
     }
     

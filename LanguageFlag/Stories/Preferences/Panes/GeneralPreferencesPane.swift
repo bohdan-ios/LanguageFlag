@@ -88,7 +88,7 @@ struct GeneralPreferencesPane: View {
                         get: { Double(WindowSize.allCases.firstIndex(of: preferences.windowSize) ?? 1) },
                         set: { preferences.windowSize = WindowSize.allCases[Int($0)] }
                     ),
-                    in: 0...2,
+                    in: 0...3,
                     step: 1
                 )
 
