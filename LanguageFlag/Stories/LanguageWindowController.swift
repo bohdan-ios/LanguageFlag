@@ -40,7 +40,7 @@ final class LanguageWindowController: NSWindowController {
     @ScheduledTimer private var timer: Timer?
 
     private let preferences = UserPreferences.shared
-    private let analytics = LayoutAnalytics.shared
+
     private let positionCalculator = WindowPositionCalculator()
     private let animationCoordinator = AnimationCoordinator()
     private var cancellables = Set<AnyCancellable>()
@@ -53,13 +53,12 @@ final class LanguageWindowController: NSWindowController {
         configureContentViewController()
         addObservers()
         observePreferencesChanges()
-        initializeAnalytics()
         updateWindowFrame()
     }
 
     // MARK: - Deinit
     deinit {
-        analytics.stopTracking()
+
         NotificationCenter.default.removeObserver(self)
         cancellables.removeAll()
     }
@@ -84,9 +83,6 @@ private extension LanguageWindowController {
 
     @objc
     func keyboardLayoutChanged(notification: NSNotification) {
-        if let model = notification.object as? KeyboardLayoutNotification {
-            analytics.startTracking(layout: model.keyboardLayout)
-        }
 
         timer?.invalidate()
         runShowWindowAnimation()
@@ -145,10 +141,7 @@ private extension LanguageWindowController {
         )
     }
 
-    func initializeAnalytics() {
-        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
-        analytics.startTracking(layout: currentLayout.name)
-    }
+
 
     func observePreferencesChanges() {
         preferences.$opacity

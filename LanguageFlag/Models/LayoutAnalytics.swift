@@ -63,6 +63,10 @@ struct AppLayoutStatistics: Identifiable {
     }
 }
 
+extension Notification.Name {
+    static let analyticsDidChange = Notification.Name("analyticsDidChange")
+}
+
 final class LayoutAnalytics {
 
     static let shared = LayoutAnalytics()
@@ -86,7 +90,10 @@ final class LayoutAnalytics {
 
     var isEnabled: Bool {
         get { defaults.bool(forKey: analyticsEnabledKey) }
-        set { defaults.set(newValue, forKey: analyticsEnabledKey) }
+        set {
+            defaults.set(newValue, forKey: analyticsEnabledKey)
+            NotificationCenter.default.post(name: .analyticsDidChange, object: nil)
+        }
     }
 
     func startTracking(layout: String, app: String? = nil) {
@@ -198,6 +205,7 @@ final class LayoutAnalytics {
         currentLayoutName = nil
         currentAppName = nil
         currentLayoutStartTime = nil
+        NotificationCenter.default.post(name: .analyticsDidChange, object: nil)
     }
 
     // MARK: - Private
@@ -238,6 +246,7 @@ final class LayoutAnalytics {
 
         if let encoded = try? JSONEncoder().encode(records) {
             defaults.set(encoded, forKey: recordsKey)
+            NotificationCenter.default.post(name: .analyticsDidChange, object: nil)
         }
     }
 

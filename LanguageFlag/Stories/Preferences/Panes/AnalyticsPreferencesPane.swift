@@ -36,6 +36,9 @@ struct AnalyticsPreferencesPane: View {
             .padding()
         }
         .onAppear { refreshStatistics() }
+        .onReceive(NotificationCenter.default.publisher(for: .analyticsDidChange)) { _ in
+            refreshStatistics()
+        }
     }
     
     private var togglesSection: some View {
