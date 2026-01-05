@@ -37,7 +37,7 @@ class LanguageViewController: NSViewController {
 
     private let bigLabel: NSTextField = {
         let label = NSTextField(labelWithString: "")
-        label.font = .systemFont(ofSize: 21)
+        label.font = .systemFont(ofSize: UserPreferences.shared.windowSize.fontSizes.title)
         label.alignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         label.cell?.wraps = true
@@ -53,7 +53,7 @@ class LanguageViewController: NSViewController {
 
     private let languageNameLabel: NSTextField = {
         let label = NSTextField(labelWithString: "")
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: UserPreferences.shared.windowSize.fontSizes.label)
         label.alignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -196,17 +196,25 @@ extension LanguageViewController {
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newSize in
-                self?.updateViewSize(to: newSize.dimensions)
+                self?.updateViewSize(to: newSize)
             }
             .store(in: &cancellables)
     }
 
-    private func updateViewSize(to dimensions: (width: CGFloat, height: CGFloat)) {
+    private func updateViewSize(to size: WindowSize) {
+        let dimensions = size.dimensions
+        let fontSizes = size.fontSizes
+
+        // Update constraints
         widthConstraint?.constant = dimensions.width
         heightConstraint?.constant = dimensions.height
         visualEffectWidthConstraint?.constant = dimensions.width
         visualEffectHeightConstraint?.constant = dimensions.height
         flagImageWidthConstraint?.constant = dimensions.width * 0.92
+
+        // Update fonts
+        bigLabel.font = .systemFont(ofSize: fontSizes.title)
+        languageNameLabel.font = .systemFont(ofSize: fontSizes.label)
 
         view.layoutSubtreeIfNeeded()
     }
