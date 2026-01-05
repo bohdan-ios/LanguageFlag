@@ -14,6 +14,7 @@ final class StatusBarManager {
     private var previousModel: KeyboardLayoutNotification?
     private lazy var preferencesWindowController = PreferencesWindowController()
     private let preferences = UserPreferences.shared
+    private let analytics = LayoutAnalytics.shared
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialization
@@ -28,7 +29,9 @@ final class StatusBarManager {
         setupStatusBar()
         addObservers()
         observePreferencesChanges()
+        initializeAnalytics()
     }
+
 
     // MARK: - Deinit
     deinit {
@@ -84,6 +87,7 @@ private extension StatusBarManager {
 
         previousModel = model
         updateStatusBarIcon(for: model)
+        analytics.startTracking(layout: model.keyboardLayout)
 
         // Update recent layouts
         menuBuilder.updateRecentLayouts(with: model.keyboardLayout)
@@ -227,6 +231,11 @@ private extension StatusBarManager {
             target: self
         )
         statusItem.menu = menu
+    }
+
+    func initializeAnalytics() {
+        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
+        analytics.startTracking(layout: currentLayout)
     }
 
     func observePreferencesChanges() {
