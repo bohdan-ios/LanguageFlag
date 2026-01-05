@@ -114,6 +114,12 @@ struct GeneralPreferencesPane: View {
     
     private var resetButton: some View {
         HStack {
+            Button("Recalculate Window Frames") {
+                NotificationCenter.default.post(name: .recalculateWindowFrames, object: nil)
+            }
+            .buttonStyle(.bordered)
+            .help("Force recalculate all indicator windows for connected displays")
+
             Spacer()
 
             Button("Reset to Defaults") {

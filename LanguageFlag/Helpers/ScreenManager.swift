@@ -52,6 +52,13 @@ extension ScreenManager {
             name: .preferencesPreviewRequested,
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(forceRecalculateFrames),
+            name: .recalculateWindowFrames,
+            object: nil
+        )
     }
 
     /// Handles screen parameter changes and refreshes windows.
@@ -66,6 +73,21 @@ extension ScreenManager {
         showPreview()
     }
 
+    /// Force recalculates all window frames (clears and rebuilds)
+    @objc
+    private func forceRecalculateFrames() {
+        // Close all existing windows
+        for (_, controller) in windowControllers {
+            controller.window?.orderOut(nil)
+            controller.window?.close()
+            controller.close()
+        }
+        windowControllers.removeAll()
+
+        // Rebuild for all screens
+        ensureWindowControllersForAllScreens()
+    }
+
     /// Ensures window controllers exist for all screens (lazy loading).
     private func ensureWindowControllersForAllScreens() {
         let currentScreens = NSScreen.screens
@@ -75,7 +97,15 @@ extension ScreenManager {
         // Remove controllers for screens that no longer exist
         let removedScreenIds = existingScreenIds.subtracting(currentScreenIds)
         for screenId in removedScreenIds {
-            windowControllers[screenId]?.close()
+            if let controller = windowControllers[screenId] {
+                // Fully destroy the window
+                if let win = controller.window {
+                    win.orderOut(nil)
+                    win.close()
+                }
+                controller.window = nil  // Explicitly nil the reference
+                controller.close()
+            }
             windowControllers.removeValue(forKey: screenId)
         }
 
