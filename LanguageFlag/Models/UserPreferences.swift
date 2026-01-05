@@ -50,6 +50,19 @@ enum WindowSize: String, Codable, CaseIterable {
         }
     }
 
+    var fontSizes: (title: CGFloat, label: CGFloat) {
+        switch self {
+        case .small:
+            return (17, 13)
+        case .medium:
+            return (21, 16)
+        case .large:
+            return (25, 19)
+        case .extraLarge:
+            return (29, 22)
+        }
+    }
+
     var description: String {
         rawValue
     }

@@ -3,6 +3,7 @@
 import Cocoa
 import LaunchAtLogin
 import Carbon
+import Combine
 
 final class StatusBarManager {
 
@@ -12,6 +13,8 @@ final class StatusBarManager {
     private let menuBuilder: StatusBarMenuBuilder
     private var previousModel: KeyboardLayoutNotification?
     private lazy var preferencesWindowController = PreferencesWindowController()
+    private let preferences = UserPreferences.shared
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialization
     init(
@@ -24,11 +27,13 @@ final class StatusBarManager {
 
         setupStatusBar()
         addObservers()
+        observePreferencesChanges()
     }
 
     // MARK: - Deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
+        cancellables.removeAll()
     }
 }
 
@@ -165,7 +170,9 @@ private extension StatusBarManager {
         if let keyboardLayout = keyboardLayout {
             let flagImage = layoutImageContainer.getFlagItem(for: keyboardLayout, size: iconSize)
             statusItem.button?.image = flagImage ?? createDefaultIcon(size: iconSize)
-            statusItem.button?.title = ""
+            
+            // Show layout name if preference is enabled
+            statusItem.button?.title = preferences.showInMenuBar ? " \(keyboardLayout)" : ""
         } else {
             statusItem.button?.image = createDefaultIcon(size: iconSize)
             statusItem.button?.title = ""
@@ -179,11 +186,12 @@ private extension StatusBarManager {
         
         if let flagImage {
             statusItem.button?.image = flagImage
-            statusItem.button?.title = ""
         } else {
             statusItem.button?.image = createDefaultIcon(size: iconSize)
-            statusItem.button?.title = ""
         }
+        
+        // Show layout name if preference is enabled
+        statusItem.button?.title = preferences.showInMenuBar ? " \(model.keyboardLayout)" : ""
     }
     
     func isCapsLockOn() -> Bool {
@@ -219,5 +227,17 @@ private extension StatusBarManager {
             target: self
         )
         statusItem.menu = menu
+    }
+
+    func observePreferencesChanges() {
+        preferences.$showInMenuBar
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                // Re-apply current layout with updated preference
+                let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
+                self?.updateStatusBarIcon(for: keyboardLayout)
+            }
+            .store(in: &cancellables)
     }
 }
