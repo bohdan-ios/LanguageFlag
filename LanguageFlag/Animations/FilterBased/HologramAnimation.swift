@@ -6,12 +6,14 @@ class HologramAnimation: BaseWindowAnimation, WindowAnimation {
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         // Create filters
         // Legacy: Saturation 1.5, Brightness 0.3, Hue 3.5, Pixel 8.0
         let colorFilter = FilterBuilder.colorControls(saturation: 1.5, brightness: 0.3)
@@ -61,12 +63,14 @@ class HologramAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         // Legacy Start: Normal (Sat 1.0, Bright 0.0, Hue 0.0, Pixel 1.0)
         let colorFilter = FilterBuilder.colorControls(saturation: 1.0, brightness: 0.0)
         let hueFilter = FilterBuilder.hueAdjust(angle: 0.0)

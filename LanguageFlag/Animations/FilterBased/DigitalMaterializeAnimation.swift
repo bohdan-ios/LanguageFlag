@@ -62,12 +62,14 @@ class DigitalMaterializeAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              window.contentView != nil else {
+        guard
+            let layer = prepareLayer(from: window),
+            window.contentView != nil
+        else {
             completion?()
             return
         }
-        
+
         // Setup Filters
         // Start: Normal (Brightness 0.0, Bloom 0.0)
         let bloomFilter = FilterBuilder.bloom(intensity: 0.0, radius: 10.0)

@@ -6,12 +6,14 @@ class BlurAnimation: BaseWindowAnimation, WindowAnimation {
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let blurFilter = FilterBuilder.gaussianBlur(radius: 0.0)
         applyFilters([blurFilter], to: layer)
         
