@@ -42,12 +42,14 @@ class LiquidRippleAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let center = CIVector(x: layer.bounds.midX, y: layer.bounds.midY)
         
         let splashFilter = FilterBuilder.circleSplashDistortion(center: center, radius: 0.0)

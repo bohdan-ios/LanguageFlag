@@ -6,12 +6,14 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let pixelFilter = FilterBuilder.pixellate(scale: 1.0)
         applyFilters([pixelFilter], to: layer)
         
@@ -33,12 +35,14 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let pixelFilter = FilterBuilder.pixellate(scale: 50.0)
         applyFilters([pixelFilter], to: layer)
         

@@ -6,12 +6,14 @@ class EnergyPortalAnimation: BaseWindowAnimation, WindowAnimation {
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let center = CIVector(x: layer.bounds.midX, y: layer.bounds.midY)
         // Legacy: Radius 150.0
         let radius: CGFloat = 150.0

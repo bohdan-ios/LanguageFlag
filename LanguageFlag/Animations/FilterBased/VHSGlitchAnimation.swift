@@ -8,13 +8,15 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
     
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
-        
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         // Filters
         let blurFilter = FilterBuilder.gaussianBlur(radius: 3.0)
         let posterFilter = FilterBuilder.colorPosterize(levels: 8.0)
@@ -74,12 +76,14 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         // Filters
         let blurFilter = FilterBuilder.gaussianBlur(radius: 0.0)
         let posterFilter = FilterBuilder.colorPosterize(levels: 256.0)
