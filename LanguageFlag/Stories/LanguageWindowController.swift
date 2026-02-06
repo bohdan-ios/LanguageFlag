@@ -166,7 +166,12 @@ private extension LanguageWindowController {
 private extension LanguageWindowController {
 
     func updateWindowFrame() {
-        guard let targetRect = screenRect, let window = window else { return }
+        guard
+            let targetRect = screenRect,
+            let window = window
+        else {
+            return
+        }
 
         let newRect = positionCalculator.calculateWindowFrame(
             in: targetRect,
@@ -193,7 +198,12 @@ private extension LanguageWindowController {
     }
 
     func restartAnimation() {
-        guard let window = window, window.alphaValue > 0 else { return }
+        guard
+            let window = window,
+            window.alphaValue > 0
+        else {
+            return
+        }
 
         runHideWindowAnimation()
 
@@ -207,7 +217,12 @@ private extension LanguageWindowController {
 private extension LanguageWindowController {
 
     func runShowWindowAnimation() {
-        guard let window = window, let screenRect = screenRect else { return }
+        guard
+            let window = window,
+            let screenRect = screenRect
+        else {
+            return
+        }
 
         animationCoordinator.animateIn(
             window: window,
@@ -218,7 +233,12 @@ private extension LanguageWindowController {
     }
 
     func runHideWindowAnimation() {
-        guard let window = window, let screenRect = screenRect else { return }
+        guard
+            let window = window,
+            let screenRect = screenRect
+        else {
+            return
+        }
 
         animationCoordinator.animateOut(
             window: window,

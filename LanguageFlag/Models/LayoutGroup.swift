@@ -35,8 +35,10 @@ final class LayoutGroupManager {
     // MARK: - Public API
 
     func getGroups() -> [LayoutGroup] {
-        guard let data = defaults.data(forKey: groupsKey),
-              let groups = try? JSONDecoder().decode([LayoutGroup].self, from: data) else {
+        guard
+            let data = defaults.data(forKey: groupsKey),
+            let groups = try? JSONDecoder().decode([LayoutGroup].self, from: data)
+        else {
             return []
         }
         return groups
@@ -67,8 +69,10 @@ final class LayoutGroupManager {
 
     var activeGroup: LayoutGroup? {
         get {
-            guard let data = defaults.data(forKey: activeGroupKey),
-                  let group = try? JSONDecoder().decode(LayoutGroup.self, from: data) else {
+            guard
+                let data = defaults.data(forKey: activeGroupKey),
+                let group = try? JSONDecoder().decode(LayoutGroup.self, from: data)
+            else {
                 return nil
             }
             return group
