@@ -2,7 +2,7 @@ import Cocoa
 
 /// Simple fade animation - opacity from 0 to 1 (in) or 1 to 0 (out)
 class FadeAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

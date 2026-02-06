@@ -211,10 +211,12 @@ final class LayoutAnalytics {
     // MARK: - Private
 
     private func endCurrentSession() {
-        guard isEnabled,
-              let layoutName = currentLayoutName,
-              let appName = currentAppName,
-              let startTime = currentLayoutStartTime else {
+        guard
+            isEnabled,
+            let layoutName = currentLayoutName,
+            let appName = currentAppName,
+            let startTime = currentLayoutStartTime
+        else {
             return
         }
 
@@ -251,8 +253,10 @@ final class LayoutAnalytics {
     }
 
     private func loadRecords() -> [LayoutUsageRecord] {
-        guard let data = defaults.data(forKey: recordsKey),
-              let records = try? JSONDecoder().decode([LayoutUsageRecord].self, from: data) else {
+        guard
+            let data = defaults.data(forKey: recordsKey),
+            let records = try? JSONDecoder().decode([LayoutUsageRecord].self, from: data)
+        else {
             return []
         }
         return records

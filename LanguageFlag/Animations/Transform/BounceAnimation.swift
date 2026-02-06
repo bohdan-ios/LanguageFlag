@@ -6,12 +6,14 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let originalFrame = layer.frame
         let centerX = originalFrame.midX
         let centerY = originalFrame.midY
@@ -46,12 +48,14 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         let animation = CAKeyframeAnimation(keyPath: "transform.scale")
         animation.duration = duration
         animation.values = [1.0, 1.1, 0.3]

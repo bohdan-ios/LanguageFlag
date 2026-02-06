@@ -6,12 +6,14 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         // Legacy: Morphology 10.0, Blur 15.0, Contrast 1.5
         let morphFilter = FilterBuilder.morphologyMaximum(radius: 10.0)
         let blurFilter = FilterBuilder.gaussianBlur(radius: 15.0)
@@ -49,12 +51,14 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        guard let layer = prepareLayer(from: window),
-              let contentView = window.contentView else {
+        guard
+            let layer = prepareLayer(from: window),
+            let contentView = window.contentView
+        else {
             completion?()
             return
         }
-        
+
         // Start: Normal (Contrast 1.0, Morph 0, Blur 0)
         let morphFilter = FilterBuilder.morphologyMaximum(radius: 0.0)
         let blurFilter = FilterBuilder.gaussianBlur(radius: 0.0)

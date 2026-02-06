@@ -85,8 +85,10 @@ final class SmartLayoutSuggestions {
     }
 
     func getAppPreferences() -> [AppLayoutPreference] {
-        guard let data = defaults.data(forKey: appPreferencesKey),
-              let preferences = try? JSONDecoder().decode([String: AppLayoutPreference].self, from: data) else {
+        guard
+            let data = defaults.data(forKey: appPreferencesKey),
+            let preferences = try? JSONDecoder().decode([String: AppLayoutPreference].self, from: data)
+        else {
             return []
         }
         return Array(preferences.values).sorted { $0.confidenceScore > $1.confidenceScore }
@@ -136,10 +138,12 @@ final class SmartLayoutSuggestions {
 
     private func getAppSuggestion(for app: String) -> String? {
         let preferences = loadAppPreferences()
-        guard let appPref = preferences[app],
-              let preferredLayout = appPref.preferredLayout,
-              appPref.confidenceScore >= 0.6, // At least 60% confidence
-              (appPref.layoutPreferences[preferredLayout] ?? 0) >= minUsageForSuggestion else {
+        guard
+            let appPref = preferences[app],
+            let preferredLayout = appPref.preferredLayout,
+            appPref.confidenceScore >= 0.6, // At least 60% confidence
+            (appPref.layoutPreferences[preferredLayout] ?? 0) >= minUsageForSuggestion
+        else {
             return nil
         }
         return preferredLayout
@@ -148,17 +152,21 @@ final class SmartLayoutSuggestions {
     private func getTimeBasedSuggestion() -> String? {
         let hour = Calendar.current.component(.hour, from: Date())
         let patterns = loadTimePatterns()
-        guard let pattern = patterns[hour],
-              let preferredLayout = pattern.preferredLayout,
-              (pattern.layoutUsage[preferredLayout] ?? 0) >= minUsageForSuggestion else {
+        guard
+            let pattern = patterns[hour],
+            let preferredLayout = pattern.preferredLayout,
+            (pattern.layoutUsage[preferredLayout] ?? 0) >= minUsageForSuggestion
+        else {
             return nil
         }
         return preferredLayout
     }
 
     private func loadAppPreferences() -> [String: AppLayoutPreference] {
-        guard let data = defaults.data(forKey: appPreferencesKey),
-              let preferences = try? JSONDecoder().decode([String: AppLayoutPreference].self, from: data) else {
+        guard
+            let data = defaults.data(forKey: appPreferencesKey),
+            let preferences = try? JSONDecoder().decode([String: AppLayoutPreference].self, from: data)
+        else {
             return [:]
         }
         return preferences
@@ -171,8 +179,10 @@ final class SmartLayoutSuggestions {
     }
 
     private func loadTimePatterns() -> [Int: TimeBasedPattern] {
-        guard let data = defaults.data(forKey: timeBasedPatternsKey),
-              let patterns = try? JSONDecoder().decode([Int: TimeBasedPattern].self, from: data) else {
+        guard
+            let data = defaults.data(forKey: timeBasedPatternsKey),
+            let patterns = try? JSONDecoder().decode([Int: TimeBasedPattern].self, from: data)
+        else {
             return [:]
         }
         return patterns
