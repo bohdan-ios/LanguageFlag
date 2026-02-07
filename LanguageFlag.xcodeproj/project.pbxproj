@@ -14,20 +14,11 @@
 
 /* Begin PBXFileReference section */
 		40E0C9A6244B7EF50012F409 /* LanguageFlag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LanguageFlag.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		40E0C9B3244B7EF60012F409 /* LanguageFlag.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LanguageFlag.entitlements; sourceTree = "<group>"; };
 		40E0C9BA244B7F030012F409 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B463493C2F0AFDAD00337505 /* Animations */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Animations; sourceTree = "<group>"; };
-		B463496C2F0B43DB00337505 /* Stories */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Stories; sourceTree = "<group>"; };
-		B46349972F0B507600337505 /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
-		B47640EB2F37B54500719179 /* Shaders */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shaders; sourceTree = "<group>"; };
-		B47640EF2F37B54500719179 /* Supporting files */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Supporting files"; sourceTree = "<group>"; };
-		B47641022F37B57700719179 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
-		B47641102F37B60000719179 /* Application */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Application; sourceTree = "<group>"; };
-		B4B9C1BC2F37B28800F6A496 /* Configuration */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Configuration; sourceTree = "<group>"; };
-		B4B9C1C62F37B2C200F6A496 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
+		B47643282F37B7DE00719179 /* LanguageFlag */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlag; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +38,7 @@
 		40E0C99D244B7EF50012F409 = {
 			isa = PBXGroup;
 			children = (
-				40E0C9A8244B7EF50012F409 /* LanguageFlag */,
+				B47643282F37B7DE00719179 /* LanguageFlag */,
 				40E0C9A7244B7EF50012F409 /* Products */,
 				40E0C9B9244B7F020012F409 /* Frameworks */,
 			);
@@ -59,23 +50,6 @@
 				40E0C9A6244B7EF50012F409 /* LanguageFlag.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		40E0C9A8244B7EF50012F409 /* LanguageFlag */ = {
-			isa = PBXGroup;
-			children = (
-				B47641102F37B60000719179 /* Application */,
-				B47641022F37B57700719179 /* Extensions */,
-				B47640EB2F37B54500719179 /* Shaders */,
-				B47640EF2F37B54500719179 /* Supporting files */,
-				B4B9C1C62F37B2C200F6A496 /* Models */,
-				B4B9C1BC2F37B28800F6A496 /* Configuration */,
-				B46349972F0B507600337505 /* Helpers */,
-				B463496C2F0B43DB00337505 /* Stories */,
-				B463493C2F0AFDAD00337505 /* Animations */,
-				40E0C9B3244B7EF60012F409 /* LanguageFlag.entitlements */,
-			);
-			path = LanguageFlag;
 			sourceTree = "<group>";
 		};
 		40E0C9B9244B7F020012F409 /* Frameworks */ = {
@@ -104,15 +78,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B463493C2F0AFDAD00337505 /* Animations */,
-				B463496C2F0B43DB00337505 /* Stories */,
-				B46349972F0B507600337505 /* Helpers */,
-				B47640EB2F37B54500719179 /* Shaders */,
-				B47640EF2F37B54500719179 /* Supporting files */,
-				B47641022F37B57700719179 /* Extensions */,
-				B47641102F37B60000719179 /* Application */,
-				B4B9C1BC2F37B28800F6A496 /* Configuration */,
-				B4B9C1C62F37B2C200F6A496 /* Models */,
+				B47643282F37B7DE00719179 /* LanguageFlag */,
 			);
 			name = LanguageFlag;
 			packageProductDependencies = (
@@ -221,8 +187,8 @@
 /* Begin XCBuildConfiguration section */
 		40E0C9B4244B7EF60012F409 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B4B9C1BC2F37B28800F6A496 /* Configuration */;
-			baseConfigurationReferenceRelativePath = QAT.xcconfig;
+			baseConfigurationReferenceAnchor = B47643282F37B7DE00719179 /* LanguageFlag */;
+			baseConfigurationReferenceRelativePath = Configuration/QAT.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -285,8 +251,8 @@
 		};
 		40E0C9B5244B7EF60012F409 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B4B9C1BC2F37B28800F6A496 /* Configuration */;
-			baseConfigurationReferenceRelativePath = Production.xcconfig;
+			baseConfigurationReferenceAnchor = B47643282F37B7DE00719179 /* LanguageFlag */;
+			baseConfigurationReferenceRelativePath = Configuration/Production.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -342,8 +308,8 @@
 		};
 		40E0C9B7244B7EF60012F409 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B4B9C1BC2F37B28800F6A496 /* Configuration */;
-			baseConfigurationReferenceRelativePath = QAT.xcconfig;
+			baseConfigurationReferenceAnchor = B47643282F37B7DE00719179 /* LanguageFlag */;
+			baseConfigurationReferenceRelativePath = Configuration/QAT.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -363,7 +329,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12;
-				MARKETING_VERSION = 0.1.1;
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.localmaster.languageflag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -373,8 +339,8 @@
 		};
 		40E0C9B8244B7EF60012F409 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B4B9C1BC2F37B28800F6A496 /* Configuration */;
-			baseConfigurationReferenceRelativePath = Production.xcconfig;
+			baseConfigurationReferenceAnchor = B47643282F37B7DE00719179 /* LanguageFlag */;
+			baseConfigurationReferenceRelativePath = Configuration/Production.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -394,7 +360,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12;
-				MARKETING_VERSION = 0.1.1;
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.localmaster.languageflag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
