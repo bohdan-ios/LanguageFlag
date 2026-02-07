@@ -1,12 +1,12 @@
-// swiftlint:disable all
-
 import Cocoa
 
 enum SlideDirection {
+
     case up, down, left, right
 }
 
 protocol Animatable {
+
     func fadeIn(duration: TimeInterval, completion: (() -> Void)?)
     func fadeOut(duration: TimeInterval, completion: (() -> Void)?)
     func slideIn(duration: TimeInterval, direction: SlideDirection, maxDistance: CGFloat?, completion: (() -> Void)?)

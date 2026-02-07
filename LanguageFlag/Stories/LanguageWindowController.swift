@@ -83,7 +83,6 @@ private extension LanguageWindowController {
 
     @objc
     func keyboardLayoutChanged(notification: NSNotification) {
-
         timer?.invalidate()
         runShowWindowAnimation()
         scheduleTimer()
@@ -140,8 +139,6 @@ private extension LanguageWindowController {
             object: nil
         )
     }
-
-
 
     func observePreferencesChanges() {
         preferences.$opacity

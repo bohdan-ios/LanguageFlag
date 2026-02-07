@@ -109,6 +109,7 @@ final class UserPreferences: ObservableObject {
         static let animationDuration = "animationDuration"
         static let showShortcuts = "showShortcuts"
         static let showInMenuBar = "showInMenuBar"
+        static let resetAnimationOnChange = "resetAnimationOnChange"
     }
 
     // MARK: - Published Properties
@@ -168,6 +169,10 @@ final class UserPreferences: ObservableObject {
         didSet { defaults.set(showInMenuBar, forKey: Keys.showInMenuBar) }
     }
 
+    @Published var resetAnimationOnChange: Bool {
+        didSet { defaults.set(resetAnimationOnChange, forKey: Keys.resetAnimationOnChange) }
+    }
+
     // MARK: - Initialization
     private init() {
         // Load saved values or use defaults
@@ -176,6 +181,7 @@ final class UserPreferences: ObservableObject {
         self.animationDuration = defaults.object(forKey: Keys.animationDuration) as? Double ?? 0.3
         self.showShortcuts = defaults.object(forKey: Keys.showShortcuts) as? Bool ?? false
         self.showInMenuBar = defaults.object(forKey: Keys.showInMenuBar) as? Bool ?? false
+        self.resetAnimationOnChange = defaults.object(forKey: Keys.resetAnimationOnChange) as? Bool ?? true
 
         // Decode complex types
         if let data = defaults.data(forKey: Keys.displayPosition),
@@ -209,5 +215,6 @@ final class UserPreferences: ObservableObject {
         animationDuration = 0.3
         showShortcuts = false
         showInMenuBar = false
+        resetAnimationOnChange = true
     }
 }

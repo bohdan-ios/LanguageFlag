@@ -2,7 +2,7 @@ import Cocoa
 
 /// Slide animation - window slides in from edge or out to edge
 class SlideAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
     // Configuration properties
     var forcedDirection: SlideDirection?
     var forcedMaxDistance: CGFloat?

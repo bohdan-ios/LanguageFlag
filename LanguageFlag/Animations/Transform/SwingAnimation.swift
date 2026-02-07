@@ -2,7 +2,8 @@ import Cocoa
 
 /// Swing animation - Swings on X axis like a sign
 class SwingAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
@@ -25,9 +26,9 @@ class SwingAnimation: BaseWindowAnimation, WindowAnimation {
         animation.duration = duration
         
         // Create transform values for swinging
-        let angles: [CGFloat] = [-.pi/2, .pi/4, -.pi/8, .pi/16, 0]
+        let angles: [CGFloat] = [-.pi / 2, .pi / 4, -.pi / 8, .pi / 16, 0]
         animation.values = angles.map { angle -> CATransform3D in
-            return CATransform3DRotate(transform, angle, 1, 0, 0)
+            CATransform3DRotate(transform, angle, 1, 0, 0)
         }
         
         animation.keyTimes = [0.0, 0.4, 0.6, 0.8, 1.0]
@@ -70,7 +71,7 @@ class SwingAnimation: BaseWindowAnimation, WindowAnimation {
         
         let animation = CABasicAnimation(keyPath: "transform")
         animation.fromValue = CATransform3DIdentity
-        animation.toValue = CATransform3DRotate(transform, -.pi/2, 1, 0, 0)
+        animation.toValue = CATransform3DRotate(transform, -.pi / 2, 1, 0, 0)
         animation.duration = duration
         animation.timingFunction = AnimationTiming.easeIn
         

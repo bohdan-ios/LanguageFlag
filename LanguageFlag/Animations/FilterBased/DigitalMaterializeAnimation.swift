@@ -2,7 +2,8 @@ import Cocoa
 
 /// Digital Materialize animation using Gradient Mask and Bloom
 class DigitalMaterializeAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

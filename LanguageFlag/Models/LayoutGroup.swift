@@ -1,4 +1,4 @@
-// swiftlint:disable all
+// swiftlint:disable force_cast
 
 import Foundation
 import Carbon
@@ -103,8 +103,6 @@ final class LayoutGroupManager {
     }
 
     private func createDefaultGroups() {
-        let availableLayouts = getAvailableLayouts()
-
         let defaultGroups = [
             LayoutGroup(name: "Work", layouts: [], color: "#007AFF"),
             LayoutGroup(name: "Personal", layouts: [], color: "#34C759"),
@@ -117,5 +115,6 @@ final class LayoutGroupManager {
 
 // MARK: - Notification Names
 extension Notification.Name {
+
     static let layoutGroupChanged = Notification.Name("layoutGroupChanged")
 }

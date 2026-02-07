@@ -3,7 +3,7 @@ import Cocoa
 /// Presets for common animation timing functions
 /// Provides consistent timing across all animations
 enum AnimationTiming {
-    
+
     // MARK: - Standard Timing Functions
     
     /// Ease in timing (slow start, fast end)

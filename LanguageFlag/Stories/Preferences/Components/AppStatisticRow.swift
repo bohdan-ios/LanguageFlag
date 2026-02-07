@@ -35,11 +35,11 @@ struct AppStatisticRow: View {
     }
     
     private var headerButton: some View {
-        Button(action: {
+        Button {
             withAnimation {
                 isExpanded.toggle()
             }
-        }) {
+        } label: {
             HStack {
                 Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
                     .font(.caption)

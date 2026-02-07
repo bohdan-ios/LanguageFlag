@@ -2,7 +2,8 @@ import Cocoa
 
 /// Blur animation using Gaussian blur filter
 class BlurAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
@@ -25,8 +26,12 @@ class BlurAnimation: BaseWindowAnimation, WindowAnimation {
             completion?()
         }
         
-        let animation = createAnimation(keyPath: "filters.CIGaussianBlur.inputRadius",
-                                       from: 20.0, to: 0.0, duration: duration)
+        let animation = createAnimation(
+            keyPath: "filters.CIGaussianBlur.inputRadius",
+            from: 20.0,
+            to: 0.0,
+            duration: duration
+        )
         layer.add(animation, forKey: "blur")
         
         CATransaction.commit()
@@ -54,14 +59,23 @@ class BlurAnimation: BaseWindowAnimation, WindowAnimation {
             completion?()
         }
         
-        let animation = createAnimation(keyPath: "filters.CIGaussianBlur.inputRadius",
-                                       from: 0.0, to: 20.0, duration: duration,
-                                       timing: AnimationTiming.easeIn)
+        let animation = createAnimation(
+            keyPath: "filters.CIGaussianBlur.inputRadius",
+            from: 0.0,
+            to: 20.0,
+            duration: duration,
+            timing: AnimationTiming.easeIn
+        )
         layer.add(animation, forKey: "blur")
         
         CATransaction.commit()
         
-        animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration,
-                    timing: AnimationTiming.easeIn)
+        animateAlpha(
+            contentView: contentView,
+            from: 1.0,
+            to: 0.0,
+            duration: duration,
+            timing: AnimationTiming.easeIn
+        )
     }
 }

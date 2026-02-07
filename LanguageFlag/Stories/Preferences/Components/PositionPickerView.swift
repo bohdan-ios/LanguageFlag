@@ -120,25 +120,29 @@ private extension PositionPickerView {
         var row = 0
 
         var currentX: CGFloat = 0
-        for c in 0..<3 {
+        for newColumn in 0..<3 {
             let cellEnd = currentX + cellWidth
+
             if adjustedX < cellEnd {
-                col = c
+                col = newColumn
                 break
             }
+
             currentX = cellEnd + cellSpacing
-            col = c + 1
+            col = newColumn + 1
         }
 
         var currentY: CGFloat = 0
-        for r in 0..<3 {
+        for newRow in 0..<3 {
             let cellEnd = currentY + cellHeight
+
             if adjustedY < cellEnd {
-                row = r
+                row = newRow
                 break
             }
+
             currentY = cellEnd + cellSpacing
-            row = r + 1
+            row = newRow + 1
         }
 
         col = min(2, max(0, col))

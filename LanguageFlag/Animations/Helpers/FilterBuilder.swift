@@ -3,14 +3,16 @@ import Cocoa
 /// Type-safe builder for creating and configuring CIFilters
 /// Provides a clean, Swift-friendly API for filter creation
 enum FilterBuilder {
-    
+
     // MARK: - Blur Filters
     
     /// Creates a Gaussian blur filter
     /// - Parameter radius: Blur radius (0 = no blur, higher = more blur)
     /// - Returns: Configured CIFilter
     static func gaussianBlur(radius: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CIGaussianBlur")!
+        guard let filter = CIFilter(name: "CIGaussianBlur") else {
+            fatalError("Failed to create CIGaussianBlur filter")
+        }
         filter.setDefaults()
         filter.setValue(radius, forKey: kCIInputRadiusKey)
         return filter
@@ -22,7 +24,9 @@ enum FilterBuilder {
     ///   - angle: Blur angle in radians
     /// - Returns: Configured CIFilter
     static func motionBlur(radius: CGFloat, angle: CGFloat = 0.0) -> CIFilter {
-        let filter = CIFilter(name: "CIMotionBlur")!
+        guard let filter = CIFilter(name: "CIMotionBlur") else {
+            fatalError("Failed to create CIMotionBlur filter")
+        }
         filter.setDefaults()
         filter.setValue(radius, forKey: kCIInputRadiusKey)
         filter.setValue(angle, forKey: kCIInputAngleKey)
@@ -35,7 +39,9 @@ enum FilterBuilder {
     ///   - center: Center point of the blur
     /// - Returns: Configured CIFilter
     static func zoomBlur(amount: CGFloat, center: CIVector) -> CIFilter {
-        let filter = CIFilter(name: "CIZoomBlur")!
+        guard let filter = CIFilter(name: "CIZoomBlur") else {
+            fatalError("Failed to create CIZoomBlur filter")
+        }
         filter.setDefaults()
         filter.setValue(amount, forKey: kCIInputAmountKey)
         filter.setValue(center, forKey: kCIInputCenterKey)
@@ -48,7 +54,9 @@ enum FilterBuilder {
     /// - Parameter scale: Pixel size (1 = normal, higher = more pixelated)
     /// - Returns: Configured CIFilter
     static func pixellate(scale: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CIPixellate")!
+        guard let filter = CIFilter(name: "CIPixellate") else {
+            fatalError("Failed to create CIPixellate filter")
+        }
         filter.setDefaults()
         filter.setValue(scale, forKey: kCIInputScaleKey)
         return filter
@@ -58,7 +66,9 @@ enum FilterBuilder {
     /// - Parameter levels: Number of color levels (lower = more posterized)
     /// - Returns: Configured CIFilter
     static func colorPosterize(levels: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CIColorPosterize")!
+        guard let filter = CIFilter(name: "CIColorPosterize") else {
+            fatalError("Failed to create CIColorPosterize filter")
+        }
         filter.setDefaults()
         filter.setValue(levels, forKey: "inputLevels")
         return filter
@@ -77,7 +87,9 @@ enum FilterBuilder {
         brightness: CGFloat = 0.0,
         contrast: CGFloat = 1.0
     ) -> CIFilter {
-        let filter = CIFilter(name: "CIColorControls")!
+        guard let filter = CIFilter(name: "CIColorControls") else {
+            fatalError("Failed to create CIColorControls filter")
+        }
         filter.setDefaults()
         filter.setValue(saturation, forKey: "inputSaturation")
         filter.setValue(brightness, forKey: "inputBrightness")
@@ -89,7 +101,9 @@ enum FilterBuilder {
     /// - Parameter angle: Hue rotation angle in radians
     /// - Returns: Configured CIFilter
     static func hueAdjust(angle: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CIHueAdjust")!
+        guard let filter = CIFilter(name: "CIHueAdjust") else {
+            fatalError("Failed to create CIHueAdjust filter")
+        }
         filter.setDefaults()
         filter.setValue(angle, forKey: "inputAngle")
         return filter
@@ -104,7 +118,9 @@ enum FilterBuilder {
     ///   - angle: Twirl angle in radians
     /// - Returns: Configured CIFilter
     static func twirlDistortion(center: CIVector, radius: CGFloat, angle: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CITwirlDistortion")!
+        guard let filter = CIFilter(name: "CITwirlDistortion") else {
+            fatalError("Failed to create CITwirlDistortion filter")
+        }
         filter.setDefaults()
         filter.setValue(center, forKey: kCIInputCenterKey)
         filter.setValue(radius, forKey: kCIInputRadiusKey)
@@ -118,7 +134,9 @@ enum FilterBuilder {
     ///   - radius: Splash radius
     /// - Returns: Configured CIFilter
     static func circleSplashDistortion(center: CIVector, radius: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CICircleSplashDistortion")!
+        guard let filter = CIFilter(name: "CICircleSplashDistortion") else {
+            fatalError("Failed to create CICircleSplashDistortion filter")
+        }
         filter.setDefaults()
         filter.setValue(center, forKey: kCIInputCenterKey)
         filter.setValue(radius, forKey: kCIInputRadiusKey)
@@ -131,7 +149,9 @@ enum FilterBuilder {
     /// - Parameter radius: Effect radius
     /// - Returns: Configured CIFilter
     static func morphologyMaximum(radius: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CIMorphologyMaximum")!
+        guard let filter = CIFilter(name: "CIMorphologyMaximum") else {
+            fatalError("Failed to create CIMorphologyMaximum filter")
+        }
         filter.setDefaults()
         filter.setValue(radius, forKey: kCIInputRadiusKey)
         return filter
@@ -145,7 +165,9 @@ enum FilterBuilder {
     ///   - radius: Bloom radius
     /// - Returns: Configured CIFilter
     static func bloom(intensity: CGFloat, radius: CGFloat) -> CIFilter {
-        let filter = CIFilter(name: "CIBloom")!
+        guard let filter = CIFilter(name: "CIBloom") else {
+            fatalError("Failed to create CIBloom filter")
+        }
         filter.setDefaults()
         filter.setValue(intensity, forKey: kCIInputIntensityKey)
         filter.setValue(radius, forKey: kCIInputRadiusKey)

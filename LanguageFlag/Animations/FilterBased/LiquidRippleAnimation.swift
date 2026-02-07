@@ -2,7 +2,7 @@ import Cocoa
 
 /// Liquid Ripple animation using Circle Splash Distortion
 class LiquidRippleAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

@@ -138,19 +138,27 @@ extension LanguageViewController {
         heightConstraint = view.heightAnchor.constraint(equalToConstant: dimensions.height)
         flagImageWidthConstraint = flagImageView.widthAnchor.constraint(equalToConstant: dimensions.width * 0.92)
 
+        guard let visualEffectWidthConstraint,
+              let visualEffectHeightConstraint,
+              let flagImageWidthConstraint,
+              let heightConstraint,
+              let widthConstraint else {
+            return
+        }
+        
         NSLayoutConstraint.activate([
             // Visual effect view fills the entire view
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            visualEffectWidthConstraint!,
-            visualEffectHeightConstraint!,
+            visualEffectWidthConstraint,
+            visualEffectHeightConstraint,
 
             // Flag image at the top
             flagImageView.centerXAnchor.constraint(equalTo: visualEffectView.centerXAnchor),
             flagImageView.topAnchor.constraint(equalTo: visualEffectView.topAnchor),
-            flagImageWidthConstraint!,
+            flagImageWidthConstraint,
             flagImageView.widthAnchor.constraint(equalTo: flagImageView.heightAnchor, multiplier: 16.0 / 9.0),
 
             // Big label in the center
@@ -163,8 +171,8 @@ extension LanguageViewController {
             languageNameLabel.topAnchor.constraint(equalTo: flagImageView.bottomAnchor, constant: -6),
 
             // View size constraints
-            heightConstraint!,
-            widthConstraint!,
+            heightConstraint,
+            widthConstraint,
         ])
     }
 
@@ -238,12 +246,14 @@ extension LanguageViewController {
 
     private func tryToSetImage(with iconRef: IconRef?,
                                languageText: String) {
-        guard let iconRef else {
+        guard iconRef != nil else {
             set(bigLabelText: languageText, flagImage: nil, languageLabelText: "")
             return
         }
 
-        let image = NSImage(iconRef: iconRef)
+        // Use a fallback icon since NSImage(iconRef:) is deprecated
+        // Try to get the keyboard icon from the system
+        let image = NSWorkspace.shared.icon(forFileType: "public.text")
         set(bigLabelText: "", flagImage: image, languageLabelText: languageText)
     }
     

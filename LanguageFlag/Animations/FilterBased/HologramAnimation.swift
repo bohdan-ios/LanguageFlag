@@ -2,7 +2,8 @@ import Cocoa
 
 /// Hologram animation using Color Controls, Hue Adjust, and Pixelate
 class HologramAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

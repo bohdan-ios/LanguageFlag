@@ -2,7 +2,8 @@ import Cocoa
 
 /// Bounce animation using Keyframe Animation
 class BounceAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

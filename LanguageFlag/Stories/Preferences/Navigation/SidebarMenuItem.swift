@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Individual menu item in the preferences sidebar
 struct SidebarMenuItem: View {
-    
+
     // MARK: - Variables
     @State private var isHovered = false
 

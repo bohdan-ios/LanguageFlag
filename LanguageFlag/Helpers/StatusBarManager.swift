@@ -1,4 +1,4 @@
-// swiftlint:disable all
+// swiftlint:disable force_cast
 
 import Cocoa
 import LaunchAtLogin
@@ -31,8 +31,6 @@ final class StatusBarManager {
         observePreferencesChanges()
         initializeAnalytics()
     }
-
-
     // MARK: - Deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -127,7 +125,6 @@ private extension StatusBarManager {
     func exitApplication() {
         NSApplication.shared.terminate(self)
     }
-
 }
 
 // MARK: - Public Actions

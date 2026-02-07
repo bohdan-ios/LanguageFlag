@@ -2,7 +2,7 @@ import Cocoa
 
 /// VHS Glitch animation using overlay layers, posterization, and motion blur
 class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
     // Helper manager for overlays
     private let overlays = VHSOverlayManager()
     

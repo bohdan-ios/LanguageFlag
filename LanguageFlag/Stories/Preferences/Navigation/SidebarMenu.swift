@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Sidebar menu containing all preference pane options
 struct SidebarMenu: View {
-    
+
     // MARK: - Variables
     @Binding private var selectedPane: PreferencePane
     
