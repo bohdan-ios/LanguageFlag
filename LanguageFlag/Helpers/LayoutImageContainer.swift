@@ -11,7 +11,7 @@ import os.log
 
 final class LayoutImageContainer {
 
-    // MARK: Variables
+    // MARK: - Properties
     static let shared = LayoutImageContainer()
 
     private let mappingProvider: LayoutMappingProvider
@@ -29,7 +29,7 @@ final class LayoutImageContainer {
         self.imageRenderer = imageRenderer
     }
 
-    // MARK: Internal
+    // MARK: - Public Methods
     func getImage(for keyboardLayout: String) -> NSImage? {
         do {
             let imageName = try mappingProvider.imageName(for: keyboardLayout)
@@ -73,7 +73,7 @@ final class LayoutImageContainer {
         return renderedImage
     }
 
-    // MARK: Async Methods
+    // MARK: - Async Methods
     func getFlagItemAsync(for keyboardLayout: String,
                           size: NSSize,
                           isCapsLock: Bool) async -> NSImage? {
@@ -98,7 +98,7 @@ final class LayoutImageContainer {
         return renderedImage
     }
 
-    // MARK: Private
+    // MARK: - Private Methods
     private func createCacheKey(layout: String, size: NSSize, capsLock: Bool) -> String {
         "\(layout)-\(size.width)x\(size.height)-\(capsLock)"
     }

@@ -7,12 +7,6 @@
 
 import Foundation
 
-extension Notification.Name {
-
-    static let preferencesPreviewRequested = Notification.Name("preferencesPreviewRequested")
-    static let recalculateWindowFrames = Notification.Name("recalculateWindowFrames")
-}
-
 enum DisplayPosition: String, Codable, CaseIterable {
 
     case topLeft = "Top Left"

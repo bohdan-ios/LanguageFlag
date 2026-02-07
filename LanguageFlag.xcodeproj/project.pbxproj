@@ -22,6 +22,7 @@
 		B46337C52F0AEAA40072D0B5 /* HologramFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */; };
 		B46337C62F0AEAA40072D0B5 /* Pixelate.metal in Sources */ = {isa = PBXBuildFile; fileRef = B46337C32F0AEAA40072D0B5 /* Pixelate.metal */; };
 		B4B9C0E22F36B82000F6A496 /* Hologram.ci.metal in Sources */ = {isa = PBXBuildFile; fileRef = B4B9C0E12F36B82000F6A496 /* Hologram.ci.metal */; };
+		B4B9C0E42F36BD7C00F6A496 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B9C0E32F36BD7C00F6A496 /* Notifications.swift */; };
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 		D87B3EC22683AACF00EC96D2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B3EC12683AACF00EC96D2 /* main.swift */; };
 		D8E267AE26A6F30A008B3689 /* TISInputSource+GetProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E267AD26A6F30A008B3689 /* TISInputSource+GetProperty.swift */; };
@@ -46,6 +47,7 @@
 		B46337C22F0AEAA40072D0B5 /* HologramFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HologramFilter.swift; sourceTree = "<group>"; };
 		B46337C32F0AEAA40072D0B5 /* Pixelate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Pixelate.metal; sourceTree = "<group>"; };
 		B4B9C0E12F36B82000F6A496 /* Hologram.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Hologram.ci.metal; sourceTree = "<group>"; };
+		B4B9C0E32F36BD7C00F6A496 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		D87B3EC12683AACF00EC96D2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D893F1C229ACE19C0022EF46 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8E267AD26A6F30A008B3689 /* TISInputSource+GetProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TISInputSource+GetProperty.swift"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 		D8E267B726A7123B008B3689 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B4B9C0E32F36BD7C00F6A496 /* Notifications.swift */,
 				B46337AB2F0763C70072D0B5 /* NSScreen+Identifier.swift */,
 				B46337AC2F0763C70072D0B5 /* NSWindow+Animation.swift */,
 				40E94A3E244D0230001E93E1 /* NotificationName.swift */,
@@ -296,6 +299,7 @@
 				D8EB1E2929AF615100812827 /* KeyboardLayoutNotification.swift in Sources */,
 				D87B3EC22683AACF00EC96D2 /* main.swift in Sources */,
 				B46337BA2F0860F40072D0B5 /* LayoutAnalytics.swift in Sources */,
+				B4B9C0E42F36BD7C00F6A496 /* Notifications.swift in Sources */,
 				B46337BD2F0863910072D0B5 /* LayoutGroup.swift in Sources */,
 				B46337BE2F0863910072D0B5 /* SmartLayoutSuggestions.swift in Sources */,
 				D8E267AE26A6F30A008B3689 /* TISInputSource+GetProperty.swift in Sources */,
