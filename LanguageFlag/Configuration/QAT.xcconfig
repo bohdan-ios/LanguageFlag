@@ -1,0 +1,3 @@
+// QAT Configuration - All features enabled for testing
+
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) FEATURE_SHORTCUTS FEATURE_ANALYTICS FEATURE_GROUPS

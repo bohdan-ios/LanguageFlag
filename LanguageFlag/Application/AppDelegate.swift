@@ -28,5 +28,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Life cycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusBarManager = StatusBarManager()
+
+        // Disable window restoration for menu bar app
+        UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
+
+        // Hide dock icon (menu bar app only)
+        NSApp.setActivationPolicy(.accessory)
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        // Keep running even if all windows are closed
+        false
+    }
+
+    func application(_ application: NSApplication, willEncodeRestorableState coder: NSCoder) {
+        // Prevent window restoration state from being saved
+    }
+
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        // Disable state restoration for menu bar app
+        false
     }
 }

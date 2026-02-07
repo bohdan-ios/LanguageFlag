@@ -1,9 +1,8 @@
-// swiftlint:disable force_cast
-
 import Foundation
 import Carbon
 
 struct LayoutGroup: Codable, Identifiable, Equatable {
+
     let id: UUID
     var name: String
     var layouts: [String]
@@ -90,6 +89,7 @@ final class LayoutGroupManager {
     }
 
     func getAvailableLayouts() -> [String] {
+        // swiftlint:disable:next force_cast
         let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
         return inputSources.compactMap { $0.name }
     }

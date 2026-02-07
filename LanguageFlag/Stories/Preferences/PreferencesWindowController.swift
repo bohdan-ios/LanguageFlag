@@ -1,14 +1,9 @@
-//
-//  PreferencesWindowController.swift
-//  LanguageFlag
-//
-//  Created by Claude on 01/01/2026.
-//
-
 import Cocoa
 import SwiftUI
 
-final class PreferencesWindowController: NSWindowController {
+final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
+
+    private var settingsWindow: NSWindow?
 
     convenience init() {
         let hostingController = NSHostingController(rootView: PreferencesView())
@@ -19,16 +14,31 @@ final class PreferencesWindowController: NSWindowController {
         window.isReleasedWhenClosed = false
 
         self.init(window: window)
+        window.delegate = self
+
+        // Store reference
+        self.settingsWindow = window
     }
 
     func show() {
-        guard let window = window else { return }
+        guard let window else { return }
+
+        // Show dock icon while preferences are open
+        NSApp.setActivationPolicy(.regular)
 
         // Always center on current monitor when showing
         centerOnCurrentMonitor(window: window)
 
+        window.isReleasedWhenClosed = false
+        window.isRestorable = false
+
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        // Hide dock icon when preferences are closed
+        NSApp.setActivationPolicy(.accessory)
     }
     
     /// Centers the window on the monitor containing the mouse cursor

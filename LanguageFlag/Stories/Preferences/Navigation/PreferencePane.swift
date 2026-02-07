@@ -8,11 +8,11 @@ enum PreferencePane: String, CaseIterable, Identifiable {
     case shortcuts = "Shortcuts"
     case analytics = "Analytics"
     case groups = "Groups"
-    
+
     // MARK: - Properties
-    
+
     var id: String { rawValue }
-    
+
     var icon: String {
         switch self {
         case .general: return "gearshape"
@@ -21,5 +21,24 @@ enum PreferencePane: String, CaseIterable, Identifiable {
         case .analytics: return "chart.bar"
         case .groups: return "folder"
         }
+    }
+
+    // MARK: - Feature Flag Filtering
+
+    var isAvailable: Bool {
+        switch self {
+        case .general, .appearance:
+            return true
+        case .shortcuts:
+            return FeatureFlags.isShortcutsEnabled
+        case .analytics:
+            return FeatureFlags.isAnalyticsEnabled
+        case .groups:
+            return FeatureFlags.isGroupsEnabled
+        }
+    }
+
+    static var availableCases: [PreferencePane] {
+        allCases.filter(\.isAvailable)
     }
 }

@@ -1,5 +1,3 @@
-// swiftlint:disable force_cast
-
 import Cocoa
 import LaunchAtLogin
 import Carbon
@@ -14,7 +12,9 @@ final class StatusBarManager {
     private var previousModel: KeyboardLayoutNotification?
     private lazy var preferencesWindowController = PreferencesWindowController()
     private let preferences = UserPreferences.shared
+    #if FEATURE_ANALYTICS
     private let analytics = LayoutAnalytics.shared
+    #endif
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialization
@@ -29,7 +29,9 @@ final class StatusBarManager {
         setupStatusBar()
         addObservers()
         observePreferencesChanges()
+        #if FEATURE_ANALYTICS
         initializeAnalytics()
+        #endif
     }
     // MARK: - Deinit
     deinit {
@@ -85,7 +87,9 @@ private extension StatusBarManager {
 
         previousModel = model
         updateStatusBarIcon(for: model)
+        #if FEATURE_ANALYTICS
         analytics.startTracking(layout: model.keyboardLayout)
+        #endif
 
         // Update recent layouts
         menuBuilder.updateRecentLayouts(with: model.keyboardLayout)
@@ -136,12 +140,14 @@ extension StatusBarManager {
         guard let layoutName = sender.representedObject as? String else { return }
 
         // Find and activate the input source
+        // swiftlint:disable:next force_cast
         let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
         if let source = inputSources.first(where: { $0.name == layoutName }) {
             TISSelectInputSource(source)
         }
     }
 
+    #if FEATURE_GROUPS
     /// Activates a layout group.
     @objc
     func activateGroup(_ sender: NSMenuItem) {
@@ -151,6 +157,7 @@ extension StatusBarManager {
 
         // Switch to first layout in the group if available
         if let firstLayout = group.layouts.first {
+            // swiftlint:disable:next force_cast
             let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
             if let source = inputSources.first(where: { $0.name == firstLayout }) {
                 TISSelectInputSource(source)
@@ -159,6 +166,7 @@ extension StatusBarManager {
 
         refreshMenu()
     }
+    #endif
 }
 
 // MARK: - Helper Methods
@@ -230,10 +238,12 @@ private extension StatusBarManager {
         statusItem.menu = menu
     }
 
+    #if FEATURE_ANALYTICS
     func initializeAnalytics() {
         let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
         analytics.startTracking(layout: currentLayout)
     }
+    #endif
 
     func observePreferencesChanges() {
         preferences.$showInMenuBar
