@@ -112,9 +112,3 @@ final class LayoutGroupManager {
         saveGroups(defaultGroups)
     }
 }
-
-// MARK: - Notification Names
-extension Notification.Name {
-
-    static let layoutGroupChanged = Notification.Name("layoutGroupChanged")
-}
