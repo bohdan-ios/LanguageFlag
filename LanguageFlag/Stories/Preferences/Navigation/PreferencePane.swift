@@ -8,6 +8,7 @@ enum PreferencePane: String, CaseIterable, Identifiable {
     case shortcuts = "Shortcuts"
     case analytics = "Analytics"
     case groups = "Groups"
+    case about = "About"
 
     // MARK: - Properties
 
@@ -20,6 +21,7 @@ enum PreferencePane: String, CaseIterable, Identifiable {
         case .shortcuts: return "keyboard"
         case .analytics: return "chart.bar"
         case .groups: return "folder"
+        case .about: return "info.circle.fill"
         }
     }
 
@@ -27,7 +29,7 @@ enum PreferencePane: String, CaseIterable, Identifiable {
 
     var isAvailable: Bool {
         switch self {
-        case .general, .appearance:
+        case .general, .appearance, .about:
             return true
         case .shortcuts:
             return FeatureFlags.isShortcutsEnabled

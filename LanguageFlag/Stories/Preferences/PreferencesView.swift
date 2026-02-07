@@ -54,6 +54,9 @@ struct PreferencesView: View {
             #else
             GeneralPreferencesPane(preferences: preferences)
             #endif
+        
+        case .about:
+            AboutPreferencesPane()
         }
     }
 }
