@@ -25,24 +25,35 @@ struct PreferencesView: View {
         .frame(width: 809, height: 500)
     }
     
+    @ViewBuilder
     private var paneContent: some View {
-        Group {
-            switch selectedPane {
-            case .general:
-                GeneralPreferencesPane(preferences: preferences)
+        switch selectedPane {
+        case .general:
+            GeneralPreferencesPane(preferences: preferences)
 
-            case .appearance:
-                AppearancePreferencesPane(preferences: preferences)
+        case .appearance:
+            AppearancePreferencesPane(preferences: preferences)
 
-            case .shortcuts:
-                ShortcutsPreferencesPane(preferences: preferences)
+        case .shortcuts:
+            #if FEATURE_SHORTCUTS
+            ShortcutsPreferencesPane(preferences: preferences)
+            #else
+            GeneralPreferencesPane(preferences: preferences)
+            #endif
 
-            case .analytics:
-                AnalyticsPreferencesPane()
+        case .analytics:
+            #if FEATURE_ANALYTICS
+            AnalyticsPreferencesPane()
+            #else
+            GeneralPreferencesPane(preferences: preferences)
+            #endif
 
-            case .groups:
-                GroupsPreferencesPane()
-            }
+        case .groups:
+            #if FEATURE_GROUPS
+            GroupsPreferencesPane()
+            #else
+            GeneralPreferencesPane(preferences: preferences)
+            #endif
         }
     }
 }

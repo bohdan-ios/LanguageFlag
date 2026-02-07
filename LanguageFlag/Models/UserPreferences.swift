@@ -1,10 +1,3 @@
-//
-//  UserPreferences.swift
-//  LanguageFlag
-//
-//  Created by Claude on 01/01/2026.
-//
-
 import Foundation
 
 enum DisplayPosition: String, Codable, CaseIterable {

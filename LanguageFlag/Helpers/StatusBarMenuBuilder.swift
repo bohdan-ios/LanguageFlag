@@ -1,5 +1,3 @@
-// swiftlint:disable force_cast function_body_length
-
 import Cocoa
 import LaunchAtLogin
 import Carbon
@@ -9,6 +7,7 @@ final class StatusBarMenuBuilder {
     private var recentLayouts: [String] = []
     private let maxRecentLayouts = 5
 
+    // swiftlint:disable function_body_length
     /// Builds the menu for the status bar.
     /// - Parameters:
     ///   - launchAtLoginAction: Selector for toggling Launch at Login.
@@ -46,6 +45,7 @@ final class StatusBarMenuBuilder {
         }
 
         // Layout Groups
+        #if FEATURE_GROUPS
         let groups = LayoutGroupManager.shared.getGroups()
         if !groups.isEmpty {
             let groupsMenu = NSMenu()
@@ -62,6 +62,7 @@ final class StatusBarMenuBuilder {
 
             menu.addItem(NSMenuItem.separator())
         }
+        #endif
 
         // All Available Layouts
         let layoutsMenu = NSMenu()
@@ -107,6 +108,7 @@ final class StatusBarMenuBuilder {
 
         return menu
     }
+    // swiftlint:enable function_body_length
 
     func updateRecentLayouts(with layout: String) {
         // Remove if already exists
@@ -122,6 +124,7 @@ final class StatusBarMenuBuilder {
     }
 
     private func getAvailableLayouts() -> [String] {
+        // swiftlint:disable:next force_cast
         let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
         return inputSources.compactMap { $0.name }.sorted()
     }

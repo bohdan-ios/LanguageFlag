@@ -18,7 +18,7 @@ struct SidebarMenu: View {
     
     private var content: some View {
         VStack(alignment: .leading, spacing: 4) {
-            ForEach(PreferencePane.allCases) { pane in
+            ForEach(PreferencePane.availableCases) { pane in
                 SidebarMenuItem(
                     title: pane.rawValue,
                     icon: pane.icon,
