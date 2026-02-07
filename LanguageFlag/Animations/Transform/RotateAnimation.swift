@@ -2,7 +2,8 @@ import Cocoa
 
 /// Rotate animation - rotates window 360 degrees
 class RotateAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
 

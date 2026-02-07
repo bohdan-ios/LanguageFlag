@@ -2,7 +2,8 @@ import Cocoa
 
 /// Flip animation - 3D flip effect on X axis
 class FlipAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Represents each preference pane in the sidebar
 enum PreferencePane: String, CaseIterable, Identifiable {
-    
+
     case general = "General"
     case appearance = "Appearance"
     case shortcuts = "Shortcuts"

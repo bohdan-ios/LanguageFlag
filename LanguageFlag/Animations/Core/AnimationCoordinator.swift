@@ -6,6 +6,7 @@ final class AnimationCoordinator {
     // MARK: - Variables
     private let positionCalculator = WindowPositionCalculator()
     private let preferences = UserPreferences.shared
+    private var isShowing = false
 
     // Animation styles that need frame setup before animation
     private let stylesNeedingFrameSetup: Set<AnimationStyle> = [
@@ -33,6 +34,12 @@ final class AnimationCoordinator {
         duration: TimeInterval,
         screenRect: CGRect
     ) {
+        // If the window is already showing and reset is disabled,
+        // let the current animation continue.
+        // The flag image/title will still update (handled by LanguageViewController).
+        if isShowing, !preferences.resetAnimationOnChange { return }
+        isShowing = true
+
         // Set opacity before animation if window is being shown for first time
         if window.alphaValue == 0 {
             window.alphaValue = CGFloat(preferences.opacity)
@@ -66,6 +73,8 @@ final class AnimationCoordinator {
         screenRect: CGRect,
         completion: (() -> Void)? = nil
     ) {
+        isShowing = false
+
         let frameResetCompletion: (() -> Void)? = stylesNeedingFrameReset.contains(style) ? { [weak self] in
             guard let self = self else { return }
             let targetFrame = self.positionCalculator.calculateWindowFrame(
@@ -91,6 +100,7 @@ final class AnimationCoordinator {
 // MARK: - Private Animation Dispatch
 private extension AnimationCoordinator {
 
+    // swiftlint:disable:next cyclomatic_complexity
     func performInAnimation(
         window: NSWindow,
         style: AnimationStyle,
@@ -135,6 +145,7 @@ private extension AnimationCoordinator {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func performOutAnimation(
         window: NSWindow,
         style: AnimationStyle,

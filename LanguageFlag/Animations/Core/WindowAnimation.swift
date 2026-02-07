@@ -3,6 +3,7 @@ import Cocoa
 /// Protocol defining the contract for window animations
 /// Implementations provide both "in" (appear) and "out" (disappear) animations
 protocol WindowAnimation {
+
     /// Animates the window appearing
     /// - Parameters:
     ///   - window: The NSWindow to animate

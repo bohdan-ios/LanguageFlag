@@ -2,7 +2,8 @@ import Cocoa
 
 /// Pixelate animation using CIPixellate filter
 class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
@@ -25,8 +26,12 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
             completion?()
         }
         
-        let animation = createAnimation(keyPath: "filters.CIPixellate.inputScale",
-                                       from: 50.0, to: 1.0, duration: duration)
+        let animation = createAnimation(
+            keyPath: "filters.CIPixellate.inputScale",
+            from: 50.0,
+            to: 1.0,
+            duration: duration
+        )
         layer.add(animation, forKey: "pixelate")
         
         CATransaction.commit()
@@ -54,14 +59,23 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
             completion?()
         }
         
-        let animation = createAnimation(keyPath: "filters.CIPixellate.inputScale",
-                                       from: 1.0, to: 50.0, duration: duration,
-                                       timing: AnimationTiming.easeIn)
+        let animation = createAnimation(
+            keyPath: "filters.CIPixellate.inputScale",
+            from: 1.0,
+            to: 50.0,
+            duration: duration,
+            timing: AnimationTiming.easeIn
+        )
         layer.add(animation, forKey: "pixelate")
         
         CATransaction.commit()
         
-        animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration,
-                    timing: AnimationTiming.easeIn)
+        animateAlpha(
+            contentView: contentView,
+            from: 1.0,
+            to: 0.0,
+            duration: duration,
+            timing: AnimationTiming.easeIn
+        )
     }
 }

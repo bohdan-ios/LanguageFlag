@@ -3,10 +3,11 @@ import Cocoa
 /// Factory for creating window animation instances
 /// Uses the Strategy pattern to provide the appropriate animation for each style
 class WindowAnimationFactory {
-    
+
     /// Creates and returns an animation instance for the specified style
     /// - Parameter style: The animation style to create
     /// - Returns: A WindowAnimation implementation
+    // swiftlint:disable:next cyclomatic_complexity
     static func animation(for style: AnimationStyle) -> WindowAnimation {
         switch style {
         // Basic animations

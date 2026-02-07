@@ -2,7 +2,8 @@ import Cocoa
 
 /// Elastic animation - Overshoots and settles
 class ElasticAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

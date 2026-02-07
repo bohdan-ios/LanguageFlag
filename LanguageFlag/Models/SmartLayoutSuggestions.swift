@@ -8,6 +8,7 @@
 import Foundation
 
 struct AppLayoutPreference: Codable, Identifiable {
+
     let id = UUID()
     let appName: String
     var layoutPreferences: [String: Int] // layoutName -> usage count
@@ -25,11 +26,13 @@ struct AppLayoutPreference: Codable, Identifiable {
     }
 
     enum CodingKeys: String, CodingKey {
+
         case appName, layoutPreferences, lastUsedLayout
     }
 }
 
 struct TimeBasedPattern: Codable {
+
     let hour: Int // 0-23
     var layoutUsage: [String: Int]
 

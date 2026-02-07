@@ -1,4 +1,4 @@
-// swiftlint:disable all
+// swiftlint:disable force_cast function_body_length
 
 import Cocoa
 import LaunchAtLogin

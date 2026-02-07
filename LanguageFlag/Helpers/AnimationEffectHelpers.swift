@@ -2,7 +2,7 @@ import Cocoa
 
 /// Utility functions for creating visual effects used in animations
 enum AnimationEffectHelpers {
-    
+
     // MARK: - VHS Effect Helpers
     
     /// Creates a scanline pattern image with horizontal gray lines for VHS effect

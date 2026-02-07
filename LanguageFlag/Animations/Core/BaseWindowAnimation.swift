@@ -3,7 +3,7 @@ import Cocoa
 /// Base class providing common functionality for window animations
 /// Subclasses can use these utilities to simplify animation implementation
 class BaseWindowAnimation {
-    
+
     // MARK: - Layer Preparation
     
     /// Prepares and returns the content view's layer for animation

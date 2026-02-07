@@ -49,6 +49,7 @@ struct PreferencesView: View {
 
 // MARK: - Preview
 struct PreferencesView_Previews: PreviewProvider {
+
     static var previews: some View {
         PreferencesView()
     }

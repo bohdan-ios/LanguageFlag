@@ -29,6 +29,10 @@ struct AppearancePreferencesPane: View {
 
                 animationSpeedSection
 
+                Divider()
+
+                animationBehaviorSection
+
                 Spacer().frame(height: 20)
             }
             .padding()
@@ -70,6 +74,19 @@ struct AppearancePreferencesPane: View {
         }
     }
     
+    private var animationBehaviorSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Animation Behavior")
+                .font(.headline)
+
+            Toggle("Reset animation on layout change", isOn: $preferences.resetAnimationOnChange)
+
+            Text("When enabled, the animation restarts each time the keyboard layout changes. When disabled, the current animation continues uninterrupted.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+
     private var animationSpeedSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Animation Speed")
@@ -93,7 +110,9 @@ struct AppearancePreferencesPane: View {
 private extension AppearancePreferencesPane {
     
     func animationStyleButton(for style: AnimationStyle) -> some View {
-        Button(action: { preferences.animationStyle = style }) {
+        Button {
+            preferences.animationStyle = style
+        } label: {
             Text(style.description)
                 .font(.caption)
                 .frame(maxWidth: .infinity)

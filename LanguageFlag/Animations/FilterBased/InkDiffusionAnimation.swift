@@ -2,7 +2,8 @@ import Cocoa
 
 /// Ink Diffusion animation using Morphology and Blur
 class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

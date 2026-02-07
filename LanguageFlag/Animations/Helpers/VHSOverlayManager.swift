@@ -2,7 +2,7 @@ import Cocoa
 
 /// Manager for creating VHS-style overlay layers (scanlines and noise)
 class VHSOverlayManager {
-    
+
     // MARK: - Scanline Layer
     
     /// Creates a layer with horizontal scanlines for VHS effect

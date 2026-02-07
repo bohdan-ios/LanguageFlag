@@ -39,6 +39,7 @@ struct LayoutStatistics: Identifiable {
 }
 
 struct AppLayoutStatistics: Identifiable {
+
     let id = UUID()
     let appName: String
     var layoutUsage: [String: TimeInterval] // layoutName -> total duration

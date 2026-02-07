@@ -2,7 +2,8 @@ import Cocoa
 
 /// Energy Portal animation using Twirl Distortion and Zoom Blur
 class EnergyPortalAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         

@@ -2,7 +2,8 @@ import Cocoa
 
 /// Scale animation - window scales from small to normal or normal to small
 class ScaleAnimation: BaseWindowAnimation, WindowAnimation {
-    
+
+    // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
         setupWindow(window)
         
