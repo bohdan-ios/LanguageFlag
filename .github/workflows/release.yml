@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Archive
+        run: |
+          xcodebuild archive \
+            -project LanguageFlag.xcodeproj \
+            -scheme LanguageFlag \
+            -configuration Release \
+            -archivePath build/LanguageFlag.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Copy .app
+        run: |
+          cp -R \
+            build/LanguageFlag.xcarchive/Products/Applications/LanguageFlag.app \
+            build/LanguageFlag.app
+
+      - name: Zip
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ditto -c -k --keepParent \
+            build/LanguageFlag.app \
+            "build/LanguageFlag-${VERSION}.zip"
+          echo "ZIP_PATH=build/LanguageFlag-${VERSION}.zip" >> "$GITHUB_ENV"
+
+      - name: Create Release
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "$ZIP_PATH" \
+            --title "LanguageFlag $GITHUB_REF_NAME" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
