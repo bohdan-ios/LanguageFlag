@@ -1,39 +1,32 @@
 import SwiftUI
 
-/// About preferences pane displaying app information and mini-game
+/// About preferences pane displaying app information
 struct AboutPreferencesPane: View {
 
-    
     // MARK: - Properties
-    
+
     private let appName = "LanguageFlag"
     private let appVersion: String = {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
         return "Version \(version) (Build \(build))"
     }()
-    
+
     // MARK: - Views
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
                 appInfoSection
-                
-                Divider()
-                
-                gameSectionHeader
-                
-                SubwayGameView()
-                
+
                 Spacer()
             }
             .padding()
         }
     }
-    
+
     // MARK: - Subviews
-    
+
     private var appInfoSection: some View {
         VStack(spacing: 12) {
             // App Icon
@@ -50,24 +43,24 @@ struct AboutPreferencesPane: View {
                     .frame(width: 128, height: 128)
                     .foregroundColor(.accentColor)
             }
-            
+
             // App Name
             Text(appName)
                 .font(.system(size: 32, weight: .bold))
                 .foregroundColor(.primary)
-            
+
             // Version
             Text(appVersion)
                 .font(.callout)
                 .foregroundColor(.secondary)
-            
+
             // Tagline
             Text("Beautiful keyboard layout switching for macOS")
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
-            
+
             // Links
             HStack(spacing: 20) {
                 Button {
@@ -79,7 +72,7 @@ struct AboutPreferencesPane: View {
                     }
                 }
                 .buttonStyle(.link)
-                
+
                 Button {
                     // Could open GitHub
                 } label: {
@@ -93,21 +86,6 @@ struct AboutPreferencesPane: View {
             .font(.caption)
         }
         .padding(.top, 20)
-    }
-    
-    private var gameSectionHeader: some View {
-        VStack(spacing: 4) {
-            HStack {
-                Image(systemName: "gamecontroller.fill")
-                    .foregroundColor(.accentColor)
-                Text("Subway Runner Mini-Game")
-                    .font(.headline)
-            }
-            
-            Text("Take a break and test your reflexes!")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
     }
 }
 
