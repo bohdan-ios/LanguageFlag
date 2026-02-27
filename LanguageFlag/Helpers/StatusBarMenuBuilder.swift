@@ -124,8 +124,7 @@ final class StatusBarMenuBuilder {
     }
 
     private func getAvailableLayouts() -> [String] {
-        // swiftlint:disable:next force_cast
-        let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as! [TISInputSource]
+        let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as? [TISInputSource] ?? []
         return inputSources.compactMap { $0.name }.sorted()
     }
 }

@@ -3,6 +3,13 @@ import SwiftUI
 
 final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
 
+    // MARK: - Constants
+    private enum WindowSize {
+
+        static let width: CGFloat = 809
+        static let height: CGFloat = 500
+    }
+
     // MARK: - Variables
     private var settingsWindow: NSWindow?
 
@@ -14,21 +21,19 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
         window.title = "LanguageFlag Preferences"
         window.styleMask = [.titled, .closable, .miniaturizable]
         window.isReleasedWhenClosed = false
-        
-        // Set initial size to match PreferencesView frame
-        window.setContentSize(NSSize(width: 809, height: 500))
+
+        window.setContentSize(NSSize(width: WindowSize.width, height: WindowSize.height))
 
         self.init(window: window)
         window.delegate = self
 
-        // Store reference
         self.settingsWindow = window
-        
-        // Center on initial creation
+
         if let screen = NSScreen.main {
             let screenFrame = screen.visibleFrame
-            let x = screenFrame.origin.x + (screenFrame.width - 809) / 2
-            let y = screenFrame.origin.y + (screenFrame.height - 500) / 2
+            let x = screenFrame.origin.x + (screenFrame.width - WindowSize.width) / 2
+            let y = screenFrame.origin.y + (screenFrame.height - WindowSize.height) / 2
+
             window.setFrameOrigin(NSPoint(x: x, y: y))
         }
     }

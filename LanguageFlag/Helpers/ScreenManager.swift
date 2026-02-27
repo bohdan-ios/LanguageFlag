@@ -48,13 +48,6 @@ extension ScreenManager {
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(previewRequested),
-            name: .preferencesPreviewRequested,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
             selector: #selector(forceRecalculateFrames),
             name: .recalculateWindowFrames,
             object: nil
@@ -65,12 +58,6 @@ extension ScreenManager {
     @objc
     private func screenParametersDidChange() {
         ensureWindowControllersForAllScreens()
-    }
-
-    /// Handles preference preview requests.
-    @objc
-    private func previewRequested() {
-        showPreview()
     }
 
     /// Force recalculates all window frames (clears and rebuilds)
@@ -127,14 +114,18 @@ extension ScreenManager {
 
         // Update all frames simultaneously using CATransaction to batch animations
         if !controllersToUpdate.isEmpty {
-            DispatchQueue.main.async {
-                CATransaction.begin()
+            Task { [weak self, controllersToUpdate] in
+                guard self != nil else { return }
 
-                for controller in controllersToUpdate {
-                    controller.updateWindowFrameIfNeeded()
+                await MainActor.run {
+                    CATransaction.begin()
+
+                    for controller in controllersToUpdate {
+                        controller.updateWindowFrameIfNeeded()
+                    }
+
+                    CATransaction.commit()
                 }
-
-                CATransaction.commit()
             }
         }
     }
@@ -150,23 +141,31 @@ extension ScreenManager {
 
     /// Observes preference changes that affect all windows
     private func observePreferencesChanges() {
-        // Observe display position changes
+        // Frame layout changes
         preferences.$displayPosition
             .dropFirst()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.updateAllWindowFrames()
-            }
+            .sink { [weak self] _ in self?.updateAllWindowFrames() }
             .store(in: &cancellables)
 
-        // Observe window size changes
         preferences.$windowSize
             .dropFirst()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.updateAllWindowFrames()
-            }
+            .sink { [weak self] _ in self?.updateAllWindowFrames() }
             .store(in: &cancellables)
+
+        // Preview-triggering changes (replaces preferencesPreviewRequested NotificationCenter)
+        Publishers.MergeMany([
+            preferences.$displayDuration.dropFirst().map { _ in () }.eraseToAnyPublisher(),
+            preferences.$displayPosition.dropFirst().map { _ in () }.eraseToAnyPublisher(),
+            preferences.$windowSize.dropFirst().map { _ in () }.eraseToAnyPublisher(),
+            preferences.$opacity.dropFirst().map { _ in () }.eraseToAnyPublisher(),
+            preferences.$animationStyle.dropFirst().map { _ in () }.eraseToAnyPublisher(),
+            preferences.$animationDuration.dropFirst().map { _ in () }.eraseToAnyPublisher()
+        ])
+        .debounce(for: .milliseconds(50), scheduler: DispatchQueue.main)
+        .sink { [weak self] in self?.showPreview() }
+        .store(in: &cancellables)
     }
 
     /// Updates all window frames simultaneously

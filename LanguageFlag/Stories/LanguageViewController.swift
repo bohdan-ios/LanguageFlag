@@ -9,6 +9,7 @@
 import Carbon
 import Cocoa
 import Combine
+import UniformTypeIdentifiers
 
 class LanguageViewController: NSViewController {
 
@@ -138,11 +139,13 @@ extension LanguageViewController {
         heightConstraint = view.heightAnchor.constraint(equalToConstant: dimensions.height)
         flagImageWidthConstraint = flagImageView.widthAnchor.constraint(equalToConstant: dimensions.width * 0.92)
 
-        guard let visualEffectWidthConstraint,
-              let visualEffectHeightConstraint,
-              let flagImageWidthConstraint,
-              let heightConstraint,
-              let widthConstraint else {
+        guard
+            let visualEffectWidthConstraint,
+            let visualEffectHeightConstraint,
+            let flagImageWidthConstraint,
+            let heightConstraint,
+            let widthConstraint
+        else {
             return
         }
         
@@ -251,9 +254,8 @@ extension LanguageViewController {
             return
         }
 
-        // Use a fallback icon since NSImage(iconRef:) is deprecated
         // Try to get the keyboard icon from the system
-        let image = NSWorkspace.shared.icon(forFileType: "public.text")
+        let image = NSWorkspace.shared.icon(for: UTType.text)
         set(bigLabelText: "", flagImage: image, languageLabelText: languageText)
     }
     

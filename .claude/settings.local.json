@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(swiftlint:*)",
-      "Bash(xcodebuild:*)"
+      "Bash(xcodebuild:*)",
+      "Skill(macos-development)",
+      "Skill(macos-development:*)"
     ]
   }
 }

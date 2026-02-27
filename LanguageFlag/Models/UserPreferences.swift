@@ -101,10 +101,7 @@ final class UserPreferences: ObservableObject {
 
     // MARK: - Published Properties
     @Published var displayDuration: Double {
-        didSet {
-            defaults.set(displayDuration, forKey: Keys.displayDuration)
-            NotificationCenter.default.post(name: .preferencesPreviewRequested, object: nil)
-        }
+        didSet { defaults.set(displayDuration, forKey: Keys.displayDuration) }
     }
 
     @Published var displayPosition: DisplayPosition {
@@ -112,7 +109,6 @@ final class UserPreferences: ObservableObject {
             if let encoded = try? JSONEncoder().encode(displayPosition) {
                 defaults.set(encoded, forKey: Keys.displayPosition)
             }
-            NotificationCenter.default.post(name: .preferencesPreviewRequested, object: nil)
         }
     }
 
@@ -121,15 +117,11 @@ final class UserPreferences: ObservableObject {
             if let encoded = try? JSONEncoder().encode(windowSize) {
                 defaults.set(encoded, forKey: Keys.windowSize)
             }
-            NotificationCenter.default.post(name: .preferencesPreviewRequested, object: nil)
         }
     }
 
     @Published var opacity: Double {
-        didSet {
-            defaults.set(opacity, forKey: Keys.opacity)
-            NotificationCenter.default.post(name: .preferencesPreviewRequested, object: nil)
-        }
+        didSet { defaults.set(opacity, forKey: Keys.opacity) }
     }
 
     @Published var animationStyle: AnimationStyle {
@@ -137,15 +129,11 @@ final class UserPreferences: ObservableObject {
             if let encoded = try? JSONEncoder().encode(animationStyle) {
                 defaults.set(encoded, forKey: Keys.animationStyle)
             }
-            NotificationCenter.default.post(name: .preferencesPreviewRequested, object: nil)
         }
     }
 
     @Published var animationDuration: Double {
-        didSet {
-            defaults.set(animationDuration, forKey: Keys.animationDuration)
-            NotificationCenter.default.post(name: .preferencesPreviewRequested, object: nil)
-        }
+        didSet { defaults.set(animationDuration, forKey: Keys.animationDuration) }
     }
 
     @Published var showShortcuts: Bool {

@@ -10,34 +10,12 @@ import Cocoa
 import Combine
 import Carbon
 
-@propertyWrapper
-struct ScheduledTimer {
-
-    private var timer: Timer?
-
-    var wrappedValue: Timer? {
-        get { timer }
-        set {
-            timer?.invalidate()
-            timer = newValue
-            if let newValue {
-                RunLoop.main.add(newValue, forMode: .common)
-            }
-        }
-    }
-
-    mutating func invalidate() {
-        timer?.invalidate()
-        timer = nil
-    }
-}
-
 final class LanguageWindowController: NSWindowController {
 
     // MARK: - Variables
     var screenRect: NSRect?
 
-    @ScheduledTimer private var timer: Timer?
+    private var hideTask: Task<Void, Never>?
 
     private let preferences = UserPreferences.shared
 
@@ -58,18 +36,18 @@ final class LanguageWindowController: NSWindowController {
 
     // MARK: - Deinit
     deinit {
-
         NotificationCenter.default.removeObserver(self)
+        hideTask?.cancel()
         cancellables.removeAll()
     }
 
     // MARK: - Public Methods
-    
+
     /// Shows a preview of the window with current preferences
     func showPreview() {
-        timer?.invalidate()
+        hideTask?.cancel()
         runShowWindowAnimation()
-        scheduleTimer()
+        scheduleHide()
     }
 
     /// Updates the window frame based on the current screenRect
@@ -83,22 +61,16 @@ private extension LanguageWindowController {
 
     @objc
     func keyboardLayoutChanged(notification: NSNotification) {
-        timer?.invalidate()
+        hideTask?.cancel()
         runShowWindowAnimation()
-        scheduleTimer()
+        scheduleHide()
     }
 
     @objc
     func capsLockChanged(notification: NSNotification) {
-        timer?.invalidate()
+        hideTask?.cancel()
         runShowWindowAnimation()
-        scheduleTimer()
-    }
-
-    @objc
-    func hideApplication() {
-        timer?.invalidate()
-        runHideWindowAnimation()
+        scheduleHide()
     }
 }
 
@@ -184,14 +156,20 @@ private extension LanguageWindowController {
         }
     }
 
-    func scheduleTimer() {
-        timer = Timer(
-            timeInterval: preferences.displayDuration,
-            target: self,
-            selector: #selector(hideApplication),
-            userInfo: nil,
-            repeats: false
-        )
+    func scheduleHide() {
+        let nanoseconds = UInt64(preferences.displayDuration * 1_000_000_000)
+
+        hideTask = Task { [weak self] in
+            guard let self else { return }
+
+            do {
+                try await Task.sleep(nanoseconds: nanoseconds)
+            } catch {
+                return
+            }
+
+            runHideWindowAnimation()
+        }
     }
 
     func restartAnimation() {
@@ -204,7 +182,13 @@ private extension LanguageWindowController {
 
         runHideWindowAnimation()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        Task { [weak self] in
+            do {
+                try await Task.sleep(nanoseconds: 100_000_000) // 100ms
+            } catch {
+                return
+            }
+
             self?.showPreview()
         }
     }

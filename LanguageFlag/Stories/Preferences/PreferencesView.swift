@@ -4,16 +4,12 @@ import SwiftUI
 struct PreferencesView: View {
 
     // MARK: - Variables
-    @ObservedObject private var preferences = UserPreferences.shared
+    @StateObject private var preferences = UserPreferences.shared
 
     @State private var selectedPane: PreferencePane = .general
 
     // MARK: - Views
     var body: some View {
-        content
-    }
-    
-    private var content: some View {
         HStack(spacing: 0) {
             SidebarMenu(selectedPane: $selectedPane)
 
@@ -24,7 +20,7 @@ struct PreferencesView: View {
         }
         .frame(width: 809, height: 500)
     }
-    
+
     @ViewBuilder
     private var paneContent: some View {
         switch selectedPane {
