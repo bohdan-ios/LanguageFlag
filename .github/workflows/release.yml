@@ -40,15 +40,15 @@ jobs:
       - name: Zip
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          ditto -c -k --keepParent \
-            build/LanguageFlag.app \
-            "build/LanguageFlag-${VERSION}.zip"
+          ditto -c -k --keepParent build/LanguageFlag.app "build/LanguageFlag-${VERSION}.zip"
+          ditto -c -k --keepParent build/LanguageFlag.app "build/LanguageFlag.zip"
           echo "ZIP_PATH=build/LanguageFlag-${VERSION}.zip" >> "$GITHUB_ENV"
 
       - name: Create Release
         run: |
           gh release create "$GITHUB_REF_NAME" \
             "$ZIP_PATH" \
+            "build/LanguageFlag.zip" \
             --title "LanguageFlag $GITHUB_REF_NAME" \
             --generate-notes
         env:
