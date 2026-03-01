@@ -68,3 +68,5 @@ Dependencies/
 
 # Local AI/Claude settings
 *.local.json
+.agents/
+.claude/
