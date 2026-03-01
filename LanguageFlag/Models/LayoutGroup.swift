@@ -20,11 +20,22 @@ final class LayoutGroupManager {
 
     static let shared = LayoutGroupManager()
 
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private let groupsKey = "layoutGroups"
     private let activeGroupKey = "activeLayoutGroup"
 
     private init() {
+        self.defaults = .standard
+        initializeDefaultGroups()
+    }
+    
+    // Initializer for testing with dependency injection
+    init(defaults: UserDefaults) {
+        self.defaults = defaults
+        initializeDefaultGroups()
+    }
+    
+    private func initializeDefaultGroups() {
         // Initialize with default groups if none exist
         if getGroups().isEmpty {
             createDefaultGroups()

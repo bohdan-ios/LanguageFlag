@@ -83,7 +83,7 @@ final class UserPreferences: ObservableObject {
 
     static let shared = UserPreferences()
 
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
 
     // MARK: - Keys
     private enum Keys {
@@ -150,6 +150,37 @@ final class UserPreferences: ObservableObject {
 
     // MARK: - Initialization
     private init() {
+        self.defaults = .standard
+        self.displayDuration = 1.0
+        self.opacity = 0.95
+        self.animationDuration = 0.3
+        self.showShortcuts = false
+        self.showInMenuBar = false
+        self.resetAnimationOnChange = true
+        self.displayPosition = .bottomCenter
+        self.windowSize = .medium
+        self.animationStyle = .fade
+        
+        loadSavedPreferences()
+    }
+    
+    // Initializer for testing with dependency injection
+    init(defaults: UserDefaults) {
+        self.defaults = defaults
+        self.displayDuration = 1.0
+        self.opacity = 0.95
+        self.animationDuration = 0.3
+        self.showShortcuts = false
+        self.showInMenuBar = false
+        self.resetAnimationOnChange = true
+        self.displayPosition = .bottomCenter
+        self.windowSize = .medium
+        self.animationStyle = .fade
+        
+        loadSavedPreferences()
+    }
+    
+    private func loadSavedPreferences() {
         // Load saved values or use defaults
         self.displayDuration = defaults.object(forKey: Keys.displayDuration) as? Double ?? 1.0
         self.opacity = defaults.object(forKey: Keys.opacity) as? Double ?? 0.95

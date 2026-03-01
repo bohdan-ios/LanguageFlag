@@ -4,4 +4,31 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <FileRef
+      location = "group:KeyboardLayoutManagerTests.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TESTING_PLAN.md">
+   </FileRef>
+   <FileRef
+      location = "group:LayoutAnalyticsTests.swift">
+   </FileRef>
+   <FileRef
+      location = "group:LayoutImageProtocolsTests.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TestUtilities.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TEST_SETUP_SUMMARY.md">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_START_TESTING.md">
+   </FileRef>
+   <FileRef
+      location = "group:TASK_COMPLETION_SUMMARY.md">
+   </FileRef>
+   <FileRef
+      location = "group:SmartLayoutSuggestionsTests.swift">
+   </FileRef>
 </Workspace>

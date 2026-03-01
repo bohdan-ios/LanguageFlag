@@ -12,12 +12,33 @@
 		D829E663283B700300AEA0A0 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = D829E662283B700300AEA0A0 /* LaunchAtLogin */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B45A6DEF2F54C0170003B6DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40E0C99E244B7EF50012F409 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40E0C9A5244B7EF50012F409;
+			remoteInfo = LanguageFlag;
+		};
+		B45A6E1C2F54CD620003B6DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40E0C99E244B7EF50012F409 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40E0C9A5244B7EF50012F409;
+			remoteInfo = LanguageFlag;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		40E0C9A6244B7EF50012F409 /* LanguageFlag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LanguageFlag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40E0C9BA244B7F030012F409 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		B45A6DEB2F54C0170003B6DD /* LanguageFlagTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LanguageFlagTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B45A6E162F54CD620003B6DD /* LanguageFlagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LanguageFlagUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		B45A6DEC2F54C0170003B6DD /* LanguageFlagTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlagTests; sourceTree = "<group>"; };
+		B45A6E172F54CD620003B6DD /* LanguageFlagUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlagUITests; sourceTree = "<group>"; };
 		B47643282F37B7DE00719179 /* LanguageFlag */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlag; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -32,6 +53,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B45A6DE82F54C0170003B6DD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B45A6E132F54CD620003B6DD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -39,6 +74,8 @@
 			isa = PBXGroup;
 			children = (
 				B47643282F37B7DE00719179 /* LanguageFlag */,
+				B45A6DEC2F54C0170003B6DD /* LanguageFlagTests */,
+				B45A6E172F54CD620003B6DD /* LanguageFlagUITests */,
 				40E0C9A7244B7EF50012F409 /* Products */,
 				40E0C9B9244B7F020012F409 /* Frameworks */,
 			);
@@ -48,6 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				40E0C9A6244B7EF50012F409 /* LanguageFlag.app */,
+				B45A6DEB2F54C0170003B6DD /* LanguageFlagTests.xctest */,
+				B45A6E162F54CD620003B6DD /* LanguageFlagUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,18 +128,72 @@
 			productReference = 40E0C9A6244B7EF50012F409 /* LanguageFlag.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B45A6DEA2F54C0170003B6DD /* LanguageFlagTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B45A6DF32F54C0170003B6DD /* Build configuration list for PBXNativeTarget "LanguageFlagTests" */;
+			buildPhases = (
+				B45A6DE72F54C0170003B6DD /* Sources */,
+				B45A6DE82F54C0170003B6DD /* Frameworks */,
+				B45A6DE92F54C0170003B6DD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B45A6DF02F54C0170003B6DD /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B45A6DEC2F54C0170003B6DD /* LanguageFlagTests */,
+			);
+			name = LanguageFlagTests;
+			packageProductDependencies = (
+			);
+			productName = LanguageFlagTests;
+			productReference = B45A6DEB2F54C0170003B6DD /* LanguageFlagTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B45A6E152F54CD620003B6DD /* LanguageFlagUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B45A6E1E2F54CD620003B6DD /* Build configuration list for PBXNativeTarget "LanguageFlagUITests" */;
+			buildPhases = (
+				B45A6E122F54CD620003B6DD /* Sources */,
+				B45A6E132F54CD620003B6DD /* Frameworks */,
+				B45A6E142F54CD620003B6DD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B45A6E1D2F54CD620003B6DD /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B45A6E172F54CD620003B6DD /* LanguageFlagUITests */,
+			);
+			name = LanguageFlagUITests;
+			packageProductDependencies = (
+			);
+			productName = LanguageFlagUITests;
+			productReference = B45A6E162F54CD620003B6DD /* LanguageFlagUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		40E0C99E244B7EF50012F409 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1120;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 1420;
 				ORGANIZATIONNAME = Bohdan;
 				TargetAttributes = {
 					40E0C9A5244B7EF50012F409 = {
 						CreatedOnToolsVersion = 11.2.1;
+					};
+					B45A6DEA2F54C0170003B6DD = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 40E0C9A5244B7EF50012F409;
+					};
+					B45A6E152F54CD620003B6DD = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 40E0C9A5244B7EF50012F409;
 					};
 				};
 			};
@@ -122,12 +215,28 @@
 			projectRoot = "";
 			targets = (
 				40E0C9A5244B7EF50012F409 /* LanguageFlag */,
+				B45A6DEA2F54C0170003B6DD /* LanguageFlagTests */,
+				B45A6E152F54CD620003B6DD /* LanguageFlagUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		40E0C9A4244B7EF50012F409 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B45A6DE92F54C0170003B6DD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B45A6E142F54CD620003B6DD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -182,7 +291,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B45A6DE72F54C0170003B6DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B45A6E122F54CD620003B6DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B45A6DF02F54C0170003B6DD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40E0C9A5244B7EF50012F409 /* LanguageFlag */;
+			targetProxy = B45A6DEF2F54C0170003B6DD /* PBXContainerItemProxy */;
+		};
+		B45A6E1D2F54CD620003B6DD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40E0C9A5244B7EF50012F409 /* LanguageFlag */;
+			targetProxy = B45A6E1C2F54CD620003B6DD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		40E0C9B4244B7EF60012F409 /* Debug */ = {
@@ -368,6 +504,110 @@
 			};
 			name = Release;
 		};
+		B45A6DF12F54C0170003B6DD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28VBPU4C4V;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bestcompany.LanguageFlagTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LanguageFlag.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LanguageFlag";
+			};
+			name = Debug;
+		};
+		B45A6DF22F54C0170003B6DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28VBPU4C4V;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bestcompany.LanguageFlagTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LanguageFlag.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LanguageFlag";
+			};
+			name = Release;
+		};
+		B45A6E1F2F54CD620003B6DD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28VBPU4C4V;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bestcompany.LanguageFlagUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = LanguageFlag;
+			};
+			name = Debug;
+		};
+		B45A6E202F54CD620003B6DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28VBPU4C4V;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bestcompany.LanguageFlagUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = LanguageFlag;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -385,6 +625,24 @@
 			buildConfigurations = (
 				40E0C9B7244B7EF60012F409 /* Debug */,
 				40E0C9B8244B7EF60012F409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B45A6DF32F54C0170003B6DD /* Build configuration list for PBXNativeTarget "LanguageFlagTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B45A6DF12F54C0170003B6DD /* Debug */,
+				B45A6DF22F54C0170003B6DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B45A6E1E2F54CD620003B6DD /* Build configuration list for PBXNativeTarget "LanguageFlagUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B45A6E1F2F54CD620003B6DD /* Debug */,
+				B45A6E202F54CD620003B6DD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

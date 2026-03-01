@@ -128,6 +128,35 @@ private extension LanguageWindowController {
                 self?.restartAnimation()
             }
             .store(in: &cancellables)
+        
+        // NEW: Observe animation style changes and show preview
+        preferences.$animationStyle
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.showPreview()
+            }
+            .store(in: &cancellables)
+        
+        // NEW: Observe window size changes and update frame + preview
+        preferences.$windowSize
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateWindowFrame()
+                self?.showPreview()
+            }
+            .store(in: &cancellables)
+        
+        // NEW: Observe display position changes and update frame + preview
+        preferences.$displayPosition
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateWindowFrame()
+                self?.showPreview()
+            }
+            .store(in: &cancellables)
     }
 }
 

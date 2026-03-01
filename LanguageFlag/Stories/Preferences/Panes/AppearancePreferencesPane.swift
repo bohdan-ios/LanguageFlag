@@ -46,9 +46,11 @@ struct AppearancePreferencesPane: View {
 
             HStack {
                 Slider(value: $preferences.opacity, in: 0.5...1.0, step: 0.05)
+                    .accessibilityIdentifier("opacity_slider") // ← Added for UI testing!
 
                 Text(String(format: "%.0f%%", preferences.opacity * 100))
                     .frame(width: 45, alignment: .trailing)
+                    .accessibilityIdentifier("opacity_value")
             }
 
             Text("Transparency of the indicator window")
@@ -80,6 +82,7 @@ struct AppearancePreferencesPane: View {
                 .font(.headline)
 
             Toggle("Reset animation on layout change", isOn: $preferences.resetAnimationOnChange)
+                .accessibilityIdentifier("reset_animation_toggle") // ← Added for UI testing!
 
             Text("When enabled, the animation restarts each time the keyboard layout changes. When disabled, the current animation continues uninterrupted.")
                 .font(.caption)
@@ -94,9 +97,11 @@ struct AppearancePreferencesPane: View {
 
             HStack {
                 Slider(value: $preferences.animationDuration, in: 0.1...1.0, step: 0.1)
+                    .accessibilityIdentifier("animation_duration_slider") // ← Added for UI testing!
 
                 Text(String(format: "%.1fs", preferences.animationDuration))
                     .frame(width: 40, alignment: .trailing)
+                    .accessibilityIdentifier("animation_duration_value")
             }
 
             Text("Duration of show/hide animations")
@@ -109,7 +114,7 @@ struct AppearancePreferencesPane: View {
 // MARK: - Private
 private extension AppearancePreferencesPane {
     
-    func animationStyleButton(for style: AnimationStyle) -> some View {
+    private func animationStyleButton(for style: AnimationStyle) -> some View {
         Button {
             preferences.animationStyle = style
         } label: {
@@ -122,5 +127,7 @@ private extension AppearancePreferencesPane {
                 .cornerRadius(6)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("animation_style_\(style.rawValue.lowercased())") // ← Added for UI testing!
+        .accessibilityLabel(style.description)
     }
 }

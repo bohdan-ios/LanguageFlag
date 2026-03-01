@@ -65,3 +65,6 @@ playground.xcworkspace
 # Accio dependency management
 Dependencies/
 .accio/
+
+# Local AI/Claude settings
+*.local.json

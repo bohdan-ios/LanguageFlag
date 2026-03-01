@@ -72,7 +72,7 @@ final class LayoutAnalytics {
 
     static let shared = LayoutAnalytics()
 
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private let recordsKey = "layoutUsageRecords"
     private let analyticsEnabledKey = "analyticsEnabled"
 
@@ -81,6 +81,17 @@ final class LayoutAnalytics {
     private var currentLayoutStartTime: Date?
 
     private init() {
+        self.defaults = .standard
+        setupDefaultValues()
+    }
+    
+    // Initializer for testing with dependency injection
+    init(defaults: UserDefaults) {
+        self.defaults = defaults
+        setupDefaultValues()
+    }
+    
+    private func setupDefaultValues() {
         // Load analytics enabled preference (default: true)
         if defaults.object(forKey: analyticsEnabledKey) == nil {
             defaults.set(true, forKey: analyticsEnabledKey)

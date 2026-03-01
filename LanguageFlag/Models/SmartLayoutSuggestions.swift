@@ -45,13 +45,24 @@ final class SmartLayoutSuggestions {
 
     static let shared = SmartLayoutSuggestions()
 
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private let appPreferencesKey = "appLayoutPreferences"
     private let timeBasedPatternsKey = "timeBasedPatterns"
     private let enabledKey = "smartSuggestionsEnabled"
     private let minUsageForSuggestion = 3 // Minimum times used before suggesting
 
     private init() {
+        self.defaults = .standard
+        setupDefaultValues()
+    }
+    
+    // Initializer for testing with dependency injection
+    init(defaults: UserDefaults) {
+        self.defaults = defaults
+        setupDefaultValues()
+    }
+    
+    private func setupDefaultValues() {
         // Initialize with smart suggestions enabled by default
         if defaults.object(forKey: enabledKey) == nil {
             defaults.set(true, forKey: enabledKey)
