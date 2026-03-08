@@ -23,7 +23,10 @@ class BaseWindowAnimation {
     /// - Parameter window: The window to set up
     func setupWindow(_ window: NSWindow) {
         // Deep Cleanup of previous state
-        if let contentView = window.contentView, let layer = contentView.layer {
+        if
+            let contentView = window.contentView,
+            let layer = contentView.layer
+        {
             layer.filters = nil
             layer.mask = nil
             layer.removeAllAnimations()

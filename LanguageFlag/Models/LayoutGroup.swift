@@ -88,8 +88,10 @@ final class LayoutGroupManager {
             return group
         }
         set {
-            if let newValue = newValue,
-               let encoded = try? JSONEncoder().encode(newValue) {
+            if
+                let newValue = newValue,
+                let encoded = try? JSONEncoder().encode(newValue)
+            {
                 defaults.set(encoded, forKey: activeGroupKey)
                 NotificationCenter.default.post(name: .layoutGroupChanged, object: newValue)
             } else {

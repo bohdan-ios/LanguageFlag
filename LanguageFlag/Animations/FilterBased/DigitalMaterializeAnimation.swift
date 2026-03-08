@@ -8,8 +8,7 @@ class DigitalMaterializeAnimation: BaseWindowAnimation, WindowAnimation {
         setupWindow(window)
         
         guard
-            let layer = prepareLayer(from: window),
-            let contentView = window.contentView
+            let layer = prepareLayer(from: window)
         else {
             completion?()
             return

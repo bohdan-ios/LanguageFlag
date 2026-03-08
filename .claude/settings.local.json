@@ -45,7 +45,8 @@
       "Bash(git add index.html)",
       "Bash(gh release upload v1.1.0 /Users/lion/Projects/LanguageFlag/dist/LanguageFlag.zip)",
       "Bash(git add index.html sitemap.xml)",
-      "Bash(git rm --cached .claude/settings.local.json)"
+      "Bash(git rm --cached .claude/settings.local.json)",
+      "Bash(grep -v \"^$\")"
     ]
   }
 }

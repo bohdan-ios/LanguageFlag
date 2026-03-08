@@ -190,22 +190,28 @@ final class UserPreferences: ObservableObject {
         self.resetAnimationOnChange = defaults.object(forKey: Keys.resetAnimationOnChange) as? Bool ?? true
 
         // Decode complex types
-        if let data = defaults.data(forKey: Keys.displayPosition),
-           let decoded = try? JSONDecoder().decode(DisplayPosition.self, from: data) {
+        if
+            let data = defaults.data(forKey: Keys.displayPosition),
+            let decoded = try? JSONDecoder().decode(DisplayPosition.self, from: data)
+        {
             self.displayPosition = decoded
         } else {
             self.displayPosition = .bottomCenter
         }
 
-        if let data = defaults.data(forKey: Keys.windowSize),
-           let decoded = try? JSONDecoder().decode(WindowSize.self, from: data) {
+        if
+            let data = defaults.data(forKey: Keys.windowSize),
+            let decoded = try? JSONDecoder().decode(WindowSize.self, from: data)
+        {
             self.windowSize = decoded
         } else {
             self.windowSize = .medium
         }
 
-        if let data = defaults.data(forKey: Keys.animationStyle),
-           let decoded = try? JSONDecoder().decode(AnimationStyle.self, from: data) {
+        if
+            let data = defaults.data(forKey: Keys.animationStyle),
+            let decoded = try? JSONDecoder().decode(AnimationStyle.self, from: data)
+        {
             self.animationStyle = decoded
         } else {
             self.animationStyle = .fade

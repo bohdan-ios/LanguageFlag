@@ -24,6 +24,7 @@ disabled_rules:
   - trailing_whitespace
   - line_length
   - trailing_comma
+  - opening_brace
 
 # File Settings
 included:
@@ -84,6 +85,23 @@ vertical_whitespace_closing_braces:
 
 # Custom Rules
 custom_rules:
+  # Multi-condition if/guard: all conditions on one line with opening brace
+  # Bad:  if let x = x, let y = y {
+  # Good: if\n    let x = x,\n    let y = y\n{
+  multiline_if_conditions_single_line:
+    name: "Multiline If Conditions (single line)"
+    regex: '^\s*(?:if|guard)[ \t]+(?:let|var)\s+\w[^{\n]*,[ \t]*(?:let|var|case)\s+\w[^{\n]*\{'
+    message: "Multiple if/guard conditions must each be on their own line with the opening brace on a new line"
+    severity: warning
+
+  # Multi-condition if/guard: if keyword is inline with first condition, more conditions follow
+  # Bad:  if let x = x,\n       let y = y {
+  # Good: if\n    let x = x,\n    let y = y\n{
+  multiline_if_conditions_leading:
+    name: "Multiline If Conditions (leading)"
+    regex: '^\s*(?:if|guard)[ \t]+(?:let|var)\s+\w[^{\n]*,\s*$'
+    message: "When if/guard has multiple conditions, the keyword should be alone on its line and the opening brace on its own line"
+    severity: warning
   # One blank line after class/struct/enum/protocol declaration
   vertical_whitespace_after_type_declaration:
     name: "Vertical Whitespace After Type Declaration"

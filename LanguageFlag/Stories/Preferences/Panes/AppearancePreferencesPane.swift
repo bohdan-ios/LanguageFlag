@@ -33,7 +33,8 @@ struct AppearancePreferencesPane: View {
 
                 animationBehaviorSection
 
-                Spacer().frame(height: 20)
+                Spacer()
+                    .frame(height: 16)
             }
             .padding()
         }

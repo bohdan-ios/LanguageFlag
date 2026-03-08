@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Main preferences view - orchestrates sidebar navigation and content panes
+/// Main preferences view - tab-based navigation across preference panes
 struct PreferencesView: View {
 
     // MARK: - Variables
@@ -10,20 +10,21 @@ struct PreferencesView: View {
 
     // MARK: - Views
     var body: some View {
-        HStack(spacing: 0) {
-            SidebarMenu(selectedPane: $selectedPane)
-
-            Divider()
-
-            paneContent
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        TabView(selection: $selectedPane) {
+            ForEach(PreferencePane.availableCases) { pane in
+                paneContent(for: pane)
+                    .tabItem {
+                        Label(pane.rawValue, systemImage: pane.icon)
+                    }
+                    .tag(pane)
+            }
         }
         .frame(width: 809, height: 500)
     }
 
     @ViewBuilder
-    private var paneContent: some View {
-        switch selectedPane {
+    private func paneContent(for pane: PreferencePane) -> some View {
+        switch pane {
         case .general:
             GeneralPreferencesPane(preferences: preferences)
 
@@ -34,23 +35,23 @@ struct PreferencesView: View {
             #if FEATURE_SHORTCUTS
             ShortcutsPreferencesPane(preferences: preferences)
             #else
-            GeneralPreferencesPane(preferences: preferences)
+            EmptyView()
             #endif
 
         case .analytics:
             #if FEATURE_ANALYTICS
             AnalyticsPreferencesPane()
             #else
-            GeneralPreferencesPane(preferences: preferences)
+            EmptyView()
             #endif
 
         case .groups:
             #if FEATURE_GROUPS
             GroupsPreferencesPane()
             #else
-            GeneralPreferencesPane(preferences: preferences)
+            EmptyView()
             #endif
-        
+
         case .about:
             AboutPreferencesPane()
         }

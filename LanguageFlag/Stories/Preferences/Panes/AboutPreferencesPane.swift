@@ -64,7 +64,9 @@ struct AboutPreferencesPane: View {
             // Links
             HStack(spacing: 20) {
                 Button {
-                    NSWorkspace.shared.open(URL(string: "https://bohdan-ios.github.io/languageflag-website/")!)
+                    if let url = URL(string: "https://bohdan-ios.github.io/languageflag-website/") {
+                        NSWorkspace.shared.open(url)
+                    }
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "link.circle")
@@ -74,7 +76,9 @@ struct AboutPreferencesPane: View {
                 .buttonStyle(.link)
 
                 Button {
-                    NSWorkspace.shared.open(URL(string: "https://github.com/bohdan-ios/LanguageFlag")!)
+                    if let url = URL(string: "https://github.com/bohdan-ios/LanguageFlag") {
+                        NSWorkspace.shared.open(url)
+                    }
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left.forwardslash.chevron.right")

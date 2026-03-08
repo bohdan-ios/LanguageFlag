@@ -92,12 +92,12 @@ struct GeneralPreferencesPane: View {
                     step: 1
                 )
 
-                Text("Large")
+                Text("Extra Large")
                     .font(.caption)
                     .foregroundColor(.secondary)
 
                 Text(preferences.windowSize.description)
-                    .frame(width: 60, alignment: .trailing)
+                    .frame(width: 100, alignment: .trailing)
                     .foregroundColor(.primary)
             }
 

@@ -80,10 +80,10 @@ final class AnimationPreviewUITests: XCTestCase {
     func testNavigateToAppearanceTab() throws {
         openPreferences()
         
-        // Click on Appearance in sidebar
-        let appearanceButton = app.buttons["Appearance"]
-        XCTAssertTrue(appearanceButton.exists, "Appearance button should exist")
-        
+        // Click on Appearance tab
+        let appearanceButton = app.tabs["Appearance"]
+        XCTAssertTrue(appearanceButton.waitForExistence(timeout: 3), "Appearance button should exist")
+
         appearanceButton.click()
         
         // Verify Appearance content is shown
@@ -286,8 +286,8 @@ final class AnimationPreviewUITests: XCTestCase {
     }
     
     private func navigateToAppearanceTab() {
-        // Click Appearance in sidebar
-        let appearanceButton = app.buttons["Appearance"]
+        // Click Appearance tab
+        let appearanceButton = app.tabs["Appearance"]
         if appearanceButton.waitForExistence(timeout: 2) {
             appearanceButton.click()
         }
