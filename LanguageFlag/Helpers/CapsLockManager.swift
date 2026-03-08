@@ -5,9 +5,17 @@ class CapsLockManager {
 
     // MARK: - Variables
     private(set) var isCapsLockEnabled: Bool = false
-    
+    private var eventMonitor: Any?
+
     // MARK: - Init
     init() {
+        setupCapsLockObserver()
+    }
+
+    deinit {
+        if let monitor = eventMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
     }
     
     func isCapsLockOn() -> Bool {
@@ -22,8 +30,7 @@ extension CapsLockManager {
     
     /// Sets up an observer to monitor Caps Lock state changes.
     private func setupCapsLockObserver() {
-        let eventMask = NSEvent.EventTypeMask.flagsChanged
-        NSEvent.addGlobalMonitorForEvents(matching: eventMask) { [weak self] event in
+        eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
             self?.handleCapsLockStateChange(event: event)
         }
     }
@@ -40,7 +47,8 @@ extension CapsLockManager {
     
     /// Notifies observers about the Caps Lock state change.
     private func notifyCapsLockStateChanged(newCapsLockEnabled: Bool) {
-        NotificationCenter.default.post(name: .capsLockChanged,
-                                        object: newCapsLockEnabled)
+        guard UserPreferences.shared.showCapsLockIndicator else { return }
+
+        NotificationCenter.default.post(name: .capsLockChanged, object: newCapsLockEnabled)
     }
 }

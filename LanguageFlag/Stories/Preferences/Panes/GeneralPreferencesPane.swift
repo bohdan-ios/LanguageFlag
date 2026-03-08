@@ -33,6 +33,8 @@ struct GeneralPreferencesPane: View {
 
                 menuBarToggle
 
+                capsLockToggle
+
                 Spacer().frame(height: 20)
 
                 resetButton
@@ -110,6 +112,11 @@ struct GeneralPreferencesPane: View {
     private var menuBarToggle: some View {
         Toggle("Show current layout in menu bar", isOn: $preferences.showInMenuBar)
             .help("Display the current keyboard layout in the menu bar")
+    }
+
+    private var capsLockToggle: some View {
+        Toggle("Show indicator on Caps Lock change", isOn: $preferences.showCapsLockIndicator)
+            .help("Show the language indicator window when Caps Lock is toggled")
     }
     
     private var resetButton: some View {

@@ -97,6 +97,7 @@ final class UserPreferences: ObservableObject {
         static let showShortcuts = "showShortcuts"
         static let showInMenuBar = "showInMenuBar"
         static let resetAnimationOnChange = "resetAnimationOnChange"
+        static let showCapsLockIndicator = "showCapsLockIndicator"
     }
 
     // MARK: - Published Properties
@@ -148,6 +149,10 @@ final class UserPreferences: ObservableObject {
         didSet { defaults.set(resetAnimationOnChange, forKey: Keys.resetAnimationOnChange) }
     }
 
+    @Published var showCapsLockIndicator: Bool {
+        didSet { defaults.set(showCapsLockIndicator, forKey: Keys.showCapsLockIndicator) }
+    }
+
     // MARK: - Initialization
     private init() {
         self.defaults = .standard
@@ -157,13 +162,14 @@ final class UserPreferences: ObservableObject {
         self.showShortcuts = false
         self.showInMenuBar = false
         self.resetAnimationOnChange = true
+        self.showCapsLockIndicator = false
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
-        
+
         loadSavedPreferences()
     }
-    
+
     // Initializer for testing with dependency injection
     init(defaults: UserDefaults) {
         self.defaults = defaults
@@ -173,10 +179,11 @@ final class UserPreferences: ObservableObject {
         self.showShortcuts = false
         self.showInMenuBar = false
         self.resetAnimationOnChange = true
+        self.showCapsLockIndicator = false
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
-        
+
         loadSavedPreferences()
     }
     
@@ -188,6 +195,7 @@ final class UserPreferences: ObservableObject {
         self.showShortcuts = defaults.object(forKey: Keys.showShortcuts) as? Bool ?? false
         self.showInMenuBar = defaults.object(forKey: Keys.showInMenuBar) as? Bool ?? false
         self.resetAnimationOnChange = defaults.object(forKey: Keys.resetAnimationOnChange) as? Bool ?? true
+        self.showCapsLockIndicator = defaults.object(forKey: Keys.showCapsLockIndicator) as? Bool ?? false
 
         // Decode complex types
         if
@@ -228,5 +236,6 @@ final class UserPreferences: ObservableObject {
         showShortcuts = false
         showInMenuBar = false
         resetAnimationOnChange = true
+        showCapsLockIndicator = false
     }
 }

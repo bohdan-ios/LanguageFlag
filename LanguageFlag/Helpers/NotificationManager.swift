@@ -4,6 +4,9 @@ import Combine
 
 class NotificationManager {
 
+    // MARK: - Variables
+    private let capsLockManager = CapsLockManager()
+
     // MARK: - Init
     init() {
         setupObservers()
