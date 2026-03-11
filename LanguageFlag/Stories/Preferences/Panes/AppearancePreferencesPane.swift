@@ -40,17 +40,23 @@ struct AppearancePreferencesPane: View {
         }
     }
     
+    private let opacitySteps: [Double] = stride(from: 0.5, through: 1.0, by: 0.1).map { $0 }
+
     private var opacitySection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Opacity")
                 .font(.headline)
 
-            HStack {
-                Slider(value: $preferences.opacity, in: 0.5...1.0, step: 0.05)
-                    .accessibilityIdentifier("opacity_slider") // ← Added for UI testing!
+            HStack(alignment: .top, spacing: 8) {
+                VStack(spacing: 2) {
+                    Slider(value: $preferences.opacity, in: 0.5...1.0, step: 0.05)
+                        .accessibilityIdentifier("opacity_slider")
+
+                    SliderTickLabels(labels: opacitySteps.map { String(format: "%.0f%%", $0 * 100) })
+                }
 
                 Text(String(format: "%.0f%%", preferences.opacity * 100))
-                    .frame(width: 45, alignment: .trailing)
+                    .frame(width: 95, alignment: .trailing)
                     .accessibilityIdentifier("opacity_value")
             }
 
@@ -82,26 +88,44 @@ struct AppearancePreferencesPane: View {
             Text("Animation Behavior")
                 .font(.headline)
 
-            Toggle("Reset animation on layout change", isOn: $preferences.resetAnimationOnChange)
-                .accessibilityIdentifier("reset_animation_toggle") // ← Added for UI testing!
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Reset animation on layout change")
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text("When enabled, the animation restarts each time the keyboard layout changes. When disabled, the current animation continues uninterrupted.")
-                .font(.caption)
-                .foregroundColor(.secondary)
+                    Text("When enabled, the animation restarts each time the keyboard layout changes. When disabled, the current animation continues uninterrupted.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Toggle("Reset animation on layout change", isOn: $preferences.resetAnimationOnChange)
+                    .toggleStyle(.switch)
+                    .labelsHidden()
+                    .accessibilityLabel("Reset animation on layout change")
+                    .accessibilityIdentifier("reset_animation_toggle")
+            }
         }
     }
+
+    private let animationSpeedSteps: [Double] = stride(from: 0.1, through: 1.0, by: 0.1).map { $0 }
 
     private var animationSpeedSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Animation Speed")
                 .font(.headline)
 
-            HStack {
-                Slider(value: $preferences.animationDuration, in: 0.1...1.0, step: 0.1)
-                    .accessibilityIdentifier("animation_duration_slider") // ← Added for UI testing!
+            HStack(alignment: .top, spacing: 8) {
+                VStack(spacing: 2) {
+                    Slider(value: $preferences.animationDuration, in: 0.1...1.0, step: 0.1)
+                        .accessibilityIdentifier("animation_duration_slider")
+
+                    SliderTickLabels(labels: animationSpeedSteps.map { String(format: "%.1f", $0) })
+                }
 
                 Text(String(format: "%.1fs", preferences.animationDuration))
-                    .frame(width: 40, alignment: .trailing)
+                    .frame(width: 95, alignment: .trailing)
                     .accessibilityIdentifier("animation_duration_value")
             }
 

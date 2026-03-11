@@ -68,6 +68,9 @@ private extension LanguageWindowController {
 
     @objc
     func capsLockChanged(notification: NSNotification) {
+        print("[WindowController] capsLockChanged received — object: \(String(describing: notification.object))")
+        guard notification.object is Bool else { return }
+
         hideTask?.cancel()
         runShowWindowAnimation()
         scheduleHide()
@@ -82,7 +85,9 @@ private extension LanguageWindowController {
             print("❌ No screen rect provided")
             return
         }
-        window = LanguageWindow(contentRect: .zero)
+        let win = LanguageWindow(contentRect: .zero)
+        win.setAccessibilityIdentifier("LanguageIndicatorWindow")
+        window = win
     }
 
     func configureContentViewController() {
@@ -187,6 +192,7 @@ private extension LanguageWindowController {
 
     func scheduleHide() {
         let nanoseconds = UInt64(preferences.displayDuration * 1_000_000_000)
+        let animationNanoseconds = UInt64((preferences.animationDuration + 0.1) * 1_000_000_000)
 
         hideTask = Task { [weak self] in
             guard let self else { return }
@@ -198,6 +204,17 @@ private extension LanguageWindowController {
             }
 
             runHideWindowAnimation()
+
+            // After the animation finishes, remove the window from screen so it
+            // disappears from the accessibility tree (needed for UI tests and to
+            // prevent hover effects on invisible borderless windows).
+            do {
+                try await Task.sleep(nanoseconds: animationNanoseconds)
+            } catch {
+                return
+            }
+
+            window?.orderOut(nil)
         }
     }
 

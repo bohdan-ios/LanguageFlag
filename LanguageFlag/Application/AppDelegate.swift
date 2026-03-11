@@ -16,11 +16,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarManager: StatusBarManager?
     private let screenManager: ScreenManager
     private let notificationManager: NotificationManager
+    private let capsLockManager: CapsLockManager
 
     // MARK: - Initialization
     override init() {
         self.screenManager = ScreenManager()
         self.notificationManager = NotificationManager()
+        self.capsLockManager = CapsLockManager()
 
         super.init()
     }

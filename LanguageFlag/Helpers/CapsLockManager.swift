@@ -9,6 +9,7 @@ class CapsLockManager {
 
     // MARK: - Init
     init() {
+        isCapsLockEnabled = CGEventSource.flagsState(.combinedSessionState).contains(.maskAlphaShift)
         setupCapsLockObserver()
     }
 
@@ -34,7 +35,7 @@ extension CapsLockManager {
             self?.handleCapsLockStateChange(event: event)
         }
     }
-    
+
     /// Handles Caps Lock state changes.
     private func handleCapsLockStateChange(event: NSEvent) {
         let capsLockEnabled = isCapsLockOn()
@@ -44,7 +45,7 @@ extension CapsLockManager {
             notifyCapsLockStateChanged(newCapsLockEnabled: capsLockEnabled)
         }
     }
-    
+
     /// Notifies observers about the Caps Lock state change.
     private func notifyCapsLockStateChanged(newCapsLockEnabled: Bool) {
         guard UserPreferences.shared.showCapsLockIndicator else { return }

@@ -42,6 +42,7 @@ class LanguageViewController: NSViewController {
         label.alignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         label.cell?.wraps = true
+        label.setAccessibilityIdentifier("bigLabel")
         return label
     }()
 
@@ -57,6 +58,7 @@ class LanguageViewController: NSViewController {
         label.font = .systemFont(ofSize: UserPreferences.shared.windowSize.fontSizes.label)
         label.alignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.setAccessibilityIdentifier("languageNameLabel")
         return label
     }()
 
@@ -106,16 +108,20 @@ extension LanguageViewController {
     
     @objc
     private func capsLockChanged(notification: NSNotification) {
-        guard
-            let newBool = notification.object as? Bool,
-            let previousModel
-        else {
-            return
+        guard let newBool = notification.object as? Bool else { return }
+
+        let layout: TISInputSource
+        if let previous = previousModel {
+            changeFlagImage(keyboardLayout: previous.keyboardLayout,
+                            isCapsLockEnabled: newBool,
+                            iconRef: previous.iconRef)
+        } else {
+            // No layout change has occurred yet — use the current system layout
+            layout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
+            changeFlagImage(keyboardLayout: layout.name,
+                            isCapsLockEnabled: newBool,
+                            iconRef: layout.iconRef)
         }
-        
-        changeFlagImage(keyboardLayout: previousModel.keyboardLayout,
-                        isCapsLockEnabled: newBool,
-                        iconRef: previousModel.iconRef)
     }
 }
 

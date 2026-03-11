@@ -128,8 +128,6 @@ private extension StatusBarManager {
         #if FEATURE_ANALYTICS
         analytics.startTracking(layout: model.keyboardLayout)
         #endif
-
-        menuBuilder.updateRecentLayouts(with: model.keyboardLayout)
     }
 
     @objc

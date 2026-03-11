@@ -4,9 +4,6 @@ import Carbon
 
 final class StatusBarMenuBuilder {
 
-    private var recentLayouts: [String] = []
-    private let maxRecentLayouts = 5
-
     // swiftlint:disable function_body_length
     /// Builds the menu for the status bar.
     /// - Parameters:
@@ -30,20 +27,6 @@ final class StatusBarMenuBuilder {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Recent Layouts
-        if !recentLayouts.isEmpty {
-            let recentMenuItem = menu.addItem(withTitle: "Recent Layouts", action: nil, keyEquivalent: "")
-            recentMenuItem.isEnabled = false
-
-            for layout in recentLayouts {
-                let item = menu.addItem(withTitle: "  \(layout)", action: #selector(StatusBarManager.switchToLayout(_:)), keyEquivalent: "")
-                item.representedObject = layout
-                item.target = target
-            }
-
-            menu.addItem(NSMenuItem.separator())
-        }
-
         // Layout Groups
         #if FEATURE_GROUPS
         let groups = LayoutGroupManager.shared.getGroups()
@@ -65,19 +48,14 @@ final class StatusBarMenuBuilder {
         #endif
 
         // All Available Layouts
-        let layoutsMenu = NSMenu()
         let availableLayouts = getAvailableLayouts()
 
         for layout in availableLayouts {
-            let item = NSMenuItem(title: layout, action: #selector(StatusBarManager.switchToLayout(_:)), keyEquivalent: "")
+            let item = menu.addItem(withTitle: layout, action: #selector(StatusBarManager.switchToLayout(_:)), keyEquivalent: "")
             item.representedObject = layout
             item.target = target
             item.state = layout == currentLayout ? .on : .off
-            layoutsMenu.addItem(item)
         }
-
-        let layoutsMenuItem = menu.addItem(withTitle: "All Layouts", action: nil, keyEquivalent: "")
-        menu.setSubmenu(layoutsMenu, for: layoutsMenuItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -110,18 +88,6 @@ final class StatusBarMenuBuilder {
     }
     // swiftlint:enable function_body_length
 
-    func updateRecentLayouts(with layout: String) {
-        // Remove if already exists
-        recentLayouts.removeAll { $0 == layout }
-
-        // Add to front
-        recentLayouts.insert(layout, at: 0)
-
-        // Keep only max recent
-        if recentLayouts.count > maxRecentLayouts {
-            recentLayouts = Array(recentLayouts.prefix(maxRecentLayouts))
-        }
-    }
 
     private func getAvailableLayouts() -> [String] {
         let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as? [TISInputSource] ?? []

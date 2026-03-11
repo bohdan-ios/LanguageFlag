@@ -14,6 +14,7 @@ extension TISInputSource {
         guard let cfType = TISGetInputSourceProperty(self, key) else {
             return nil
         }
+
         return Unmanaged<AnyObject>.fromOpaque(cfType).takeUnretainedValue()
     }
 
@@ -45,6 +46,7 @@ extension TISInputSource {
         guard let cfType = TISGetInputSourceProperty(self, kTISPropertyIconRef) else {
             return nil
         }
+
         return OpaquePointer(cfType) as IconRef?
     }
 }
