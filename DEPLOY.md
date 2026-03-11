@@ -49,7 +49,35 @@ This kicks off the release workflow which:
 
 ---
 
-## 4. Verify
+## 4. Monitor & Manage Release CI
+
+```bash
+# List recent release workflow runs
+gh run list --workflow=release.yml -L 5
+
+# Watch a run in real-time
+gh run watch
+
+# View logs of a failed run
+gh run view <RUN_ID> --log-failed
+
+# Re-run a failed release
+gh run rerun <RUN_ID>
+```
+
+### Re-trigger a release (delete & recreate tag)
+
+```bash
+git tag -d v1.3
+git push origin :refs/tags/v1.3
+git tag v1.3
+git push origin main --force
+git push origin v1.3
+```
+
+---
+
+## 5. Verify
 
 - Check [GitHub Releases](https://github.com/bohdan-ios/LanguageFlag/releases) for the new release
 - Verify Homebrew: `brew update && brew info languageflag`

@@ -9,6 +9,8 @@ jobs:
   release:
     name: Build & Release
     runs-on: macos-15
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -17,26 +19,22 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app
 
-      - name: Archive
+      - name: Build
         run: |
-          xcodebuild archive \
+          xcodebuild build \
             -project LanguageFlag.xcodeproj \
             -scheme LanguageFlag \
             -configuration Release \
-            -archivePath build/LanguageFlag.xcarchive \
-            CODE_SIGN_IDENTITY="-" \
+            CONFIGURATION_BUILD_DIR=$(pwd)/build/app \
+            CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_ENTITLEMENTS=
-
-      - name: Copy .app
-        run: |
-          cp -R \
-            build/LanguageFlag.xcarchive/Products/Applications/LanguageFlag.app \
-            build/LanguageFlag.app
+            CODE_SIGNING_ALLOWED=NO
 
       - name: Sign (ad-hoc)
-        run: codesign --force --deep --sign - build/LanguageFlag.app
+        run: codesign --force --deep --sign - build/app/LanguageFlag.app
+
+      - name: Prepare
+        run: mv build/app/LanguageFlag.app build/LanguageFlag.app
 
       - name: Zip
         run: |
