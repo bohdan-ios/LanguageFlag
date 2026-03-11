@@ -19,7 +19,8 @@ struct PreferencesView: View {
                     .tag(pane)
             }
         }
-        .frame(width: 809, height: 500)
+        .padding(.top, 8)
+        .frame(width: 817, height: 505)
     }
 
     @ViewBuilder
