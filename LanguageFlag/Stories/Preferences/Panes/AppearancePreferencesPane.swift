@@ -32,9 +32,6 @@ struct AppearancePreferencesPane: View {
                 Divider()
 
                 animationBehaviorSection
-
-                Spacer()
-                    .frame(height: 16)
             }
             .padding()
         }

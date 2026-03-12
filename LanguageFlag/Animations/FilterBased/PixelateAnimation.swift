@@ -21,10 +21,6 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         let animation = createAnimation(
             keyPath: "filters.CIPixellate.inputScale",
@@ -32,6 +28,13 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
             to: 1.0,
             duration: duration
         )
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+        animation.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(animation, forKey: "pixelate")
         
         CATransaction.commit()
@@ -54,10 +57,6 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         let animation = createAnimation(
             keyPath: "filters.CIPixellate.inputScale",
@@ -66,6 +65,13 @@ class PixelateAnimation: BaseWindowAnimation, WindowAnimation {
             duration: duration,
             timing: AnimationTiming.easeIn
         )
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+        animation.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(animation, forKey: "pixelate")
         
         CATransaction.commit()

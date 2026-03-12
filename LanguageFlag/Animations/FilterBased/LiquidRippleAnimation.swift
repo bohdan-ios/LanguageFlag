@@ -25,15 +25,16 @@ class LiquidRippleAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate splash radius (150 -> 0)
         let splashAnim = createAnimation(keyPath: "filters.CICircleSplashDistortion.inputRadius", from: 150.0, to: 0.0, duration: duration)
         splashAnim.fillMode = .forwards
         splashAnim.isRemovedOnCompletion = false
+        splashAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(splashAnim, forKey: "splash")
         
         CATransaction.commit()
@@ -60,15 +61,16 @@ class LiquidRippleAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate splash radius (0 -> 150)
         let splashAnim = createAnimation(keyPath: "filters.CICircleSplashDistortion.inputRadius", from: 0.0, to: 150.0, duration: duration)
         splashAnim.fillMode = .forwards
         splashAnim.isRemovedOnCompletion = false
+        splashAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(splashAnim, forKey: "splash")
         
         CATransaction.commit()

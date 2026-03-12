@@ -1,4 +1,5 @@
 import SwiftUI
+import LaunchAtLogin
 
 /// General preferences pane for display duration, position, size, and menu bar settings
 struct GeneralPreferencesPane: View {
@@ -32,9 +33,7 @@ struct GeneralPreferencesPane: View {
 
                 Divider()
 
-                menuBarToggle
-
-                capsLockToggle
+                indicatorBehaviorSection
 
                 Spacer()
                     .frame(height: 20)
@@ -113,33 +112,75 @@ struct GeneralPreferencesPane: View {
         }
     }
     
-    private var menuBarToggle: some View {
-        HStack {
-            Text("Show current layout in menu bar")
+    private var indicatorBehaviorSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Indicator Behavior")
+                .font(.headline)
 
-            Spacer()
+            VStack(alignment: .leading, spacing: 12) {
+                // Menu Bar Toggle
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Show current layout in menu bar")
+                        Text("Display the current keyboard layout in the macOS menu bar.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Toggle("Show current layout in menu bar", isOn: $preferences.showInMenuBar)
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .accessibilityIdentifier("menuBarToggle")
+                }
 
-            Toggle("Show current layout in menu bar", isOn: $preferences.showInMenuBar)
-                .toggleStyle(.switch)
-                .labelsHidden()
-                .accessibilityLabel("Show current layout in menu bar")
-                .accessibilityIdentifier("menuBarToggle")
-                .help("Display the current keyboard layout in the menu bar")
-        }
-    }
+                // Caps Lock Toggle
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Show indicator on Caps Lock change")
+                        Text("Show the language window when Caps Lock is toggled.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Toggle("Show indicator on Caps Lock change", isOn: $preferences.showCapsLockIndicator)
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .accessibilityIdentifier("capsLockToggle")
+                }
 
-    private var capsLockToggle: some View {
-        HStack {
-            Text("Show indicator on Caps Lock change")
+                // Bypass Click Toggle
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Bypass click")
+                        Text("When enabled, clicks on the language window pass through to the window underneath.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Toggle("Bypass click", isOn: $preferences.bypassClick)
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .accessibilityIdentifier("bypassClickToggle")
+                }
 
-            Spacer()
+                // Launch at Login Toggle
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Launch at login")
 
-            Toggle("Show indicator on Caps Lock change", isOn: $preferences.showCapsLockIndicator)
-                .toggleStyle(.switch)
-                .labelsHidden()
-                .accessibilityLabel("Show indicator on Caps Lock change")
-                .accessibilityIdentifier("capsLockToggle")
-                .help("Show the language indicator window when Caps Lock is toggled")
+                        Text("Automatically open the app when you log in to your Mac.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    LaunchAtLogin.Toggle()
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .accessibilityIdentifier("launchAtLoginToggle")
+                }
+            }
         }
     }
     

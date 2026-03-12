@@ -25,14 +25,15 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         let morphAnim = createAnimation(keyPath: "filters.CIMorphologyMaximum.inputRadius", from: 10.0, to: 0.0, duration: duration)
         morphAnim.fillMode = .forwards
         morphAnim.isRemovedOnCompletion = false
+        morphAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(morphAnim, forKey: "morph")
         
         let blurAnim = createAnimation(keyPath: "filters.CIGaussianBlur.inputRadius", from: 15.0, to: 0.0, duration: duration)
@@ -70,14 +71,15 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         let morphAnim = createAnimation(keyPath: "filters.CIMorphologyMaximum.inputRadius", from: 0.0, to: 10.0, duration: duration)
         morphAnim.fillMode = .forwards
         morphAnim.isRemovedOnCompletion = false
+        morphAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(morphAnim, forKey: "morph")
         
         let blurAnim = createAnimation(keyPath: "filters.CIGaussianBlur.inputRadius", from: 0.0, to: 15.0, duration: duration)

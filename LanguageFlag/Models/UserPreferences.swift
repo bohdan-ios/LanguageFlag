@@ -98,6 +98,7 @@ final class UserPreferences: ObservableObject {
         static let showInMenuBar = "showInMenuBar"
         static let resetAnimationOnChange = "resetAnimationOnChange"
         static let showCapsLockIndicator = "showCapsLockIndicator"
+        static let bypassClick = "bypassClick"
     }
 
     // MARK: - Published Properties
@@ -152,6 +153,10 @@ final class UserPreferences: ObservableObject {
     @Published var showCapsLockIndicator: Bool {
         didSet { defaults.set(showCapsLockIndicator, forKey: Keys.showCapsLockIndicator) }
     }
+    
+    @Published var bypassClick: Bool {
+        didSet { defaults.set(bypassClick, forKey: Keys.bypassClick) }
+    }
 
     // MARK: - Initialization
     private init() {
@@ -163,6 +168,7 @@ final class UserPreferences: ObservableObject {
         self.showInMenuBar = false
         self.resetAnimationOnChange = true
         self.showCapsLockIndicator = false
+        self.bypassClick = true
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
@@ -180,6 +186,7 @@ final class UserPreferences: ObservableObject {
         self.showInMenuBar = false
         self.resetAnimationOnChange = true
         self.showCapsLockIndicator = false
+        self.bypassClick = true
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
@@ -196,6 +203,7 @@ final class UserPreferences: ObservableObject {
         self.showInMenuBar = defaults.object(forKey: Keys.showInMenuBar) as? Bool ?? false
         self.resetAnimationOnChange = defaults.object(forKey: Keys.resetAnimationOnChange) as? Bool ?? true
         self.showCapsLockIndicator = defaults.object(forKey: Keys.showCapsLockIndicator) as? Bool ?? false
+        self.bypassClick = defaults.object(forKey: Keys.bypassClick) as? Bool ?? true
 
         // Decode complex types
         if
@@ -237,5 +245,6 @@ final class UserPreferences: ObservableObject {
         showInMenuBar = false
         resetAnimationOnChange = true
         showCapsLockIndicator = false
+        bypassClick = true
     }
 }

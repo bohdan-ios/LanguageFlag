@@ -15,6 +15,11 @@ class ElasticAnimation: BaseWindowAnimation, WindowAnimation {
             return
         }
 
+        let originalFrame = layer.frame
+        
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.0) // Bottom middle
+        layer.frame = originalFrame
+
         let animation = CAKeyframeAnimation(keyPath: "transform.scale")
         animation.duration = duration
         // Elastic overshoot values
@@ -28,13 +33,19 @@ class ElasticAnimation: BaseWindowAnimation, WindowAnimation {
             AnimationTiming.easeInOut
         ]
         
-        layer.add(animation, forKey: "elastic")
+        CATransaction.begin()
         
-        animateAlpha(contentView: contentView, from: 0.0, to: 1.0, duration: duration * 0.3)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+        animation.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+            layer.frame = originalFrame
             completion?()
         }
+        
+        layer.add(animation, forKey: "elastic")
+        CATransaction.commit()
+        
+        animateAlpha(contentView: contentView, from: 0.0, to: 1.0, duration: duration * 0.3)
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
@@ -46,6 +57,11 @@ class ElasticAnimation: BaseWindowAnimation, WindowAnimation {
             return
         }
 
+        let originalFrame = layer.frame
+        
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.0) // Bottom middle
+        layer.frame = originalFrame
+
         let animation = CAKeyframeAnimation(keyPath: "transform.scale")
         animation.duration = duration
         animation.values = [1.0, 1.1, 0.0]
@@ -55,12 +71,18 @@ class ElasticAnimation: BaseWindowAnimation, WindowAnimation {
             AnimationTiming.easeIn
         ]
         
-        layer.add(animation, forKey: "elastic")
+        CATransaction.begin()
         
-        animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+        animation.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+            layer.frame = originalFrame
             completion?()
         }
+        
+        layer.add(animation, forKey: "elastic")
+        CATransaction.commit()
+        
+        animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration)
     }
 }

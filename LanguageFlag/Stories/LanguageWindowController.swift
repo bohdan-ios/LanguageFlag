@@ -44,9 +44,9 @@ final class LanguageWindowController: NSWindowController {
     // MARK: - Public Methods
 
     /// Shows a preview of the window with current preferences
-    func showPreview() {
+    func showPreview(force: Bool = false) {
         hideTask?.cancel()
-        runShowWindowAnimation()
+        runShowWindowAnimation(force: force)
         scheduleHide()
     }
 
@@ -62,7 +62,7 @@ private extension LanguageWindowController {
     @objc
     func keyboardLayoutChanged(notification: NSNotification) {
         hideTask?.cancel()
-        runShowWindowAnimation()
+        runShowWindowAnimation(force: false)
         scheduleHide()
     }
 
@@ -72,7 +72,7 @@ private extension LanguageWindowController {
         guard notification.object is Bool else { return }
 
         hideTask?.cancel()
-        runShowWindowAnimation()
+        runShowWindowAnimation(force: false)
         scheduleHide()
     }
 }
@@ -134,12 +134,12 @@ private extension LanguageWindowController {
             }
             .store(in: &cancellables)
         
-        // NEW: Observe animation style changes and show preview
+        // NEW: Observe animation style changes and show preview unconditionally (forced)
         preferences.$animationStyle
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.showPreview()
+                self?.showPreview(force: true)
             }
             .store(in: &cancellables)
         
@@ -243,7 +243,7 @@ private extension LanguageWindowController {
 // MARK: - Animation Dispatch
 private extension LanguageWindowController {
 
-    func runShowWindowAnimation() {
+    func runShowWindowAnimation(force: Bool = false) {
         guard
             let window = window,
             let screenRect = screenRect
@@ -255,7 +255,8 @@ private extension LanguageWindowController {
             window: window,
             style: preferences.animationStyle,
             duration: preferences.animationDuration,
-            screenRect: screenRect
+            screenRect: screenRect,
+            force: force
         )
     }
 

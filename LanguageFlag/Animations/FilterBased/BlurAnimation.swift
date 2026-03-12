@@ -18,22 +18,24 @@ class BlurAnimation: BaseWindowAnimation, WindowAnimation {
         let blurFilter = FilterBuilder.gaussianBlur(radius: 0.0)
         applyFilters([blurFilter], to: layer)
         
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(duration)
-        CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
-        
-        let animation = createAnimation(
+        let blurAnim = createAnimation(
             keyPath: "filters.CIGaussianBlur.inputRadius",
             from: 20.0,
             to: 0.0,
             duration: duration
         )
-        layer.add(animation, forKey: "blur")
-        
+        blurAnim.fillMode = .forwards
+        blurAnim.isRemovedOnCompletion = false
+        blurAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
+        layer.add(blurAnim, forKey: "blur")
         CATransaction.commit()
         
         animateAlpha(contentView: contentView, from: 0.0, to: 1.0, duration: duration)
@@ -51,23 +53,25 @@ class BlurAnimation: BaseWindowAnimation, WindowAnimation {
         let blurFilter = FilterBuilder.gaussianBlur(radius: 20.0)
         applyFilters([blurFilter], to: layer)
         
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(duration)
-        CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
-        
-        let animation = createAnimation(
+        let blurAnim = createAnimation(
             keyPath: "filters.CIGaussianBlur.inputRadius",
             from: 0.0,
             to: 20.0,
             duration: duration,
             timing: AnimationTiming.easeIn
         )
-        layer.add(animation, forKey: "blur")
-        
+        blurAnim.fillMode = .forwards
+        blurAnim.isRemovedOnCompletion = false
+        blurAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
+        layer.add(blurAnim, forKey: "blur")
         CATransaction.commit()
         
         animateAlpha(

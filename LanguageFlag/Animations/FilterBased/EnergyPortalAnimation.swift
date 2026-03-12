@@ -29,15 +29,16 @@ class EnergyPortalAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate twirl (3pi -> 0)
         let twirlAnim = createAnimation(keyPath: "filters.CITwirlDistortion.inputAngle", from: CGFloat.pi * 3, to: 0.0, duration: duration)
         twirlAnim.fillMode = .forwards
         twirlAnim.isRemovedOnCompletion = false
+        twirlAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(twirlAnim, forKey: "twirl")
         
         // Animate zoom (30 -> 0)
@@ -85,15 +86,16 @@ class EnergyPortalAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate twirl (0 -> 3pi)
         let twirlAnim = createAnimation(keyPath: "filters.CITwirlDistortion.inputAngle", from: 0.0, to: CGFloat.pi * 3, duration: duration)
         twirlAnim.fillMode = .forwards
         twirlAnim.isRemovedOnCompletion = false
+        twirlAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(twirlAnim, forKey: "twirl")
         
         // Animate zoom (0 -> 30)

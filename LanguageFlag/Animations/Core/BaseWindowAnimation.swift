@@ -12,6 +12,7 @@ class BaseWindowAnimation {
     /// - Returns: The prepared CALayer, or nil if preparation fails
     func prepareLayer(from window: NSWindow) -> CALayer? {
         guard let contentView = window.contentView else { return nil }
+
         contentView.wantsLayer = true
         return contentView.layer
     }
@@ -79,6 +80,7 @@ class BaseWindowAnimation {
         animation.toValue = to
         animation.duration = duration
         animation.timingFunction = timing
+
         return animation
     }
     
@@ -97,10 +99,29 @@ class BaseWindowAnimation {
         timing: CAMediaTimingFunction = CAMediaTimingFunction(name: .easeOut)
     ) {
         contentView.alphaValue = from
+
         NSAnimationContext.runAnimationGroup { context in
             context.duration = duration
             context.timingFunction = timing
             contentView.animator().alphaValue = to
         }
+    }
+}
+
+/// Delegate helper to handle CAAnimation completion reliably across animation overrides
+class AnimationCompletionDelegate: NSObject, CAAnimationDelegate {
+
+    // MARK: - Properties
+    private let completion: (Bool) -> Void
+
+    // MARK: - Initialization
+    init(completion: @escaping (Bool) -> Void) {
+        self.completion = completion
+        super.init()
+    }
+
+    // MARK: - CAAnimationDelegate
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        completion(flag)
     }
 }

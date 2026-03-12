@@ -26,18 +26,16 @@ class HologramAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            // Legacy: Explicitly set final values before clearing?
-            // Since we conform to Strategy, clearing is standard.
-            // But we use fillMode.forwards to hold until clear.
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate pixelation (8.0 -> 1.0)
         let pixelAnim = createAnimation(keyPath: "filters.CIPixellate.inputScale", from: 8.0, to: 1.0, duration: duration)
         pixelAnim.fillMode = .forwards
         pixelAnim.isRemovedOnCompletion = false
+        pixelAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(pixelAnim, forKey: "pixel")
         
         // Animate saturation (1.5 -> 1.0)
@@ -82,15 +80,16 @@ class HologramAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate pixelation (1.0 -> 8.0)
         let pixelAnim = createAnimation(keyPath: "filters.CIPixellate.inputScale", from: 1.0, to: 8.0, duration: duration)
         pixelAnim.fillMode = .forwards
         pixelAnim.isRemovedOnCompletion = false
+        pixelAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            completion?()
+        }
         layer.add(pixelAnim, forKey: "pixel")
         
         // Animate saturation (1.0 -> 1.5)

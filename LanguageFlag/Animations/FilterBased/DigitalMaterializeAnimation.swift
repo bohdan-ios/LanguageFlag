@@ -32,16 +32,17 @@ class DigitalMaterializeAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.linear)
-        CATransaction.setCompletionBlock {
-            layer.mask = nil
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate Mask from bottom to top (build up)
         let maskAnim = createAnimation(keyPath: "locations", from: [0.95, 1.0, 1.0], to: [0.0, 0.0, 0.05], duration: duration)
         maskAnim.fillMode = .forwards
         maskAnim.isRemovedOnCompletion = false
+        maskAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            layer.mask = nil
+            self.clearFilters(from: layer)
+            completion?()
+        }
         maskLayer.add(maskAnim, forKey: "scanline")
         maskLayer.locations = [0.0, 0.0, 0.05] // Final state (Model matches End for Mask, but safe to persist)
         
@@ -88,16 +89,17 @@ class DigitalMaterializeAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.linear)
-        CATransaction.setCompletionBlock {
-            layer.mask = nil
-            self.clearFilters(from: layer)
-            completion?()
-        }
         
         // Animate Mask from top to bottom (dematerialize)
         let maskAnim = createAnimation(keyPath: "locations", from: [0.0, 0.0, 0.05], to: [0.95, 1.0, 1.0], duration: duration)
         maskAnim.fillMode = .forwards
         maskAnim.isRemovedOnCompletion = false
+        maskAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            layer.mask = nil
+            self.clearFilters(from: layer)
+            completion?()
+        }
         maskLayer.add(maskAnim, forKey: "scanline")
         maskLayer.locations = [0.95, 1.0, 1.0] // Final state
         

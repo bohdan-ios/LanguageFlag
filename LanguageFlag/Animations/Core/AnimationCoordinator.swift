@@ -8,6 +8,11 @@ final class AnimationCoordinator {
     private let preferences = UserPreferences.shared
     private var isShowing = false
 
+    /// Generation counter that increments on each animateIn, used to invalidate
+    /// stale animateOut completion blocks that would otherwise hide the window
+    /// after a new animation has already started.
+    private var generation: Int = 0
+
     // Animation styles that need frame setup before animation
     private let stylesNeedingFrameSetup: Set<AnimationStyle> = [
         .slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic,
@@ -32,13 +37,17 @@ final class AnimationCoordinator {
         window: NSWindow,
         style: AnimationStyle,
         duration: TimeInterval,
-        screenRect: CGRect
+        screenRect: CGRect,
+        force: Bool = false
     ) {
         // If the window is already showing and reset is disabled,
-        // let the current animation continue.
+        // let the current animation continue unless forced (e.g., style preview).
         // The flag image/title will still update (handled by LanguageViewController).
-        if isShowing, !preferences.resetAnimationOnChange { return }
+        if isShowing, !preferences.resetAnimationOnChange, !force { return }
         isShowing = true
+
+        // Increment generation so any in-flight animateOut completions become no-ops
+        generation += 1
 
         // Set opacity before animation if window is being shown for first time
         if window.alphaValue == 0 {
@@ -75,8 +84,17 @@ final class AnimationCoordinator {
     ) {
         isShowing = false
 
+        // Capture the current generation so the completion block can verify
+        // that no new animateIn has started since this animateOut was dispatched.
+        let capturedGeneration = generation
+
         let frameResetCompletion: (() -> Void)? = stylesNeedingFrameReset.contains(style) ? { [weak self] in
             guard let self = self else { return }
+
+            // If a new animateIn has started since this animateOut was dispatched,
+            // skip the cleanup to avoid hiding the newly-shown window.
+            guard self.generation == capturedGeneration else { return }
+
             let targetFrame = self.positionCalculator.calculateWindowFrame(
                 in: screenRect,
                 position: self.preferences.displayPosition,

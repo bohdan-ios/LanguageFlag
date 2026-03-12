@@ -33,17 +33,18 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            scanline.removeFromSuperlayer()
-            noise.removeFromSuperlayer()
-            completion?()
-        }
         
         // Animate Filters
         let blurAnim = createAnimation(keyPath: "filters.CIGaussianBlur.inputRadius", from: 3.0, to: 0.0, duration: duration)
         blurAnim.fillMode = .forwards
         blurAnim.isRemovedOnCompletion = false
+        blurAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            scanline.removeFromSuperlayer()
+            noise.removeFromSuperlayer()
+            completion?()
+        }
         layer.add(blurAnim, forKey: "blur")
         
         let posterAnim = createAnimation(keyPath: "filters.CIColorPosterize.inputLevels", from: 8.0, to: 256.0, duration: duration)
@@ -102,17 +103,18 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
-        CATransaction.setCompletionBlock {
-            self.clearFilters(from: layer)
-            scanline.removeFromSuperlayer()
-            noise.removeFromSuperlayer()
-            completion?()
-        }
         
         // Animate Filters
         let blurAnim = createAnimation(keyPath: "filters.CIGaussianBlur.inputRadius", from: 0.0, to: 3.0, duration: duration)
         blurAnim.fillMode = .forwards
         blurAnim.isRemovedOnCompletion = false
+        blurAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
+            guard let self, finished else { return }
+            self.clearFilters(from: layer)
+            scanline.removeFromSuperlayer()
+            noise.removeFromSuperlayer()
+            completion?()
+        }
         layer.add(blurAnim, forKey: "blur")
         
         let posterAnim = createAnimation(keyPath: "filters.CIColorPosterize.inputLevels", from: 256.0, to: 8.0, duration: duration)

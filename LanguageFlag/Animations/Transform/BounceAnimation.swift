@@ -16,16 +16,8 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
         }
 
         let originalFrame = layer.frame
-        let centerX = originalFrame.midX
-        let centerY = originalFrame.midY
-        
-        // Start Small
-        let startScale: CGFloat = 0.3
-        var startFrame = originalFrame
-        startFrame.size.width *= startScale
-        startFrame.size.height *= startScale
-        startFrame.origin.x = centerX - startFrame.width / 2
-        startFrame.origin.y = centerY - startFrame.height / 2
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.0) // Bottom middle
+        layer.frame = originalFrame
         
         // Keyframe Animation
         let animation = CAKeyframeAnimation(keyPath: "transform.scale")
@@ -38,14 +30,19 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
             AnimationTiming.easeInOut
         ]
         
-        layer.add(animation, forKey: "bounce")
+        CATransaction.begin()
         
-        animateAlpha(contentView: contentView, from: 0.0, to: 1.0, duration: duration * 0.5)
-        
-        // Add completion delay to match duration
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+        animation.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+            layer.frame = originalFrame
             completion?()
         }
+        
+        layer.add(animation, forKey: "bounce")
+        CATransaction.commit()
+        
+        animateAlpha(contentView: contentView, from: 0.0, to: 1.0, duration: duration * 0.5)
     }
     
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
@@ -57,6 +54,10 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
             return
         }
 
+        let originalFrame = layer.frame
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.0) // Bottom middle
+        layer.frame = originalFrame
+
         let animation = CAKeyframeAnimation(keyPath: "transform.scale")
         animation.duration = duration
         animation.values = [1.0, 1.1, 0.3]
@@ -66,12 +67,18 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
             AnimationTiming.easeIn
         ]
         
-        layer.add(animation, forKey: "bounce")
+        CATransaction.begin()
         
-        animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+        animation.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+            layer.frame = originalFrame
             completion?()
         }
+        
+        layer.add(animation, forKey: "bounce")
+        CATransaction.commit()
+        
+        animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration)
     }
 }

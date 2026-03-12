@@ -5,16 +5,20 @@ class CapsLockManager {
 
     // MARK: - Variables
     private(set) var isCapsLockEnabled: Bool = false
-    private var eventMonitor: Any?
+    private var globalEventMonitor: Any?
+    private var localEventMonitor: Any?
 
     // MARK: - Init
     init() {
         isCapsLockEnabled = CGEventSource.flagsState(.combinedSessionState).contains(.maskAlphaShift)
-        setupCapsLockObserver()
+        setupCapsLockObservers()
     }
 
     deinit {
-        if let monitor = eventMonitor {
+        if let monitor = globalEventMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
+        if let monitor = localEventMonitor {
             NSEvent.removeMonitor(monitor)
         }
     }
@@ -29,16 +33,23 @@ class CapsLockManager {
 // MARK: - Private
 extension CapsLockManager {
     
-    /// Sets up an observer to monitor Caps Lock state changes.
-    private func setupCapsLockObserver() {
-        eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+    /// Sets up observers to monitor Caps Lock state changes locally and globally.
+    private func setupCapsLockObservers() {
+        // Global monitor for when the app is in the background
+        globalEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
             self?.handleCapsLockStateChange(event: event)
+        }
+        
+        // Local monitor for when the app (e.g., Preferences window) is active
+        localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            self?.handleCapsLockStateChange(event: event)
+            return event
         }
     }
 
     /// Handles Caps Lock state changes.
     private func handleCapsLockStateChange(event: NSEvent) {
-        let capsLockEnabled = isCapsLockOn()
+        let capsLockEnabled = event.modifierFlags.contains(.capsLock)
 
         if isCapsLockEnabled != capsLockEnabled {
             isCapsLockEnabled = capsLockEnabled
