@@ -47,41 +47,44 @@ enum AnimationEffectHelpers {
         return context.makeImage()
     }
     
-    /// Creates a noise pattern image with random dots for VHS static effect
+    /// Creates a noise pattern image with random dots for VHS static effect.
+    ///
+    /// Writes pixel values directly into a `UInt8` bitmap buffer instead of
+    /// issuing one `CGContext.fill` call per pixel, reducing Core Graphics
+    /// overhead from O(width × height) API calls down to a single `makeImage()`.
+    ///
     /// - Parameter size: Size of the pattern image
     /// - Returns: CGImage with noise pattern, or nil if creation fails
     static func createNoisePattern(size: CGSize) -> CGImage? {
         let width = Int(size.width)
         let height = Int(size.height)
-        let noiseDensity: Float = 0.8  // 80% of pixels will be noise
-        
+        guard width > 0, height > 0 else { return nil }
+
+        let pixelCount = width * height
+        let noiseDensity: Float = 0.8
+
+        // Fill buffer with white, then scatter random gray values directly.
+        // UInt8 range 51–204 maps to 0.2–0.8 brightness (same as the original).
+        var pixels = [UInt8](repeating: 255, count: pixelCount)
+        let noiseCount = Int(Float(pixelCount) * noiseDensity)
+        for _ in 0..<noiseCount {
+            pixels[Int.random(in: 0..<pixelCount)] = UInt8.random(in: 51...204)
+        }
+
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let bitmapInfo = CGImageAlphaInfo.none.rawValue
-        
-        guard let context = CGContext(
-            data: nil,
-            width: width,
-            height: height,
-            bitsPerComponent: 8,
-            bytesPerRow: width,
-            space: colorSpace,
-            bitmapInfo: bitmapInfo
-        ) else { return nil }
-        
-        // Fill with transparent
-        context.setFillColor(gray: 1.0, alpha: 1.0)
-        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
-        
-        // Add random noise dots
-        for _ in 0..<Int(Float(width * height) * noiseDensity) {
-            let x = Int.random(in: 0..<width)
-            let y = Int.random(in: 0..<height)
-            let brightness = CGFloat.random(in: 0.2...0.8)  // Random gray value
-            
-            context.setFillColor(gray: brightness, alpha: 1.0)
-            context.fill(CGRect(x: x, y: y, width: 1, height: 1))
+
+        return pixels.withUnsafeMutableBytes { ptr in
+            guard let context = CGContext(
+                data: ptr.baseAddress,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: width,
+                space: colorSpace,
+                bitmapInfo: bitmapInfo
+            ) else { return nil }
+            return context.makeImage()
         }
-        
-        return context.makeImage()
     }
 }

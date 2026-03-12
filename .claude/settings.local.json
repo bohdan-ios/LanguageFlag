@@ -46,7 +46,20 @@
       "Bash(gh release upload v1.1.0 /Users/lion/Projects/LanguageFlag/dist/LanguageFlag.zip)",
       "Bash(git add index.html sitemap.xml)",
       "Bash(git rm --cached .claude/settings.local.json)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(plutil -p /Users/lion/Documents/Untitled.trace/corespace/run1/core/core-config/exposedTableInfo.plist)",
+      "Bash(mkdir -p /tmp/trace_extract)",
+      "Bash(for uuid:*)",
+      "Bash(do)",
+      "Bash(mkdir -p \"/tmp/trace_extract/$uuid\")",
+      "Bash(unzip -o \"/Users/lion/Documents/Untitled.trace/instrument_data/$uuid/run_data/1.run.zip\" -d \"/tmp/trace_extract/$uuid/\")",
+      "Bash(done)",
+      "Read(//tmp/**)",
+      "Bash(echo \"=== $uuid ===\")",
+      "Read(//tmp/trace_extract/$uuid/**)",
+      "Bash(xctrace help:*)",
+      "Bash(xctrace export:*)",
+      "Bash(python3:*)"
     ]
   }
 }

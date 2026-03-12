@@ -29,7 +29,7 @@ extension NotificationManager {
     /// Handles input source changes.
     @objc
     private func handleInputSourceChange() {
-        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
+        let currentLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
         let isCapsLockOn = capsLockManager.isCapsLockEnabled
         let model = KeyboardLayoutNotification(keyboardLayout: currentLayout.name,
                                                isCapsLockEnabled: isCapsLockOn,

@@ -21,7 +21,7 @@ final class StatusBarMenuBuilder {
         let menu = NSMenu()
 
         // Current Layout Info
-        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
+        let currentLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue().name
         let currentItem = menu.addItem(withTitle: "Current: \(currentLayout)", action: nil, keyEquivalent: "")
         currentItem.isEnabled = false
 

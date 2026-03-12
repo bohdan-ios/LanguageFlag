@@ -8,7 +8,6 @@
 
 import Cocoa
 import LaunchAtLogin
-import Carbon
 
 class AppDelegate: NSObject, NSApplicationDelegate {
 

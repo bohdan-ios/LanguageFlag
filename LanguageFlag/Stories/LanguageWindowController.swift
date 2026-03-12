@@ -8,7 +8,6 @@
 
 import Cocoa
 import Combine
-import Carbon
 
 final class LanguageWindowController: NSWindowController {
 
@@ -68,7 +67,6 @@ private extension LanguageWindowController {
 
     @objc
     func capsLockChanged(notification: NSNotification) {
-        print("[WindowController] capsLockChanged received — object: \(String(describing: notification.object))")
         guard notification.object is Bool else { return }
 
         hideTask?.cancel()

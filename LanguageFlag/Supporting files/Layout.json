@@ -168,6 +168,10 @@
     "Uyghur":"034-china",
     "Uzbek – Cyrillic":"190-uzbekistn",
     "Vietnamese":"220-vietnam",
+    "VIQR":"220-vietnam",
+    "Simple Telex":"220-vietnam",
+    "Telex":"220-vietnam",
+    "VNI":"220-vietnam",
     "Welsh":"014-wales",
     "Zhuyin":"034-china"
 }

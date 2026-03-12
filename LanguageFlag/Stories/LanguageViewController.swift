@@ -117,7 +117,7 @@ extension LanguageViewController {
                             iconRef: previous.iconRef)
         } else {
             // No layout change has occurred yet — use the current system layout
-            layout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
+            layout = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
             changeFlagImage(keyboardLayout: layout.name,
                             isCapsLockEnabled: newBool,
                             iconRef: layout.iconRef)
@@ -186,7 +186,7 @@ extension LanguageViewController {
     }
 
     private func setupUI() {
-        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
+        let currentLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
         let model = KeyboardLayoutNotification(keyboardLayout: currentLayout.name,
                                                isCapsLockEnabled: false,
                                                iconRef: currentLayout.iconRef)

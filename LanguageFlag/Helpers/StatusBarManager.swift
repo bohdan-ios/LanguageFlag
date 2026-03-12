@@ -70,7 +70,7 @@ private extension StatusBarManager {
             self?.rebuildMenuContents()
         }
 
-        let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
+        let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue().name
         updateStatusBarIcon(for: keyboardLayout)
     }
 
@@ -248,7 +248,7 @@ private extension StatusBarManager {
 
     #if FEATURE_ANALYTICS
     func initializeAnalytics() {
-        let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
+        let currentLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue().name
         analytics.startTracking(layout: currentLayout)
     }
     #endif
@@ -258,7 +258,7 @@ private extension StatusBarManager {
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue().name
+                let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue().name
                 self?.updateStatusBarIcon(for: keyboardLayout)
             }
             .store(in: &cancellables)
