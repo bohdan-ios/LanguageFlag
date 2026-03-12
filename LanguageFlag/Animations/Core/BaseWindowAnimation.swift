@@ -35,6 +35,10 @@ class BaseWindowAnimation {
             // Remove VHS overlays if any
             layer.sublayers?.filter { $0.name == "vhsScanline" || $0.name == "vhsNoise" }
                 .forEach { $0.removeFromSuperlayer() }
+            
+            // Fix: Reset contentView alpha & layer opacity that might be permanently stuck at 0 from FadeAnimation
+            contentView.alphaValue = 1.0
+            layer.opacity = 1.0
         }
         
         window.orderFrontRegardless()

@@ -167,7 +167,7 @@ final class UserPreferences: ObservableObject {
         self.showShortcuts = false
         self.showInMenuBar = false
         self.resetAnimationOnChange = true
-        self.showCapsLockIndicator = false
+        self.showCapsLockIndicator = true
         self.bypassClick = true
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
@@ -185,7 +185,7 @@ final class UserPreferences: ObservableObject {
         self.showShortcuts = false
         self.showInMenuBar = false
         self.resetAnimationOnChange = true
-        self.showCapsLockIndicator = false
+        self.showCapsLockIndicator = true
         self.bypassClick = true
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
@@ -202,7 +202,7 @@ final class UserPreferences: ObservableObject {
         self.showShortcuts = defaults.object(forKey: Keys.showShortcuts) as? Bool ?? false
         self.showInMenuBar = defaults.object(forKey: Keys.showInMenuBar) as? Bool ?? false
         self.resetAnimationOnChange = defaults.object(forKey: Keys.resetAnimationOnChange) as? Bool ?? true
-        self.showCapsLockIndicator = defaults.object(forKey: Keys.showCapsLockIndicator) as? Bool ?? false
+        self.showCapsLockIndicator = defaults.object(forKey: Keys.showCapsLockIndicator) as? Bool ?? true
         self.bypassClick = defaults.object(forKey: Keys.bypassClick) as? Bool ?? true
 
         // Decode complex types
@@ -244,7 +244,7 @@ final class UserPreferences: ObservableObject {
         showShortcuts = false
         showInMenuBar = false
         resetAnimationOnChange = true
-        showCapsLockIndicator = false
+        showCapsLockIndicator = true
         bypassClick = true
     }
 }

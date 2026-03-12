@@ -5,48 +5,77 @@ class ScaleAnimation: BaseWindowAnimation, WindowAnimation {
 
     // MARK: - WindowAnimation
     func animateIn(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
+        guard let layer = prepareLayer(from: window) else {
+            completion?()
+            return
+        }
         setupWindow(window)
-        
-        let originalFrame = window.frame
-        let centerX = originalFrame.midX
-        let centerY = originalFrame.midY
-        
-        // Start with small scale
-        let startScale: CGFloat = 0.3
-        var startFrame = originalFrame
-        startFrame.size.width *= startScale
-        startFrame.size.height *= startScale
-        startFrame.origin.x = centerX - startFrame.width / 2
-        startFrame.origin.y = centerY - startFrame.height / 2
-        
-        window.setFrame(startFrame, display: false, animate: false)
-        
-        NSAnimationContext.runAnimationGroup({ context in
+
+        // Hide window initially so we can fade it in
+        window.alphaValue = 0
+
+        let oldAnchor = layer.anchorPoint
+        let oldPosition = layer.position
+
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        layer.position = CGPoint(x: layer.bounds.midX, y: layer.bounds.midY)
+
+        let scaleAnim = createAnimation(keyPath: "transform.scale",
+                                        from: 0.3,
+                                        to: 1.0,
+                                        duration: duration)
+        scaleAnim.fillMode = .forwards
+        scaleAnim.isRemovedOnCompletion = false
+
+        scaleAnim.delegate = AnimationCompletionDelegate { [weak layer] finished in
+            layer?.transform = CATransform3DIdentity
+            layer?.anchorPoint = oldAnchor
+            layer?.position = oldPosition
+            completion?()
+        }
+
+        layer.add(scaleAnim, forKey: "scaleIn")
+
+        NSAnimationContext.runAnimationGroup { context in
             context.duration = duration
             context.timingFunction = AnimationTiming.easeOut
-            window.animator().setFrame(originalFrame, display: true)
             window.animator().alphaValue = CGFloat(UserPreferences.shared.opacity)
-        }, completionHandler: completion)
+        }
     }
-    
+
     func animateOut(window: NSWindow, duration: TimeInterval, completion: (() -> Void)?) {
-        let currentFrame = window.frame
-        let centerX = currentFrame.midX
-        let centerY = currentFrame.midY
-        
-        // End with small scale
-        let endScale: CGFloat = 0.3
-        var endFrame = currentFrame
-        endFrame.size.width *= endScale
-        endFrame.size.height *= endScale
-        endFrame.origin.x = centerX - endFrame.width / 2
-        endFrame.origin.y = centerY - endFrame.height / 2
-        
-        NSAnimationContext.runAnimationGroup({ context in
+        guard let layer = window.contentView?.layer else {
+            completion?()
+            return
+        }
+
+        let oldAnchor = layer.anchorPoint
+        let oldPosition = layer.position
+
+        layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        layer.position = CGPoint(x: layer.bounds.midX, y: layer.bounds.midY)
+
+        let scaleAnim = createAnimation(keyPath: "transform.scale",
+                                        from: 1.0,
+                                        to: 0.3,
+                                        duration: duration,
+                                        timing: CAMediaTimingFunction(name: .easeIn))
+        scaleAnim.fillMode = .forwards
+        scaleAnim.isRemovedOnCompletion = false
+
+        scaleAnim.delegate = AnimationCompletionDelegate { [weak layer] finished in
+            layer?.transform = CATransform3DIdentity
+            layer?.anchorPoint = oldAnchor
+            layer?.position = oldPosition
+            completion?()
+        }
+
+        layer.add(scaleAnim, forKey: "scaleOut")
+
+        NSAnimationContext.runAnimationGroup { context in
             context.duration = duration
             context.timingFunction = AnimationTiming.easeIn
-            window.animator().setFrame(endFrame, display: true)
             window.animator().alphaValue = 0
-        }, completionHandler: completion)
+        }
     }
 }
