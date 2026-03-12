@@ -15,12 +15,11 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
             return
         }
 
-        // Legacy: Morphology 10.0, Blur 15.0, Contrast 1.5
+        // Legacy: Morphology 10.0, Blur 15.0
         let morphFilter = FilterBuilder.morphologyMaximum(radius: 10.0)
         let blurFilter = FilterBuilder.gaussianBlur(radius: 15.0)
-        let colorFilter = FilterBuilder.colorControls(contrast: 1.5)
         
-        applyFilters([morphFilter, blurFilter, colorFilter], to: layer)
+        applyFilters([morphFilter, blurFilter], to: layer)
         
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
@@ -29,9 +28,10 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
         let morphAnim = createAnimation(keyPath: "filters.CIMorphologyMaximum.inputRadius", from: 10.0, to: 0.0, duration: duration)
         morphAnim.fillMode = .forwards
         morphAnim.isRemovedOnCompletion = false
-        morphAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
-            guard let self, finished else { return }
-            self.clearFilters(from: layer)
+        morphAnim.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.filters = nil
+            layer.removeAllAnimations()
             completion?()
         }
         layer.add(morphAnim, forKey: "morph")
@@ -40,12 +40,6 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
         blurAnim.fillMode = .forwards
         blurAnim.isRemovedOnCompletion = false
         layer.add(blurAnim, forKey: "blur")
-        
-        // Legacy: Animate contrast 1.5 -> 1.0
-        let contrastAnim = createAnimation(keyPath: "filters.CIColorControls.inputContrast", from: 1.5, to: 1.0, duration: duration)
-        contrastAnim.fillMode = .forwards
-        contrastAnim.isRemovedOnCompletion = false
-        layer.add(contrastAnim, forKey: "contrast")
         
         CATransaction.commit()
         
@@ -61,12 +55,11 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
             return
         }
 
-        // Start: Normal (Contrast 1.0, Morph 0, Blur 0)
+        // Start: Normal (Morph 0, Blur 0)
         let morphFilter = FilterBuilder.morphologyMaximum(radius: 0.0)
         let blurFilter = FilterBuilder.gaussianBlur(radius: 0.0)
-        let colorFilter = FilterBuilder.colorControls(contrast: 1.0)
         
-        applyFilters([morphFilter, blurFilter, colorFilter], to: layer)
+        applyFilters([morphFilter, blurFilter], to: layer)
         
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
@@ -75,9 +68,10 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
         let morphAnim = createAnimation(keyPath: "filters.CIMorphologyMaximum.inputRadius", from: 0.0, to: 10.0, duration: duration)
         morphAnim.fillMode = .forwards
         morphAnim.isRemovedOnCompletion = false
-        morphAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
-            guard let self, finished else { return }
-            self.clearFilters(from: layer)
+        morphAnim.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.filters = nil
+            layer.removeAllAnimations()
             completion?()
         }
         layer.add(morphAnim, forKey: "morph")
@@ -86,12 +80,6 @@ class InkDiffusionAnimation: BaseWindowAnimation, WindowAnimation {
         blurAnim.fillMode = .forwards
         blurAnim.isRemovedOnCompletion = false
         layer.add(blurAnim, forKey: "blur")
-        
-        // Legacy: Animate contrast 1.0 -> 1.5
-        let contrastAnim = createAnimation(keyPath: "filters.CIColorControls.inputContrast", from: 1.0, to: 1.5, duration: duration)
-        contrastAnim.fillMode = .forwards
-        contrastAnim.isRemovedOnCompletion = false
-        layer.add(contrastAnim, forKey: "contrast")
         
         CATransaction.commit()
         

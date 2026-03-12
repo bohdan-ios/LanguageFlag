@@ -21,10 +21,6 @@ struct GeneralPreferencesPane: View {
     private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                displayDurationSection
-
-                Divider()
-
                 displayPositionSection
 
                 Divider()
@@ -41,30 +37,6 @@ struct GeneralPreferencesPane: View {
                 resetButton
             }
             .padding()
-        }
-    }
-    
-    private let displayDurationSteps: [Double] = stride(from: 0.5, through: 5.0, by: 0.5).map { $0 }
-
-    private var displayDurationSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Display Duration")
-                .font(.headline)
-
-            HStack(alignment: .top, spacing: 8) {
-                VStack(spacing: 2) {
-                    Slider(value: $preferences.displayDuration, in: 0.5...5.0, step: 0.5)
-
-                    SliderTickLabels(labels: displayDurationSteps.map { String(format: "%.1f", $0) })
-                }
-
-                Text(String(format: "%.1fs", preferences.displayDuration))
-                    .frame(width: 95, alignment: .trailing)
-            }
-
-            Text("How long the language indicator stays visible")
-                .font(.caption)
-                .foregroundColor(.secondary)
         }
     }
     
@@ -106,7 +78,7 @@ struct GeneralPreferencesPane: View {
                     .foregroundColor(.primary)
             }
 
-            Text("Size of the language indicator window")
+            Text("Size of the language language window")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -191,7 +163,7 @@ struct GeneralPreferencesPane: View {
                 NotificationCenter.default.post(name: .recalculateWindowFrames, object: nil)
             }
             .buttonStyle(.bordered)
-            .help("Force recalculate all indicator windows for connected displays")
+            .help("Force recalculate all language windows for connected displays")
             #endif
 
             Spacer()

@@ -16,26 +16,27 @@ class LiquidRippleAnimation: BaseWindowAnimation, WindowAnimation {
         
         let center = CIVector(x: layer.bounds.midX, y: layer.bounds.midY)
         
-        // Use splash distortion filter
-        let splashFilter = FilterBuilder.circleSplashDistortion(center: center, radius: 150.0)
-        let colorFilter = FilterBuilder.colorControls(saturation: 1.3, brightness: 0.1)
+        // Use bump distortion filter for transparent lens ripple
+        let bumpFilter = FilterBuilder.bumpDistortion(center: center, radius: 150.0, scale: 0.5)
+        let colorFilter = FilterBuilder.colorControls(saturation: 1.3, brightness: 0.0)
         
-        applyFilters([splashFilter, colorFilter], to: layer)
+        applyFilters([bumpFilter, colorFilter], to: layer)
         
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeOut)
         
-        // Animate splash radius (150 -> 0)
-        let splashAnim = createAnimation(keyPath: "filters.CICircleSplashDistortion.inputRadius", from: 150.0, to: 0.0, duration: duration)
-        splashAnim.fillMode = .forwards
-        splashAnim.isRemovedOnCompletion = false
-        splashAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
-            guard let self, finished else { return }
-            self.clearFilters(from: layer)
+        // Animate bump radius (150 -> 0)
+        let bumpAnim = createAnimation(keyPath: "filters.CIBumpDistortion.inputRadius", from: 150.0, to: 0.0, duration: duration)
+        bumpAnim.fillMode = .forwards
+        bumpAnim.isRemovedOnCompletion = false
+        bumpAnim.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.filters = nil
+            layer.removeAllAnimations()
             completion?()
         }
-        layer.add(splashAnim, forKey: "splash")
+        layer.add(bumpAnim, forKey: "bump")
         
         CATransaction.commit()
         
@@ -53,25 +54,26 @@ class LiquidRippleAnimation: BaseWindowAnimation, WindowAnimation {
 
         let center = CIVector(x: layer.bounds.midX, y: layer.bounds.midY)
         
-        let splashFilter = FilterBuilder.circleSplashDistortion(center: center, radius: 0.0)
+        let bumpFilter = FilterBuilder.bumpDistortion(center: center, radius: 0.0, scale: 0.5)
         let colorFilter = FilterBuilder.colorControls(saturation: 1.0, brightness: 0.0)
         
-        applyFilters([splashFilter, colorFilter], to: layer)
+        applyFilters([bumpFilter, colorFilter], to: layer)
         
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setAnimationTimingFunction(AnimationTiming.easeIn)
         
-        // Animate splash radius (0 -> 150)
-        let splashAnim = createAnimation(keyPath: "filters.CICircleSplashDistortion.inputRadius", from: 0.0, to: 150.0, duration: duration)
-        splashAnim.fillMode = .forwards
-        splashAnim.isRemovedOnCompletion = false
-        splashAnim.delegate = AnimationCompletionDelegate { [weak self] finished in
-            guard let self, finished else { return }
-            self.clearFilters(from: layer)
+        // Animate bump radius (0 -> 150)
+        let bumpAnim = createAnimation(keyPath: "filters.CIBumpDistortion.inputRadius", from: 0.0, to: 150.0, duration: duration)
+        bumpAnim.fillMode = .forwards
+        bumpAnim.isRemovedOnCompletion = false
+        bumpAnim.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
+            layer.filters = nil
+            layer.removeAllAnimations()
             completion?()
         }
-        layer.add(splashAnim, forKey: "splash")
+        layer.add(bumpAnim, forKey: "bump")
         
         CATransaction.commit()
         

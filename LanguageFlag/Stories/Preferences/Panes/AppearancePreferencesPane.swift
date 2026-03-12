@@ -28,6 +28,10 @@ struct AppearancePreferencesPane: View {
                 Divider()
 
                 animationSpeedSection
+                
+                Divider()
+                
+                displayDurationSection
 
                 Divider()
 
@@ -57,7 +61,7 @@ struct AppearancePreferencesPane: View {
                     .accessibilityIdentifier("opacity_value")
             }
 
-            Text("Transparency of the indicator window")
+            Text("Transparency of the language window")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -126,7 +130,31 @@ struct AppearancePreferencesPane: View {
                     .accessibilityIdentifier("animation_duration_value")
             }
 
-            Text("Duration of show/hide animations")
+            Text("How fast the animated entrance and exit effects play when the window appears or disappears.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    private let displayDurationSteps: [Double] = stride(from: 0.5, through: 5.0, by: 0.5).map { $0 }
+
+    private var displayDurationSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Display Duration")
+                .font(.headline)
+
+            HStack(alignment: .top, spacing: 8) {
+                VStack(spacing: 2) {
+                    Slider(value: $preferences.displayDuration, in: 0.5...5.0, step: 0.5)
+
+                    SliderTickLabels(labels: displayDurationSteps.map { String(format: "%.1f", $0) })
+                }
+
+                Text(String(format: "%.1fs", preferences.displayDuration))
+                    .frame(width: 95, alignment: .trailing)
+            }
+
+            Text("How long the language window stays visible on your screen before automatically fading away.")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

@@ -77,7 +77,7 @@ struct AppearancePreferencesPane: View {
                     .accessibilityIdentifier("opacity_value") // ← Value display
             }
 
-            Text("Transparency of the indicator window")
+            Text("Transparency of the language window")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

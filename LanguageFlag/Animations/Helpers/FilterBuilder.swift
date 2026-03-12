@@ -13,8 +13,10 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIGaussianBlur") else {
             fatalError("Failed to create CIGaussianBlur filter")
         }
+
         filter.setDefaults()
         filter.setValue(radius, forKey: kCIInputRadiusKey)
+
         return filter
     }
     
@@ -27,9 +29,11 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIMotionBlur") else {
             fatalError("Failed to create CIMotionBlur filter")
         }
+
         filter.setDefaults()
         filter.setValue(radius, forKey: kCIInputRadiusKey)
         filter.setValue(angle, forKey: kCIInputAngleKey)
+
         return filter
     }
     
@@ -42,9 +46,11 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIZoomBlur") else {
             fatalError("Failed to create CIZoomBlur filter")
         }
+
         filter.setDefaults()
         filter.setValue(amount, forKey: kCIInputAmountKey)
         filter.setValue(center, forKey: kCIInputCenterKey)
+
         return filter
     }
     
@@ -57,8 +63,10 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIPixellate") else {
             fatalError("Failed to create CIPixellate filter")
         }
+
         filter.setDefaults()
         filter.setValue(scale, forKey: kCIInputScaleKey)
+
         return filter
     }
     
@@ -69,8 +77,10 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIColorPosterize") else {
             fatalError("Failed to create CIColorPosterize filter")
         }
+
         filter.setDefaults()
         filter.setValue(levels, forKey: "inputLevels")
+
         return filter
     }
     
@@ -90,10 +100,12 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIColorControls") else {
             fatalError("Failed to create CIColorControls filter")
         }
+
         filter.setDefaults()
         filter.setValue(saturation, forKey: "inputSaturation")
         filter.setValue(brightness, forKey: "inputBrightness")
         filter.setValue(contrast, forKey: "inputContrast")
+
         return filter
     }
     
@@ -104,8 +116,10 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIHueAdjust") else {
             fatalError("Failed to create CIHueAdjust filter")
         }
+
         filter.setDefaults()
         filter.setValue(angle, forKey: "inputAngle")
+
         return filter
     }
     
@@ -121,10 +135,31 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CITwirlDistortion") else {
             fatalError("Failed to create CITwirlDistortion filter")
         }
+
         filter.setDefaults()
         filter.setValue(center, forKey: kCIInputCenterKey)
         filter.setValue(radius, forKey: kCIInputRadiusKey)
         filter.setValue(angle, forKey: kCIInputAngleKey)
+
+        return filter
+    }
+    
+    /// Creates a bump distortion filter (liquid lens effect)
+    /// - Parameters:
+    ///   - center: Center point of the bump
+    ///   - radius: Bump radius
+    ///   - scale: Height/depth of the bump
+    /// - Returns: Configured CIFilter
+    static func bumpDistortion(center: CIVector, radius: CGFloat, scale: CGFloat) -> CIFilter {
+        guard let filter = CIFilter(name: "CIBumpDistortion") else {
+            fatalError("Failed to create CIBumpDistortion filter")
+        }
+
+        filter.setDefaults()
+        filter.setValue(center, forKey: kCIInputCenterKey)
+        filter.setValue(radius, forKey: kCIInputRadiusKey)
+        filter.setValue(scale, forKey: kCIInputScaleKey)
+
         return filter
     }
     
@@ -137,9 +172,11 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CICircleSplashDistortion") else {
             fatalError("Failed to create CICircleSplashDistortion filter")
         }
+
         filter.setDefaults()
         filter.setValue(center, forKey: kCIInputCenterKey)
         filter.setValue(radius, forKey: kCIInputRadiusKey)
+
         return filter
     }
     
@@ -152,8 +189,10 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIMorphologyMaximum") else {
             fatalError("Failed to create CIMorphologyMaximum filter")
         }
+
         filter.setDefaults()
         filter.setValue(radius, forKey: kCIInputRadiusKey)
+
         return filter
     }
     
@@ -168,9 +207,11 @@ enum FilterBuilder {
         guard let filter = CIFilter(name: "CIBloom") else {
             fatalError("Failed to create CIBloom filter")
         }
+
         filter.setDefaults()
         filter.setValue(intensity, forKey: kCIInputIntensityKey)
         filter.setValue(radius, forKey: kCIInputRadiusKey)
+
         return filter
     }
 }

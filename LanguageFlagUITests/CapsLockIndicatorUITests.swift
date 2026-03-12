@@ -1,7 +1,7 @@
 import XCTest
 import CoreGraphics
 
-/// UI tests that verify the language indicator window appears and hides
+/// UI tests that verify the language language window appears and hides
 /// when Caps Lock is toggled on and off.
 ///
 /// Prerequisites:
@@ -63,7 +63,7 @@ final class CapsLockIndicatorUITests: XCTestCase {
         let window = app.windows["LanguageIndicatorWindow"]
         XCTAssertTrue(
             window.waitForExistence(timeout: 3),
-            "Language indicator window should appear when Caps Lock is turned on"
+            "Language window should appear when Caps Lock is turned on"
         )
 
         // When Caps Lock is ON the language label reads "⇪ <layout-name>".
@@ -101,7 +101,7 @@ final class CapsLockIndicatorUITests: XCTestCase {
         let window = app.windows["LanguageIndicatorWindow"]
         XCTAssertTrue(
             window.waitForExistence(timeout: 3),
-            "Language indicator window should appear when Caps Lock is turned on"
+            "Language window should appear when Caps Lock is turned on"
         )
 
         // Window should auto-hide after display duration (default 1s + animation ~0.5s)

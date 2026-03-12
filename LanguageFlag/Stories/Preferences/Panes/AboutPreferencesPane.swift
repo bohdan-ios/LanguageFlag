@@ -22,12 +22,8 @@ struct AboutPreferencesPane: View {
             animatedGradientBackground
 
             ScrollView {
-                VStack(spacing: 24) {
-                    appInfoSection
-
-                    Spacer()
-                }
-                .padding()
+                appInfoSection
+                    .padding()
             }
         }
     }
@@ -91,6 +87,19 @@ private extension AboutPreferencesPane {
 
             // Links
             linksSection
+                .padding(.top, 4)
+
+            // Credits
+            VStack(spacing: 4) {
+                Text("Proudly made by Bohdan Bochkovskyi ❤️")
+                    .font(.caption)
+                    .foregroundColor(.primary)
+                
+                Text("© \(String(Calendar.current.component(.year, from: Date())))")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.top, 8)
         }
         .padding(.top, 20)
     }
