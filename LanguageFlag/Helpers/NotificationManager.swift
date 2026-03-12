@@ -4,8 +4,11 @@ import Combine
 
 class NotificationManager {
 
+    private let capsLockManager: CapsLockManager
+
     // MARK: - Init
-    init() {
+    init(capsLockManager: CapsLockManager) {
+        self.capsLockManager = capsLockManager
         setupObservers()
     }
 }
@@ -27,7 +30,7 @@ extension NotificationManager {
     @objc
     private func handleInputSourceChange() {
         let currentLayout = TISCopyCurrentKeyboardInputSource().takeUnretainedValue()
-        let isCapsLockOn = CGEventSource.flagsState(.combinedSessionState).contains(.maskAlphaShift)
+        let isCapsLockOn = capsLockManager.isCapsLockEnabled
         let model = KeyboardLayoutNotification(keyboardLayout: currentLayout.name,
                                                isCapsLockEnabled: isCapsLockOn,
                                                iconRef: currentLayout.iconRef)

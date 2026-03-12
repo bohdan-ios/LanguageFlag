@@ -21,8 +21,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Initialization
     override init() {
         self.screenManager = ScreenManager()
-        self.notificationManager = NotificationManager()
         self.capsLockManager = CapsLockManager()
+        self.notificationManager = NotificationManager(capsLockManager: capsLockManager)
 
         super.init()
     }

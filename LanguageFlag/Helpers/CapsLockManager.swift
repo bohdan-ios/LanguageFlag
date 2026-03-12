@@ -7,6 +7,7 @@ class CapsLockManager {
     private(set) var isCapsLockEnabled: Bool = false
     private var globalEventMonitor: Any?
     private var localEventMonitor: Any?
+    private var debounceTask: DispatchWorkItem?
 
     // MARK: - Init
     init() {
@@ -47,14 +48,24 @@ extension CapsLockManager {
         }
     }
 
-    /// Handles Caps Lock state changes.
+    /// Handles Caps Lock state changes using a debounce mechanism to ignore
+    /// fast, transient layout-switching toggles created by macOS.
     private func handleCapsLockStateChange(event: NSEvent) {
-        let capsLockEnabled = event.modifierFlags.contains(.capsLock)
+        debounceTask?.cancel()
 
-        if isCapsLockEnabled != capsLockEnabled {
-            isCapsLockEnabled = capsLockEnabled
-            notifyCapsLockStateChanged(newCapsLockEnabled: capsLockEnabled)
+        let task = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+
+            let capsLockEnabled = CGEventSource.flagsState(.combinedSessionState).contains(.maskAlphaShift)
+
+            if isCapsLockEnabled != capsLockEnabled {
+                isCapsLockEnabled = capsLockEnabled
+                notifyCapsLockStateChanged(newCapsLockEnabled: capsLockEnabled)
+            }
         }
+        
+        debounceTask = task
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: task)
     }
 
     /// Notifies observers about the Caps Lock state change.
