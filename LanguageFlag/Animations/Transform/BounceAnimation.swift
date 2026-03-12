@@ -34,8 +34,6 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
         
         animation.delegate = AnimationCompletionDelegate { finished in
             guard finished else { return }
-            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
-            layer.frame = originalFrame
             completion?()
         }
         
@@ -71,8 +69,6 @@ class BounceAnimation: BaseWindowAnimation, WindowAnimation {
         
         animation.delegate = AnimationCompletionDelegate { finished in
             guard finished else { return }
-            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
-            layer.frame = originalFrame
             completion?()
         }
         

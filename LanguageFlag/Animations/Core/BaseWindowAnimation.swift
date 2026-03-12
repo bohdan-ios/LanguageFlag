@@ -39,6 +39,13 @@ class BaseWindowAnimation {
             // Fix: Reset contentView alpha & layer opacity that might be permanently stuck at 0 from FadeAnimation
             contentView.alphaValue = 1.0
             layer.opacity = 1.0
+            
+            // Fix: Globally Sanitize Layer Geometry
+            // Interrupted animations (like Bounce) can permanently orphan the anchorPoint 
+            // causing subsequent animations (like Rotate) to spin wildly off-axis.
+            layer.transform = CATransform3DIdentity
+            layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            layer.position = CGPoint(x: layer.bounds.midX, y: layer.bounds.midY)
         }
         
         window.orderFrontRegardless()

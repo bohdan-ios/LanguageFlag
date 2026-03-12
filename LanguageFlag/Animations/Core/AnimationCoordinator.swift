@@ -16,13 +16,13 @@ final class AnimationCoordinator {
     // Animation styles that need frame setup before animation
     private let stylesNeedingFrameSetup: Set<AnimationStyle> = [
         .slide, .scale, .pixelate, .bounce, .flip, .swing, .elastic,
-        .hologram, .energyPortal, .digitalMaterialize, .liquidRipple, .inkDiffusion, .vhsGlitch
+        .hologram, .energyPortal, .digitalMaterialize, .liquidRipple, .inkDiffusion, .vhsGlitch, .rotate
     ]
 
     // Animation styles that need frame reset after out animation
     private let stylesNeedingFrameReset: Set<AnimationStyle> = [
         .slide, .scale, .pixelate, .flip, .bounce, .swing,
-        .hologram, .energyPortal, .digitalMaterialize, .liquidRipple, .inkDiffusion, .vhsGlitch
+        .hologram, .energyPortal, .digitalMaterialize, .liquidRipple, .inkDiffusion, .vhsGlitch, .rotate
     ]
 
     // MARK: - Public Methods
@@ -191,8 +191,7 @@ private extension AnimationCoordinator {
         case .bounce:
             window.bounceOut(duration: duration, completion: completion)
         case .rotate:
-            window.rotateOut(duration: duration)
-            completion?()
+            window.rotateOut(duration: duration, completion: completion)
         case .swing:
             window.swingOut(duration: duration, completion: completion)
         case .elastic:
