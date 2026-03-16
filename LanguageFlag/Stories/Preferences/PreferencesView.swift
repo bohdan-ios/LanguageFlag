@@ -1,10 +1,50 @@
 import SwiftUI
 
-/// Main preferences view - tab-based navigation across preference panes
+// MARK: - State holder (re-renders on objectWillChange, but its body is trivial)
+
+/// Owns the UserPreferences @StateObject and projects bindings into the static PreferencesView.
+/// Kept separate so that PreferencesView.body never re-runs due to UserPreferences changes.
 struct PreferencesView: View {
 
-    // MARK: - Variables
     @StateObject private var preferences = UserPreferences.shared
+
+    var body: some View {
+        PreferencesContentView(
+            displayPosition: $preferences.displayPosition,
+            windowSize: $preferences.windowSize,
+            showInMenuBar: $preferences.showInMenuBar,
+            showCapsLockIndicator: $preferences.showCapsLockIndicator,
+            bypassClick: $preferences.bypassClick,
+            opacity: $preferences.opacity,
+            animationStyle: $preferences.animationStyle,
+            animationDuration: $preferences.animationDuration,
+            displayDuration: $preferences.displayDuration,
+            resetAnimationOnChange: $preferences.resetAnimationOnChange,
+            showShortcuts: $preferences.showShortcuts,
+            onReset: { UserPreferences.shared.resetToDefaults() }
+        )
+    }
+}
+
+// MARK: - Static content (TabView — body only re-runs when its own @State/@Binding values change)
+
+/// Main preferences view - tab-based navigation across preference panes.
+/// Takes all preferences as bindings so its body is not invalidated by unrelated property changes.
+private struct PreferencesContentView: View {
+
+    // MARK: - Bindings from UserPreferences
+    @Binding var displayPosition: DisplayPosition
+    @Binding var windowSize: WindowSize
+    @Binding var showInMenuBar: Bool
+    @Binding var showCapsLockIndicator: Bool
+    @Binding var bypassClick: Bool
+    @Binding var opacity: Double
+    @Binding var animationStyle: AnimationStyle
+    @Binding var animationDuration: Double
+    @Binding var displayDuration: Double
+    @Binding var resetAnimationOnChange: Bool
+    @Binding var showShortcuts: Bool
+    let onReset: () -> Void
 
     @State private var selectedPane: PreferencePane = .general
 
@@ -27,14 +67,27 @@ struct PreferencesView: View {
     private func paneContent(for pane: PreferencePane) -> some View {
         switch pane {
         case .general:
-            GeneralPreferencesPane(preferences: preferences)
+            GeneralPreferencesPane(
+                displayPosition: $displayPosition,
+                windowSize: $windowSize,
+                showInMenuBar: $showInMenuBar,
+                showCapsLockIndicator: $showCapsLockIndicator,
+                bypassClick: $bypassClick,
+                onReset: onReset
+            )
 
         case .appearance:
-            AppearancePreferencesPane(preferences: preferences)
+            AppearancePreferencesPane(
+                opacity: $opacity,
+                animationStyle: $animationStyle,
+                animationDuration: $animationDuration,
+                displayDuration: $displayDuration,
+                resetAnimationOnChange: $resetAnimationOnChange
+            )
 
         case .shortcuts:
             #if FEATURE_SHORTCUTS
-            ShortcutsPreferencesPane(preferences: preferences)
+            ShortcutsPreferencesPane(showShortcuts: $showShortcuts)
             #else
             EmptyView()
             #endif

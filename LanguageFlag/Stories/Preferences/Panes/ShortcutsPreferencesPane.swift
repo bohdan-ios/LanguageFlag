@@ -4,12 +4,7 @@ import SwiftUI
 struct ShortcutsPreferencesPane: View {
 
     // MARK: - Variables
-    @ObservedObject private var preferences: UserPreferences
-    
-    // MARK: - Init
-    init(preferences: UserPreferences) {
-        self.preferences = preferences
-    }
+    @Binding var showShortcuts: Bool
 
     // MARK: - Views
     var body: some View {
@@ -19,7 +14,7 @@ struct ShortcutsPreferencesPane: View {
     private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Toggle("Show keyboard shortcuts for current layout", isOn: $preferences.showShortcuts)
+                Toggle("Show keyboard shortcuts for current layout", isOn: $showShortcuts)
                     .help("Display common keyboard shortcuts when switching layouts")
 
                 Divider()

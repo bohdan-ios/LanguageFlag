@@ -23,7 +23,6 @@ struct SliderTickLabels: View {
                     Text(label)
                         .font(.system(size: 9))
                         .foregroundColor(.secondary)
-                        .fixedSize()
                         .position(x: trackInset + fraction * trackWidth, y: 7)
                 }
             }

@@ -14,18 +14,23 @@ struct AboutPreferencesPane: View {
 
     @State private var isHovering = false
     @State private var rotationDegrees: Double = 0
+    @State private var isVisible = false
 
     // MARK: - Views
 
     var body: some View {
         ZStack {
-            animatedGradientBackground
+            if isVisible {
+                animatedGradientBackground
+            }
 
             ScrollView {
                 appInfoSection
                     .padding()
             }
         }
+        .onAppear { isVisible = true }
+        .onDisappear { isVisible = false }
     }
 }
 
@@ -61,7 +66,9 @@ private extension AboutPreferencesPane {
         VStack(spacing: 16) {
             // App Icon with orbiting flags
             ZStack {
-                orbitingFlagsView
+                if isVisible {
+                    orbitingFlagsView
+                }
 
                 interactiveAppIcon
             }

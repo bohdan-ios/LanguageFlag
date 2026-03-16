@@ -5,13 +5,14 @@ import LaunchAtLogin
 struct GeneralPreferencesPane: View {
 
     // MARK: - Variables
-    @ObservedObject private var preferences: UserPreferences
+    @Binding var displayPosition: DisplayPosition
+    @Binding var windowSize: WindowSize
+    @Binding var showInMenuBar: Bool
+    @Binding var showCapsLockIndicator: Bool
+    @Binding var bypassClick: Bool
+    let onReset: () -> Void
+
     @State private var showResetConfirmation = false
-    
-    // MARK: - Init
-    init(preferences: UserPreferences) {
-        self.preferences = preferences
-    }
 
     // MARK: - Views
     var body: some View {
@@ -45,7 +46,7 @@ struct GeneralPreferencesPane: View {
             Text("Display Position")
                 .font(.headline)
 
-            PositionPickerView(selectedPosition: $preferences.displayPosition)
+            PositionPickerView(selectedPosition: $displayPosition)
                 .frame(height: 160)
 
             Text("Click a position to place the indicator on your screen")
@@ -63,8 +64,8 @@ struct GeneralPreferencesPane: View {
                 VStack(spacing: 2) {
                     Slider(
                         value: Binding(
-                            get: { Double(WindowSize.allCases.firstIndex(of: preferences.windowSize) ?? 1) },
-                            set: { preferences.windowSize = WindowSize.allCases[Int($0)] }
+                            get: { Double(WindowSize.allCases.firstIndex(of: windowSize) ?? 1) },
+                            set: { windowSize = WindowSize.allCases[Int($0)] }
                         ),
                         in: 0...3,
                         step: 1
@@ -73,7 +74,7 @@ struct GeneralPreferencesPane: View {
                     SliderTickLabels(labels: WindowSize.allCases.map(\.description))
                 }
 
-                Text(preferences.windowSize.description)
+                Text(windowSize.description)
                     .frame(width: 95, alignment: .trailing)
                     .foregroundColor(.primary)
             }
@@ -99,7 +100,7 @@ struct GeneralPreferencesPane: View {
                             .foregroundColor(.secondary)
                     }
                     Spacer()
-                    Toggle("Show current layout in menu bar", isOn: $preferences.showInMenuBar)
+                    Toggle("Show current layout in menu bar", isOn: $showInMenuBar)
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .accessibilityIdentifier("menuBarToggle")
@@ -114,7 +115,7 @@ struct GeneralPreferencesPane: View {
                             .foregroundColor(.secondary)
                     }
                     Spacer()
-                    Toggle("Show indicator on Caps Lock change", isOn: $preferences.showCapsLockIndicator)
+                    Toggle("Show indicator on Caps Lock change", isOn: $showCapsLockIndicator)
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .accessibilityIdentifier("capsLockToggle")
@@ -129,7 +130,7 @@ struct GeneralPreferencesPane: View {
                             .foregroundColor(.secondary)
                     }
                     Spacer()
-                    Toggle("Bypass click", isOn: $preferences.bypassClick)
+                    Toggle("Bypass click", isOn: $bypassClick)
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .accessibilityIdentifier("bypassClickToggle")
@@ -178,7 +179,7 @@ struct GeneralPreferencesPane: View {
                 titleVisibility: .visible
             ) {
                 Button("Reset", role: .destructive) {
-                    preferences.resetToDefaults()
+                    onReset()
                 }
             }
         }

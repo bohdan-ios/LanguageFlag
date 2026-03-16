@@ -59,7 +59,10 @@
       "Read(//tmp/trace_extract/$uuid/**)",
       "Bash(xctrace help:*)",
       "Bash(xctrace export:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "WebSearch",
+      "Bash(chmod +x /Users/lion/Projects/trace-analyzer/analyze_trace.py)",
+      "Bash(grep -n \"orderOut\\\\|isVisible\\\\|alphaValue\\\\|LanguageIndicator\" /Users/lion/Projects/LanguageFlag/LanguageFlagUITests/*.swift)"
     ]
   }
 }

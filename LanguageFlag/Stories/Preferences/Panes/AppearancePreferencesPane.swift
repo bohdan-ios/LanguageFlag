@@ -4,12 +4,11 @@ import SwiftUI
 struct AppearancePreferencesPane: View {
 
     // MARK: - Variables
-    @ObservedObject private var preferences: UserPreferences
-    
-    // MARK: - Init
-    init(preferences: UserPreferences) {
-        self.preferences = preferences
-    }
+    @Binding var opacity: Double
+    @Binding var animationStyle: AnimationStyle
+    @Binding var animationDuration: Double
+    @Binding var displayDuration: Double
+    @Binding var resetAnimationOnChange: Bool
 
     // MARK: - Views
     var body: some View {
@@ -50,13 +49,13 @@ struct AppearancePreferencesPane: View {
 
             HStack(alignment: .top, spacing: 8) {
                 VStack(spacing: 2) {
-                    Slider(value: $preferences.opacity, in: 0.5...1.0, step: 0.05)
+                    Slider(value: $opacity, in: 0.5...1.0, step: 0.05)
                         .accessibilityIdentifier("opacity_slider")
 
                     SliderTickLabels(labels: opacitySteps.map { String(format: "%.0f%%", $0 * 100) })
                 }
 
-                Text(String(format: "%.0f%%", preferences.opacity * 100))
+                Text(String(format: "%.0f%%", opacity * 100))
                     .frame(width: 95, alignment: .trailing)
                     .accessibilityIdentifier("opacity_value")
             }
@@ -101,7 +100,7 @@ struct AppearancePreferencesPane: View {
 
                 Spacer()
 
-                Toggle("Reset animation on layout change", isOn: $preferences.resetAnimationOnChange)
+                Toggle("Reset animation on layout change", isOn: $resetAnimationOnChange)
                     .toggleStyle(.switch)
                     .labelsHidden()
                     .accessibilityLabel("Reset animation on layout change")
@@ -119,13 +118,13 @@ struct AppearancePreferencesPane: View {
 
             HStack(alignment: .top, spacing: 8) {
                 VStack(spacing: 2) {
-                    Slider(value: $preferences.animationDuration, in: 0.1...1.0, step: 0.1)
+                    Slider(value: $animationDuration, in: 0.1...1.0, step: 0.1)
                         .accessibilityIdentifier("animation_duration_slider")
 
                     SliderTickLabels(labels: animationSpeedSteps.map { String(format: "%.1f", $0) })
                 }
 
-                Text(String(format: "%.1fs", preferences.animationDuration))
+                Text(String(format: "%.1fs", animationDuration))
                     .frame(width: 95, alignment: .trailing)
                     .accessibilityIdentifier("animation_duration_value")
             }
@@ -145,12 +144,12 @@ struct AppearancePreferencesPane: View {
 
             HStack(alignment: .top, spacing: 8) {
                 VStack(spacing: 2) {
-                    Slider(value: $preferences.displayDuration, in: 0.5...5.0, step: 0.5)
+                    Slider(value: $displayDuration, in: 0.5...5.0, step: 0.5)
 
                     SliderTickLabels(labels: displayDurationSteps.map { String(format: "%.1f", $0) })
                 }
 
-                Text(String(format: "%.1fs", preferences.displayDuration))
+                Text(String(format: "%.1fs", displayDuration))
                     .frame(width: 95, alignment: .trailing)
             }
 
@@ -166,14 +165,14 @@ private extension AppearancePreferencesPane {
     
     private func animationStyleButton(for style: AnimationStyle) -> some View {
         Button {
-            preferences.animationStyle = style
+            animationStyle = style
         } label: {
             Text(style.description)
                 .font(.caption)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 6)
-                .background(preferences.animationStyle == style ? Color.accentColor : Color.gray.opacity(0.15))
-                .foregroundColor(preferences.animationStyle == style ? .white : .primary)
+                .background(animationStyle == style ? Color.accentColor : Color.gray.opacity(0.15))
+                .foregroundColor(animationStyle == style ? .white : .primary)
                 .cornerRadius(6)
         }
         .buttonStyle(.plain)

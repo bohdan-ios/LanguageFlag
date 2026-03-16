@@ -29,7 +29,7 @@ class LanguageViewController: NSViewController {
     // MARK: - UI Components
     private let visualEffectView: NSVisualEffectView = {
         let view = NSVisualEffectView()
-        view.blendingMode = .behindWindow
+        view.blendingMode = .withinWindow
         view.material = .toolTip
         view.state = .active
         view.translatesAutoresizingMaskIntoConstraints = false
