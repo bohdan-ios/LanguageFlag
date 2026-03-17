@@ -33,6 +33,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Disable window restoration for menu bar app
         UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
 
+        // ⚠️ Run once to regenerate Layout.json with stable source IDs.
+        // Copy the Xcode console output to Layout.json, then delete this line.
+        #if DEBUG
+        LayoutMappingGenerator.printMapping()
+        #endif
+
         // Hide dock icon (menu bar app only)
         NSApp.setActivationPolicy(.accessory)
     }

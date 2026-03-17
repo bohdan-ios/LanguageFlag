@@ -24,7 +24,7 @@ class LanguageViewController: NSViewController {
     private var heightConstraint: NSLayoutConstraint?
     private var visualEffectWidthConstraint: NSLayoutConstraint?
     private var visualEffectHeightConstraint: NSLayoutConstraint?
-    private var flagImageWidthConstraint: NSLayoutConstraint?
+    private var flagImageBottomConstraint: NSLayoutConstraint?
 
     // MARK: - UI Components
     private let visualEffectView: NSVisualEffectView = {
@@ -33,6 +33,7 @@ class LanguageViewController: NSViewController {
         view.material = .toolTip
         view.state = .active
         view.translatesAutoresizingMaskIntoConstraints = false
+
         return view
     }()
 
@@ -43,13 +44,15 @@ class LanguageViewController: NSViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.cell?.wraps = true
         label.setAccessibilityIdentifier("bigLabel")
+
         return label
     }()
 
     private let flagImageView: NSImageView = {
         let imageView = NSImageView()
-        imageView.imageScaling = .scaleProportionallyDown
+        imageView.imageScaling = .scaleProportionallyUpOrDown
         imageView.translatesAutoresizingMaskIntoConstraints = false
+
         return imageView
     }()
 
@@ -59,6 +62,7 @@ class LanguageViewController: NSViewController {
         label.alignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setAccessibilityIdentifier("languageNameLabel")
+
         return label
     }()
 
@@ -102,6 +106,7 @@ extension LanguageViewController {
 
         previousModel = model
         changeFlagImage(keyboardLayout: model.keyboardLayout,
+                        keyboardLayoutID: model.keyboardLayoutID,
                         isCapsLockEnabled: model.isCapsLockEnabled,
                         iconRef: model.iconRef)
     }
@@ -113,12 +118,14 @@ extension LanguageViewController {
         let layout: TISInputSource
         if let previous = previousModel {
             changeFlagImage(keyboardLayout: previous.keyboardLayout,
+                            keyboardLayoutID: previous.keyboardLayoutID,
                             isCapsLockEnabled: newBool,
                             iconRef: previous.iconRef)
         } else {
             // No layout change has occurred yet — use the current system layout
             layout = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
             changeFlagImage(keyboardLayout: layout.name,
+                            keyboardLayoutID: layout.id,
                             isCapsLockEnabled: newBool,
                             iconRef: layout.iconRef)
         }
@@ -143,18 +150,21 @@ extension LanguageViewController {
         visualEffectHeightConstraint = visualEffectView.heightAnchor.constraint(equalToConstant: dimensions.height)
         widthConstraint = view.widthAnchor.constraint(equalToConstant: dimensions.width)
         heightConstraint = view.heightAnchor.constraint(equalToConstant: dimensions.height)
-        flagImageWidthConstraint = flagImageView.widthAnchor.constraint(equalToConstant: dimensions.width * 0.92)
+        flagImageBottomConstraint = flagImageView.bottomAnchor.constraint(
+            equalTo: visualEffectView.bottomAnchor,
+            constant: -labelAreaHeight(for: preferences.windowSize.fontSizes.label)
+        )
 
         guard
             let visualEffectWidthConstraint,
             let visualEffectHeightConstraint,
-            let flagImageWidthConstraint,
+            let flagImageBottomConstraint,
             let heightConstraint,
             let widthConstraint
         else {
             return
         }
-        
+
         NSLayoutConstraint.activate([
             // Visual effect view fills the entire view
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -164,20 +174,20 @@ extension LanguageViewController {
             visualEffectWidthConstraint,
             visualEffectHeightConstraint,
 
-            // Flag image at the top
-            flagImageView.centerXAnchor.constraint(equalTo: visualEffectView.centerXAnchor),
-            flagImageView.topAnchor.constraint(equalTo: visualEffectView.topAnchor),
-            flagImageWidthConstraint,
-            flagImageView.widthAnchor.constraint(equalTo: flagImageView.heightAnchor, multiplier: 16.0 / 9.0),
+            // Flag image: 16px inset on all sides, height fills remaining space above label
+            flagImageView.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor, constant: 16),
+            flagImageView.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -16),
+            flagImageView.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 16),
+            flagImageBottomConstraint,
 
             // Big label in the center
             bigLabel.centerYAnchor.constraint(equalTo: visualEffectView.centerYAnchor),
             bigLabel.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor, constant: 16),
             bigLabel.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -16),
 
-            // Language name label below flag image
+            // Language name label: 16px from bottom, no chain to flag needed
             languageNameLabel.centerXAnchor.constraint(equalTo: visualEffectView.centerXAnchor),
-            languageNameLabel.topAnchor.constraint(equalTo: flagImageView.bottomAnchor, constant: -6),
+            languageNameLabel.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor, constant: -16),
 
             // View size constraints
             heightConstraint,
@@ -188,10 +198,12 @@ extension LanguageViewController {
     private func setupUI() {
         let currentLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
         let model = KeyboardLayoutNotification(keyboardLayout: currentLayout.name,
+                                               keyboardLayoutID: currentLayout.id,
                                                isCapsLockEnabled: false,
                                                iconRef: currentLayout.iconRef)
 
         changeFlagImage(keyboardLayout: model.keyboardLayout,
+                        keyboardLayoutID: model.keyboardLayoutID,
                         isCapsLockEnabled: model.isCapsLockEnabled,
                         iconRef: model.iconRef)
     }
@@ -218,6 +230,14 @@ extension LanguageViewController {
             .store(in: &cancellables)
     }
 
+    /// Returns the total height to reserve below the flag: 16px gap + label line height + 16px bottom padding.
+    private func labelAreaHeight(for fontSize: CGFloat) -> CGFloat {
+        let font = NSFont.systemFont(ofSize: fontSize)
+        let lineHeight = ceil(font.ascender - font.descender)
+
+        return 16 + lineHeight + 16
+    }
+
     private func updateViewSize(to size: WindowSize) {
         let dimensions = size.dimensions
         let fontSizes = size.fontSizes
@@ -227,7 +247,7 @@ extension LanguageViewController {
         heightConstraint?.constant = dimensions.height
         visualEffectWidthConstraint?.constant = dimensions.width
         visualEffectHeightConstraint?.constant = dimensions.height
-        flagImageWidthConstraint?.constant = dimensions.width * 0.92
+        flagImageBottomConstraint?.constant = -labelAreaHeight(for: fontSizes.label)
 
         // Update fonts
         bigLabel.font = .systemFont(ofSize: fontSizes.title)
@@ -241,11 +261,12 @@ extension LanguageViewController {
 extension LanguageViewController {
 
     private func changeFlagImage(keyboardLayout: String,
+                                 keyboardLayoutID: String,
                                  isCapsLockEnabled: Bool,
                                  iconRef: IconRef?) {
         let languageText = isCapsLockEnabled ? "⇪ " + keyboardLayout : keyboardLayout
 
-        guard let image = layoutImageContainer.getImage(for: keyboardLayout) else {
+        guard let image = layoutImageContainer.getImage(forID: keyboardLayoutID, name: keyboardLayout) else {
             tryToSetImage(with: iconRef, languageText: languageText)
             return
         }

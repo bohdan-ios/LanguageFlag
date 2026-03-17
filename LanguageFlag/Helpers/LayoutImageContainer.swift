@@ -30,6 +30,21 @@ final class LayoutImageContainer {
     }
 
     // MARK: - Public Methods
+
+    /// Looks up by source ID first (stable), falls back to localized name for entries not yet migrated.
+    /// Checks the user's custom image store before bundled assets.
+    func getImage(forID layoutID: String,
+                  name: String) -> NSImage? {
+        CustomLayoutImageStore.shared.image(forID: layoutID)
+            ?? getImage(for: layoutID)
+            ?? getImage(for: name)
+    }
+
+    /// Clears the rendered-image cache. Call after any custom image is saved or deleted.
+    func clearCachedImages() {
+        imageCache.clearAll()
+    }
+
     func getImage(for keyboardLayout: String) -> NSImage? {
         do {
             let imageName = try mappingProvider.imageName(for: keyboardLayout)
@@ -50,7 +65,15 @@ final class LayoutImageContainer {
         }
     }
 
-    func getFlagItem(for keyboardLayout: String, size: NSSize) -> NSImage? {
+    func getFlagItem(forID layoutID: String,
+                     name: String,
+                     size: NSSize,
+                     isCapsLock: Bool = false) -> NSImage? {
+        getFlagItem(forID: layoutID, name: name, size: size, isCapsLock: isCapsLock, imageCache: imageCache)
+    }
+
+    func getFlagItem(for keyboardLayout: String,
+                     size: NSSize) -> NSImage? {
         getFlagItem(for: keyboardLayout, size: size, isCapsLock: false)
     }
 
@@ -73,7 +96,48 @@ final class LayoutImageContainer {
         return renderedImage
     }
 
+    private func getFlagItem(forID layoutID: String,
+                             name: String,
+                             size: NSSize,
+                             isCapsLock: Bool,
+                             imageCache: ImageCaching) -> NSImage? {
+        let cacheKey = createCacheKey(layout: layoutID, size: size, capsLock: isCapsLock)
+
+        if let cachedImage = imageCache.cachedImage(for: cacheKey) {
+            return cachedImage
+        }
+
+        guard let baseImage = getImage(forID: layoutID, name: name) else {
+            return nil
+        }
+
+        let renderedImage = imageRenderer.renderImage(baseImage, size: size, withCapsLock: isCapsLock)
+        imageCache.cache(renderedImage, for: cacheKey)
+
+        return renderedImage
+    }
+
     // MARK: - Async Methods
+    func getFlagItemAsync(forID layoutID: String,
+                          name: String,
+                          size: NSSize,
+                          isCapsLock: Bool) async -> NSImage? {
+        let cacheKey = createCacheKey(layout: layoutID, size: size, capsLock: isCapsLock)
+
+        if let cachedImage = imageCache.cachedImage(for: cacheKey) {
+            return cachedImage
+        }
+
+        guard let baseImage = getImage(forID: layoutID, name: name) else {
+            return nil
+        }
+
+        let renderedImage = await imageRenderer.renderImageAsync(baseImage, size: size, withCapsLock: isCapsLock)
+        imageCache.cache(renderedImage, for: cacheKey)
+
+        return renderedImage
+    }
+
     func getFlagItemAsync(for keyboardLayout: String,
                           size: NSSize,
                           isCapsLock: Bool) async -> NSImage? {

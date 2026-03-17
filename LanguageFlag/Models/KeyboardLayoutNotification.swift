@@ -11,6 +11,7 @@ import Foundation
 struct KeyboardLayoutNotification {
 
     let keyboardLayout: String
+    let keyboardLayoutID: String
     let isCapsLockEnabled: Bool
     let iconRef: IconRef?
 }

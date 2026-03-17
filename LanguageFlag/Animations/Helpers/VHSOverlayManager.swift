@@ -7,9 +7,16 @@ import Cocoa
 class VHSOverlayManager {
 
     // MARK: - Cache
+    private struct SizeKey: Hashable {
 
-    private var scanlineCache: [CGSize: CGImage] = [:]
-    private var noiseCache: [CGSize: CGImage] = [:]
+        let width: CGFloat
+        let height: CGFloat
+
+        init(_ size: CGSize) { width = size.width; height = size.height }
+    }
+
+    private var scanlineCache: [SizeKey: CGImage] = [:]
+    private var noiseCache: [SizeKey: CGImage] = [:]
 
     // MARK: - Scanline Layer
 
@@ -19,16 +26,20 @@ class VHSOverlayManager {
     ///   - opacity: Initial opacity of the layer
     /// - Returns: CALayer with scanline pattern
     func createScanlineLayer(size: CGSize, opacity: Float = 0.3) -> CALayer {
-        let image = scanlineCache[size] ?? {
+        let key = SizeKey(size)
+        let image = scanlineCache[key] ?? {
             let img = AnimationEffectHelpers.createScanlinePattern(size: size)
-            scanlineCache[size] = img
+            scanlineCache[key] = img
+
             return img
         }()
+
         let layer = CALayer()
         layer.name = "vhsScanline"
         layer.frame = CGRect(origin: .zero, size: size)
         layer.contents = image
         layer.opacity = opacity
+
         return layer
     }
 
@@ -40,16 +51,20 @@ class VHSOverlayManager {
     ///   - opacity: Initial opacity of the layer
     /// - Returns: CALayer with noise pattern
     func createNoiseLayer(size: CGSize, opacity: Float = 0.15) -> CALayer {
-        let image = noiseCache[size] ?? {
+        let key = SizeKey(size)
+        let image = noiseCache[key] ?? {
             let img = AnimationEffectHelpers.createNoisePattern(size: size)
-            noiseCache[size] = img
+            noiseCache[key] = img
+
             return img
         }()
+
         let layer = CALayer()
         layer.name = "vhsNoise"
         layer.frame = CGRect(origin: .zero, size: size)
         layer.contents = image
         layer.opacity = opacity
+
         return layer
     }
 
@@ -61,6 +76,7 @@ class VHSOverlayManager {
     func createVHSOverlays(size: CGSize) -> (scanline: CALayer, noise: CALayer) {
         let scanline = createScanlineLayer(size: size)
         let noise = createNoiseLayer(size: size)
+
         return (scanline, noise)
     }
 }

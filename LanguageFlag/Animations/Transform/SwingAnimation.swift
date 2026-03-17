@@ -42,8 +42,8 @@ class SwingAnimation: BaseWindowAnimation, WindowAnimation {
             AnimationTiming.easeInOut
         ]
 
-        animation.delegate = AnimationCompletionDelegate { [weak self] finished in
-            guard let self, finished else { return }
+        animation.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
 
             layer.transform = CATransform3DIdentity
             layer.anchorPoint = CGPoint(x: 0, y: 0)
@@ -83,8 +83,8 @@ class SwingAnimation: BaseWindowAnimation, WindowAnimation {
         animation.duration = duration
         animation.timingFunction = AnimationTiming.easeIn
 
-        animation.delegate = AnimationCompletionDelegate { [weak self] finished in
-            guard let self, finished else { return }
+        animation.delegate = AnimationCompletionDelegate { finished in
+            guard finished else { return }
 
             layer.transform = CATransform3DIdentity
             layer.anchorPoint = CGPoint(x: 0, y: 0)

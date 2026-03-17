@@ -32,6 +32,7 @@ extension NotificationManager {
         let currentLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
         let isCapsLockOn = capsLockManager.isCapsLockEnabled
         let model = KeyboardLayoutNotification(keyboardLayout: currentLayout.name,
+                                               keyboardLayoutID: currentLayout.id,
                                                isCapsLockEnabled: isCapsLockOn,
                                                iconRef: currentLayout.iconRef)
         NotificationCenter.default.post(name: .keyboardLayoutChanged, object: model)

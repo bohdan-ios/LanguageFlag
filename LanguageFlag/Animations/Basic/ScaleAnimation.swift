@@ -27,7 +27,7 @@ class ScaleAnimation: BaseWindowAnimation, WindowAnimation {
         scaleAnim.fillMode = .forwards
         scaleAnim.isRemovedOnCompletion = false
 
-        scaleAnim.delegate = AnimationCompletionDelegate { [weak layer] finished in
+        scaleAnim.delegate = AnimationCompletionDelegate { [weak layer] _ in
             layer?.transform = CATransform3DIdentity
             layer?.anchorPoint = oldAnchor
             layer?.position = oldPosition
@@ -63,7 +63,7 @@ class ScaleAnimation: BaseWindowAnimation, WindowAnimation {
         scaleAnim.fillMode = .forwards
         scaleAnim.isRemovedOnCompletion = false
 
-        scaleAnim.delegate = AnimationCompletionDelegate { [weak layer] finished in
+        scaleAnim.delegate = AnimationCompletionDelegate { [weak layer] _ in
             layer?.transform = CATransform3DIdentity
             layer?.anchorPoint = oldAnchor
             layer?.position = oldPosition

@@ -47,26 +47,12 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
         }
         layer.add(blurAnim, forKey: "blur")
         
-        let posterAnim = createAnimation(keyPath: "filters.CIColorPosterize.inputLevels", from: 8.0, to: 256.0, duration: duration)
-        posterAnim.fillMode = .forwards
-        posterAnim.isRemovedOnCompletion = false
-        layer.add(posterAnim, forKey: "level")
-        
-        let motionAnim = createAnimation(keyPath: "filters.CIMotionBlur.inputRadius", from: 10.0, to: 0.0, duration: duration)
-        motionAnim.fillMode = .forwards
-        motionAnim.isRemovedOnCompletion = false
-        layer.add(motionAnim, forKey: "motion")
-        
+        addForwardAnimation(keyPath: "filters.CIColorPosterize.inputLevels", from: 8.0, to: 256.0, duration: duration, to: layer)
+        addForwardAnimation(keyPath: "filters.CIMotionBlur.inputRadius", from: 10.0, to: 0.0, duration: duration, to: layer)
+
         // Animate Overlays Opacity
-        let scanlineAnim = createAnimation(keyPath: "opacity", from: 0.3, to: 0.0, duration: duration)
-        scanlineAnim.fillMode = .forwards
-        scanlineAnim.isRemovedOnCompletion = false
-        scanline.add(scanlineAnim, forKey: "opacity")
-        
-        let noiseAnim = createAnimation(keyPath: "opacity", from: 0.15, to: 0.0, duration: duration)
-        noiseAnim.fillMode = .forwards
-        noiseAnim.isRemovedOnCompletion = false
-        noise.add(noiseAnim, forKey: "opacity")
+        addForwardAnimation(keyPath: "opacity", from: 0.3, to: 0.0, duration: duration, to: scanline)
+        addForwardAnimation(keyPath: "opacity", from: 0.15, to: 0.0, duration: duration, to: noise)
         
         scanline.opacity = 0.0
         noise.opacity = 0.0
@@ -115,28 +101,15 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
             noise.removeFromSuperlayer()
             completion?()
         }
+
         layer.add(blurAnim, forKey: "blur")
         
-        let posterAnim = createAnimation(keyPath: "filters.CIColorPosterize.inputLevels", from: 256.0, to: 8.0, duration: duration)
-        posterAnim.fillMode = .forwards
-        posterAnim.isRemovedOnCompletion = false
-        layer.add(posterAnim, forKey: "level")
-        
-        let motionAnim = createAnimation(keyPath: "filters.CIMotionBlur.inputRadius", from: 0.0, to: 10.0, duration: duration)
-        motionAnim.fillMode = .forwards
-        motionAnim.isRemovedOnCompletion = false
-        layer.add(motionAnim, forKey: "motion")
-        
+        addForwardAnimation(keyPath: "filters.CIColorPosterize.inputLevels", from: 256.0, to: 8.0, duration: duration, to: layer)
+        addForwardAnimation(keyPath: "filters.CIMotionBlur.inputRadius", from: 0.0, to: 10.0, duration: duration, to: layer)
+
         // Animate Overlays Opacity
-        let scanlineAnim = createAnimation(keyPath: "opacity", from: 0.0, to: 0.3, duration: duration)
-        scanlineAnim.fillMode = .forwards
-        scanlineAnim.isRemovedOnCompletion = false
-        scanline.add(scanlineAnim, forKey: "opacity")
-        
-        let noiseAnim = createAnimation(keyPath: "opacity", from: 0.0, to: 0.15, duration: duration)
-        noiseAnim.fillMode = .forwards
-        noiseAnim.isRemovedOnCompletion = false
-        noise.add(noiseAnim, forKey: "opacity")
+        addForwardAnimation(keyPath: "opacity", from: 0.0, to: 0.3, duration: duration, to: scanline)
+        addForwardAnimation(keyPath: "opacity", from: 0.0, to: 0.15, duration: duration, to: noise)
         
         scanline.opacity = 0.3
         noise.opacity = 0.15
@@ -144,5 +117,22 @@ class VHSGlitchAnimation: BaseWindowAnimation, WindowAnimation {
         CATransaction.commit()
         
         animateAlpha(contentView: contentView, from: 1.0, to: 0.0, duration: duration)
+    }
+
+    // MARK: - Private
+
+    private func addForwardAnimation(keyPath: String,
+                                     from fromValue: Any,
+                                     to toValue: Any,
+                                     duration: TimeInterval,
+                                     to targetLayer: CALayer) {
+        let anim = createAnimation(keyPath: keyPath,
+                                   from: fromValue,
+                                   to: toValue,
+                                   duration: duration)
+
+        anim.fillMode = .forwards
+        anim.isRemovedOnCompletion = false
+        targetLayer.add(anim, forKey: nil)
     }
 }

@@ -4,7 +4,6 @@ import Carbon
 
 final class StatusBarMenuBuilder {
 
-    // swiftlint:disable function_body_length
     /// Builds the menu for the status bar.
     /// - Parameters:
     ///   - launchAtLoginAction: Selector for toggling Launch at Login.
@@ -86,8 +85,6 @@ final class StatusBarMenuBuilder {
 
         return menu
     }
-    // swiftlint:enable function_body_length
-
 
     private func getAvailableLayouts() -> [String] {
         let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as? [TISInputSource] ?? []

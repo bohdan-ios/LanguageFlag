@@ -70,8 +70,12 @@ private extension StatusBarManager {
             self?.rebuildMenuContents()
         }
 
-        let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue().name
-        updateStatusBarIcon(for: keyboardLayout)
+        let currentSource = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
+        let initialModel = KeyboardLayoutNotification(keyboardLayout: currentSource.name,
+                                                      keyboardLayoutID: currentSource.id,
+                                                      isCapsLockEnabled: false,
+                                                      iconRef: currentSource.iconRef)
+        updateStatusBarIcon(for: initialModel)
     }
 
     /// Rebuilds the menu contents in-place (called lazily when menu opens).
@@ -140,6 +144,7 @@ private extension StatusBarManager {
         }
 
         let newModel = KeyboardLayoutNotification(keyboardLayout: previousModel.keyboardLayout,
+                                                  keyboardLayoutID: previousModel.keyboardLayoutID,
                                                   isCapsLockEnabled: newCapsLockState,
                                                   iconRef: previousModel.iconRef)
         updateStatusBarIcon(for: newModel)
@@ -202,30 +207,45 @@ private extension StatusBarManager {
 
     /// Updates the status bar icon or title based on the keyboard layout.
     func updateStatusBarIcon(for keyboardLayout: String?) {
-        let iconSize = NSSize(width: 24, height: 24)
+        let height: CGFloat = 24
+        let defaultSize = NSSize(width: height, height: height)
 
         if let keyboardLayout = keyboardLayout {
-            let flagImage = layoutImageContainer.getFlagItem(for: keyboardLayout, size: iconSize)
-            statusItem.button?.image = flagImage ?? createDefaultIcon(size: iconSize)
+            let flagImage: NSImage?
+            if let baseImage = layoutImageContainer.getImage(for: keyboardLayout) {
+                let iconSize = statusBarIconSize(for: baseImage, height: height)
+                flagImage = layoutImageContainer.getFlagItem(for: keyboardLayout, size: iconSize)
+            } else {
+                flagImage = nil
+            }
+            statusItem.button?.image = flagImage ?? createDefaultIcon(size: defaultSize)
             statusItem.button?.title = preferences.showInMenuBar ? " \(keyboardLayout)" : ""
         } else {
-            statusItem.button?.image = createDefaultIcon(size: iconSize)
+            statusItem.button?.image = createDefaultIcon(size: defaultSize)
             statusItem.button?.title = ""
         }
     }
 
     func updateStatusBarIcon(for model: KeyboardLayoutNotification) {
-        let iconSize = NSSize(width: 24, height: 24)
+        let height: CGFloat = 24
+        let defaultSize = NSSize(width: height, height: height)
 
-        let flagImage = layoutImageContainer.getFlagItem(for: model.keyboardLayout, size: iconSize)
-
-        if let flagImage {
-            statusItem.button?.image = flagImage
+        let flagImage: NSImage?
+        if let baseImage = layoutImageContainer.getImage(forID: model.keyboardLayoutID, name: model.keyboardLayout) {
+            let iconSize = statusBarIconSize(for: baseImage, height: height)
+            flagImage = layoutImageContainer.getFlagItem(forID: model.keyboardLayoutID, name: model.keyboardLayout, size: iconSize)
         } else {
-            statusItem.button?.image = createDefaultIcon(size: iconSize)
+            flagImage = nil
         }
 
+        statusItem.button?.image = flagImage ?? createDefaultIcon(size: defaultSize)
         statusItem.button?.title = preferences.showInMenuBar ? " \(model.keyboardLayout)" : ""
+    }
+
+    /// Returns an icon size that preserves the image's aspect ratio at the given menu bar height.
+    private func statusBarIconSize(for image: NSImage, height: CGFloat) -> NSSize {
+        let aspectRatio = image.size.height > 0 ? image.size.width / image.size.height : 1
+        return NSSize(width: (height * aspectRatio).rounded(), height: height)
     }
 
     func createDefaultIcon(size: NSSize) -> NSImage {
@@ -258,8 +278,12 @@ private extension StatusBarManager {
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                let keyboardLayout = TISCopyCurrentKeyboardInputSource().takeRetainedValue().name
-                self?.updateStatusBarIcon(for: keyboardLayout)
+                let source = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
+                let model = KeyboardLayoutNotification(keyboardLayout: source.name,
+                                                       keyboardLayoutID: source.id,
+                                                       isCapsLockEnabled: false,
+                                                       iconRef: source.iconRef)
+                self?.updateStatusBarIcon(for: model)
             }
             .store(in: &cancellables)
     }

@@ -85,6 +85,9 @@ private struct PreferencesContentView: View {
                 resetAnimationOnChange: $resetAnimationOnChange
             )
 
+        case .customImages:
+            CustomImagesPreferencesPane()
+
         case .shortcuts:
             #if FEATURE_SHORTCUTS
             ShortcutsPreferencesPane(showShortcuts: $showShortcuts)

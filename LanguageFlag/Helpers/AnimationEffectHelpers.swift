@@ -16,16 +16,20 @@ enum AnimationEffectHelpers {
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let bitmapInfo = CGImageAlphaInfo.none.rawValue
         
-        guard let context = CGContext(
-            data: nil,
-            width: width,
-            height: height,
-            bitsPerComponent: 8,
-            bytesPerRow: width,
-            space: colorSpace,
-            bitmapInfo: bitmapInfo
-        ) else { return nil }
-        
+        guard
+            let context = CGContext(
+                data: nil,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: width,
+                space: colorSpace,
+                bitmapInfo: bitmapInfo
+            )
+        else {
+            return nil
+        }
+
         // Fill with transparent
         context.setFillColor(gray: 1.0, alpha: 1.0)
         context.fill(CGRect(x: 0, y: 0, width: width, height: height))
@@ -75,15 +79,20 @@ enum AnimationEffectHelpers {
         let bitmapInfo = CGImageAlphaInfo.none.rawValue
 
         return pixels.withUnsafeMutableBytes { ptr in
-            guard let context = CGContext(
-                data: ptr.baseAddress,
-                width: width,
-                height: height,
-                bitsPerComponent: 8,
-                bytesPerRow: width,
-                space: colorSpace,
-                bitmapInfo: bitmapInfo
-            ) else { return nil }
+            guard
+                let context = CGContext(
+                    data: ptr.baseAddress,
+                    width: width,
+                    height: height,
+                    bitsPerComponent: 8,
+                    bytesPerRow: width,
+                    space: colorSpace,
+                    bitmapInfo: bitmapInfo
+                )
+            else {
+                return nil
+            }
+
             return context.makeImage()
         }
     }

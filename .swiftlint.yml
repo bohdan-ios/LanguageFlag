@@ -102,6 +102,19 @@ custom_rules:
     regex: '^\s*(?:if|guard)[ \t]+(?:let|var)\s+\w[^{\n]*,\s*$'
     message: "When if/guard has multiple conditions, the keyword should be alone on its line and the opening brace on its own line"
     severity: warning
+  # Multiline guard: last condition should not have 'else {' on the same line
+  # Bad:  guard let x = foo,
+  #             let y = bar else { return }
+  # Good: guard
+  #           let x = foo,
+  #           let y = bar
+  #       else { return }
+  guard_multiline_else_same_line:
+    name: "Guard Multiline Else Same Line"
+    regex: '^[ \t]+(?=[^ \t])(?!guard)(?!\})(?!//)(?!else)[^\n]*\belse\s*\{'
+    message: "In a multiline guard, 'else {' should be on its own line"
+    severity: warning
+
   # One blank line after class/struct/enum/protocol declaration
   vertical_whitespace_after_type_declaration:
     name: "Vertical Whitespace After Type Declaration"

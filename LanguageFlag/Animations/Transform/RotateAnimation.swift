@@ -43,7 +43,7 @@ class RotateAnimation: BaseWindowAnimation, WindowAnimation {
         group.fillMode = .forwards
         group.isRemovedOnCompletion = false
         
-        group.delegate = AnimationCompletionDelegate { [weak layer] finished in
+        group.delegate = AnimationCompletionDelegate { [weak layer] _ in
             layer?.transform = CATransform3DIdentity
             layer?.anchorPoint = oldAnchor
             layer?.position = oldPosition
@@ -90,7 +90,7 @@ class RotateAnimation: BaseWindowAnimation, WindowAnimation {
         group.fillMode = .forwards
         group.isRemovedOnCompletion = false
         
-        group.delegate = AnimationCompletionDelegate { [weak layer] finished in
+        group.delegate = AnimationCompletionDelegate { [weak layer] _ in
             layer?.transform = CATransform3DIdentity
             layer?.anchorPoint = oldAnchor
             layer?.position = oldPosition

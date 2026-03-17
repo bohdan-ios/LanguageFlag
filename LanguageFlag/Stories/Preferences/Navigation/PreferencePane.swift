@@ -5,6 +5,7 @@ enum PreferencePane: String, CaseIterable, Identifiable {
 
     case general = "General"
     case appearance = "Appearance"
+    case customImages = "Custom Images"
     case shortcuts = "Shortcuts"
     case analytics = "Analytics"
     case groups = "Groups"
@@ -18,6 +19,7 @@ enum PreferencePane: String, CaseIterable, Identifiable {
         switch self {
         case .general: return "gearshape"
         case .appearance: return "paintbrush"
+        case .customImages: return "photo"
         case .shortcuts: return "keyboard"
         case .analytics: return "chart.bar"
         case .groups: return "folder"
@@ -29,7 +31,7 @@ enum PreferencePane: String, CaseIterable, Identifiable {
 
     var isAvailable: Bool {
         switch self {
-        case .general, .appearance, .about:
+        case .general, .appearance, .customImages, .about:
             return true
         case .shortcuts:
             return FeatureFlags.isShortcutsEnabled

@@ -33,6 +33,7 @@ protocol ImageCaching {
 
     func cache(_ image: NSImage, for key: String)
     func cachedImage(for key: String) -> NSImage?
+    func clearAll()
 }
 
 protocol ImageRendering {
@@ -88,6 +89,10 @@ final class NSCacheImageCache: ImageCaching {
 
     func cachedImage(for key: String) -> NSImage? {
         cache.object(forKey: key as NSString)
+    }
+
+    func clearAll() {
+        cache.removeAllObjects()
     }
 }
 
