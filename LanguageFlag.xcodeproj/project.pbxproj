@@ -36,21 +36,6 @@
 		B45A6E162F54CD620003B6DD /* LanguageFlagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LanguageFlagUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		B45A6DEC2F54C0170003B6DD /* LanguageFlagTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlagTests; sourceTree = "<group>"; };
-		B45A6E172F54CD620003B6DD /* LanguageFlagUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlagUITests; sourceTree = "<group>"; };
-		B47643282F37B7DE00719179 /* LanguageFlag */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B4AA00002F000000AA000000 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-			);
-			explicitFileTypes = {};
-			explicitFolders = ();
-			path = LanguageFlag;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		B4AA00002F000000AA000000 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -60,6 +45,12 @@
 			target = 40E0C9A5244B7EF50012F409 /* LanguageFlag */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B45A6DEC2F54C0170003B6DD /* LanguageFlagTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlagTests; sourceTree = "<group>"; };
+		B45A6E172F54CD620003B6DD /* LanguageFlagUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LanguageFlagUITests; sourceTree = "<group>"; };
+		B47643282F37B7DE00719179 /* LanguageFlag */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B4AA00002F000000AA000000 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LanguageFlag; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		40E0C9A3244B7EF50012F409 /* Frameworks */ = {

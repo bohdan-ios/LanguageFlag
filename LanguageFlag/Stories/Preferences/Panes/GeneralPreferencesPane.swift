@@ -10,6 +10,7 @@ struct GeneralPreferencesPane: View {
     @Binding var showInMenuBar: Bool
     @Binding var showCapsLockIndicator: Bool
     @Binding var bypassClick: Bool
+    @Binding var showDockIndicator: Bool
     let onReset: () -> Void
 
     @State private var showResetConfirmation = false
@@ -134,6 +135,21 @@ struct GeneralPreferencesPane: View {
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .accessibilityIdentifier("bypassClickToggle")
+                }
+
+                // Dock Indicator Toggle
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Show indicator in Dock")
+                        Text("Permanently show the current language flag as the app's Dock icon.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Toggle("Show indicator in Dock", isOn: $showDockIndicator)
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .accessibilityIdentifier("dockIndicatorToggle")
                 }
 
                 // Launch at Login Toggle

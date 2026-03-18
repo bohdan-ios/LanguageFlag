@@ -9,7 +9,6 @@
 import Cocoa
 import os.log
 
-
 final class LayoutImageContainer {
 
     // MARK: - Properties

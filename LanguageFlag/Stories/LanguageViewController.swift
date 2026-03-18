@@ -264,7 +264,7 @@ extension LanguageViewController {
                                  keyboardLayoutID: String,
                                  isCapsLockEnabled: Bool,
                                  iconRef: IconRef?) {
-        let languageText = isCapsLockEnabled ? "⇪ " + keyboardLayout : keyboardLayout
+        let languageText = (isCapsLockEnabled && preferences.showCapsLockIndicator) ? "⇪ " + keyboardLayout : keyboardLayout
 
         guard let image = layoutImageContainer.getImage(forID: keyboardLayoutID, name: keyboardLayout) else {
             tryToSetImage(with: iconRef, languageText: languageText)

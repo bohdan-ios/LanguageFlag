@@ -13,6 +13,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Variables
     private var statusBarManager: StatusBarManager?
+    private var dockIconManager: DockIconManager?
     private let screenManager: ScreenManager
     private let notificationManager: NotificationManager
     private let capsLockManager: CapsLockManager
@@ -29,6 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Life cycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusBarManager = StatusBarManager()
+        dockIconManager = DockIconManager()
 
         // Disable window restoration for menu bar app
         UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
@@ -38,9 +40,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         #if DEBUG
         LayoutMappingGenerator.printMapping()
         #endif
+    }
 
-        // Hide dock icon (menu bar app only)
-        NSApp.setActivationPolicy(.accessory)
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu()
+        let prefsItem = menu.addItem(
+            withTitle: "Preferences...",
+            action: #selector(StatusBarManager.openPreferences),
+            keyEquivalent: ""
+        )
+        prefsItem.target = statusBarManager
+
+        return menu
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

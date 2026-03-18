@@ -88,6 +88,9 @@ final class StatusBarMenuBuilder {
 
     private func getAvailableLayouts() -> [String] {
         let inputSources = TISCreateInputSourceList(nil, false).takeRetainedValue() as? [TISInputSource] ?? []
-        return inputSources.compactMap { $0.name }.sorted()
+        return inputSources
+            .filter { $0.isSelectable && $0.category == (kTISCategoryKeyboardInputSource as String) }
+            .compactMap { $0.name }
+            .sorted()
     }
 }

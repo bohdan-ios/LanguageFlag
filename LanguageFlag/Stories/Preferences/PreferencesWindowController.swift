@@ -59,8 +59,10 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
 
     // MARK: - NSWindowDelegate
     func windowWillClose(_ notification: Notification) {
-        // Hide dock icon when preferences are closed
-        NSApp.setActivationPolicy(.accessory)
+        // Only hide dock icon when preferences close if the user hasn't enabled the permanent dock indicator
+        if !UserPreferences.shared.showDockIndicator {
+            NSApp.setActivationPolicy(.accessory)
+        }
     }
 }
 

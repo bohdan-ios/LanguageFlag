@@ -149,6 +149,10 @@ private extension StatusBarManager {
                                                   iconRef: previousModel.iconRef)
         updateStatusBarIcon(for: newModel)
     }
+}
+
+// MARK: - Menu Actions
+extension StatusBarManager {
 
     /// Toggles the Launch at Login state.
     @objc

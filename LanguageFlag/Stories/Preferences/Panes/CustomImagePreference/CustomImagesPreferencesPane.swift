@@ -139,10 +139,13 @@ private struct LayoutImageRow: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(entry.name)
                 .font(.system(size: 13, weight: .medium))
+
+            #if DEBUG
             Text(entry.id)
                 .font(.system(size: 10))
                 .foregroundColor(.secondary)
                 .lineLimit(1)
+            #endif
         }
     }
 

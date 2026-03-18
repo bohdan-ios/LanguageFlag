@@ -15,6 +15,7 @@ struct PreferencesView: View {
             showInMenuBar: $preferences.showInMenuBar,
             showCapsLockIndicator: $preferences.showCapsLockIndicator,
             bypassClick: $preferences.bypassClick,
+            showDockIndicator: $preferences.showDockIndicator,
             opacity: $preferences.opacity,
             animationStyle: $preferences.animationStyle,
             animationDuration: $preferences.animationDuration,
@@ -38,6 +39,7 @@ private struct PreferencesContentView: View {
     @Binding var showInMenuBar: Bool
     @Binding var showCapsLockIndicator: Bool
     @Binding var bypassClick: Bool
+    @Binding var showDockIndicator: Bool
     @Binding var opacity: Double
     @Binding var animationStyle: AnimationStyle
     @Binding var animationDuration: Double
@@ -73,6 +75,7 @@ private struct PreferencesContentView: View {
                 showInMenuBar: $showInMenuBar,
                 showCapsLockIndicator: $showCapsLockIndicator,
                 bypassClick: $bypassClick,
+                showDockIndicator: $showDockIndicator,
                 onReset: onReset
             )
 

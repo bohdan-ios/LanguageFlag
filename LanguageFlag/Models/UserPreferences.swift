@@ -99,6 +99,7 @@ final class UserPreferences: ObservableObject {
         static let resetAnimationOnChange = "resetAnimationOnChange"
         static let showCapsLockIndicator = "showCapsLockIndicator"
         static let bypassClick = "bypassClick"
+        static let showDockIndicator = "showDockIndicator"
     }
 
     // MARK: - Published Properties
@@ -158,6 +159,10 @@ final class UserPreferences: ObservableObject {
         didSet { defaults.set(bypassClick, forKey: Keys.bypassClick) }
     }
 
+    @Published var showDockIndicator: Bool {
+        didSet { defaults.set(showDockIndicator, forKey: Keys.showDockIndicator) }
+    }
+
     // MARK: - Initialization
     private init() {
         self.defaults = .standard
@@ -169,6 +174,7 @@ final class UserPreferences: ObservableObject {
         self.resetAnimationOnChange = true
         self.showCapsLockIndicator = true
         self.bypassClick = true
+        self.showDockIndicator = false
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
@@ -187,6 +193,7 @@ final class UserPreferences: ObservableObject {
         self.resetAnimationOnChange = true
         self.showCapsLockIndicator = true
         self.bypassClick = true
+        self.showDockIndicator = false
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
@@ -204,6 +211,7 @@ final class UserPreferences: ObservableObject {
         self.resetAnimationOnChange = defaults.object(forKey: Keys.resetAnimationOnChange) as? Bool ?? true
         self.showCapsLockIndicator = defaults.object(forKey: Keys.showCapsLockIndicator) as? Bool ?? true
         self.bypassClick = defaults.object(forKey: Keys.bypassClick) as? Bool ?? true
+        self.showDockIndicator = defaults.object(forKey: Keys.showDockIndicator) as? Bool ?? false
 
         // Decode complex types
         if
@@ -246,5 +254,6 @@ final class UserPreferences: ObservableObject {
         resetAnimationOnChange = true
         showCapsLockIndicator = true
         bypassClick = true
+        showDockIndicator = false
     }
 }
