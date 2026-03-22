@@ -62,7 +62,20 @@
       "Bash(python3:*)",
       "WebSearch",
       "Bash(chmod +x /Users/lion/Projects/trace-analyzer/analyze_trace.py)",
-      "Bash(grep -n \"orderOut\\\\|isVisible\\\\|alphaValue\\\\|LanguageIndicator\" /Users/lion/Projects/LanguageFlag/LanguageFlagUITests/*.swift)"
+      "Bash(grep -n \"orderOut\\\\|isVisible\\\\|alphaValue\\\\|LanguageIndicator\" /Users/lion/Projects/LanguageFlag/LanguageFlagUITests/*.swift)",
+      "Bash(find /Users/lion/Projects/LanguageFlag -name *.xcassets -type d)",
+      "Bash(for flag:*)",
+      "Bash(do grep:*)",
+      "Bash(identify \"/Users/lion/Projects/LanguageFlag/LanguageFlag/Supporting files/Assets.xcassets/Flags/145-ukraine.imageset/145-ukraine.png\")",
+      "Bash(sips -g all \"/Users/lion/Projects/LanguageFlag/LanguageFlag/Supporting files/Assets.xcassets/Flags/145-ukraine.imageset/145-ukraine.png\")",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/lion/Library/Containers/com.localmaster.languageflag/Data/Library/Application Support/LanguageFlag/CustomImages/com.apple.keylayout.Ukrainian-PC.png\")",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/lion/Projects/LanguageFlag/LanguageFlag/Supporting files/Assets.xcassets/Flags/263-us.imageset/US.png\")",
+      "Bash(bash /tmp/crop_flags.sh)",
+      "Read(//Users/lion/Projects/LanguageFlag/**)",
+      "Bash(brew install:*)",
+      "Bash(while read:*)",
+      "Bash(do pngcrush:*)",
+      "Bash(find \"/Users/lion/Projects/LanguageFlag/LanguageFlag/Supporting files/Assets.xcassets/Flags\" -name \"*.png\" -exec cat {})"
     ]
   }
 }
