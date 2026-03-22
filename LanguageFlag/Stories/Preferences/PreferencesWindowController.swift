@@ -14,8 +14,8 @@ final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     private var settingsWindow: NSWindow?
 
     // MARK: - Init
-    convenience init() {
-        let hostingController = NSHostingController(rootView: PreferencesView())
+    convenience init(soundManager: SoundManager) {
+        let hostingController = NSHostingController(rootView: PreferencesView(soundManager: soundManager))
         let window = NSWindow(contentViewController: hostingController)
 
         window.title = "LanguageFlag Preferences"

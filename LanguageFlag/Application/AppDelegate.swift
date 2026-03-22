@@ -17,19 +17,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let screenManager: ScreenManager
     private let notificationManager: NotificationManager
     private let capsLockManager: CapsLockManager
+    private let soundManager: SoundManager
 
     // MARK: - Initialization
     override init() {
         self.screenManager = ScreenManager()
         self.capsLockManager = CapsLockManager()
         self.notificationManager = NotificationManager(capsLockManager: capsLockManager)
+        self.soundManager = SoundManager()
 
         super.init()
     }
 
     // MARK: - Life cycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        statusBarManager = StatusBarManager()
+        statusBarManager = StatusBarManager(soundManager: soundManager)
         dockIconManager = DockIconManager()
 
         // Disable window restoration for menu bar app

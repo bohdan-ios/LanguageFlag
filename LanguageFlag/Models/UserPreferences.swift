@@ -55,6 +55,35 @@ enum WindowSize: String, Codable, CaseIterable {
     }
 }
 
+enum SoundEffect: String, Codable, CaseIterable {
+
+    case blip = "sound-blip"
+    case click = "sound-click"
+    case click2 = "sound-click-2"
+    case ding = "sound-ding"
+    case notify = "sound-notify"
+    case notify2 = "sound-notify-2"
+    case notify3 = "sound-notify-3"
+    case pop = "sound-pop"
+    case `switch` = "sound-switch"
+    case switch2 = "sound-switch-2"
+
+    var displayName: String {
+        switch self {
+        case .blip: return "Blip"
+        case .click: return "Click"
+        case .click2: return "Click 2"
+        case .ding: return "Ding"
+        case .notify: return "Notification"
+        case .notify2: return "Notification 2"
+        case .notify3: return "Notification 3"
+        case .pop: return "Pop"
+        case .switch: return "Switch"
+        case .switch2: return "Switch 2"
+        }
+    }
+}
+
 enum AnimationStyle: String, Codable, CaseIterable {
 
     case fade = "Fade"
@@ -100,6 +129,8 @@ final class UserPreferences: ObservableObject {
         static let showCapsLockIndicator = "showCapsLockIndicator"
         static let bypassClick = "bypassClick"
         static let showDockIndicator = "showDockIndicator"
+        static let playSoundOnSwitch = "playSoundOnSwitch"
+        static let selectedSoundEffect = "selectedSoundEffect"
     }
 
     // MARK: - Published Properties
@@ -163,6 +194,18 @@ final class UserPreferences: ObservableObject {
         didSet { defaults.set(showDockIndicator, forKey: Keys.showDockIndicator) }
     }
 
+    @Published var playSoundOnSwitch: Bool {
+        didSet { defaults.set(playSoundOnSwitch, forKey: Keys.playSoundOnSwitch) }
+    }
+
+    @Published var selectedSoundEffect: SoundEffect {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(selectedSoundEffect) {
+                defaults.set(encoded, forKey: Keys.selectedSoundEffect)
+            }
+        }
+    }
+
     // MARK: - Initialization
     private init() {
         self.defaults = .standard
@@ -175,9 +218,11 @@ final class UserPreferences: ObservableObject {
         self.showCapsLockIndicator = true
         self.bypassClick = true
         self.showDockIndicator = false
+        self.playSoundOnSwitch = false
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
+        self.selectedSoundEffect = .click
 
         loadSavedPreferences()
     }
@@ -194,9 +239,11 @@ final class UserPreferences: ObservableObject {
         self.showCapsLockIndicator = true
         self.bypassClick = true
         self.showDockIndicator = false
+        self.playSoundOnSwitch = false
         self.displayPosition = .bottomCenter
         self.windowSize = .medium
         self.animationStyle = .fade
+        self.selectedSoundEffect = .click
 
         loadSavedPreferences()
     }
@@ -212,6 +259,7 @@ final class UserPreferences: ObservableObject {
         self.showCapsLockIndicator = defaults.object(forKey: Keys.showCapsLockIndicator) as? Bool ?? true
         self.bypassClick = defaults.object(forKey: Keys.bypassClick) as? Bool ?? true
         self.showDockIndicator = defaults.object(forKey: Keys.showDockIndicator) as? Bool ?? false
+        self.playSoundOnSwitch = defaults.object(forKey: Keys.playSoundOnSwitch) as? Bool ?? false
 
         // Decode complex types
         if
@@ -240,6 +288,15 @@ final class UserPreferences: ObservableObject {
         } else {
             self.animationStyle = .fade
         }
+
+        if
+            let data = defaults.data(forKey: Keys.selectedSoundEffect),
+            let decoded = try? JSONDecoder().decode(SoundEffect.self, from: data)
+        {
+            self.selectedSoundEffect = decoded
+        } else {
+            self.selectedSoundEffect = .click
+        }
     }
 
     func resetToDefaults() {
@@ -255,5 +312,7 @@ final class UserPreferences: ObservableObject {
         showCapsLockIndicator = true
         bypassClick = true
         showDockIndicator = false
+        playSoundOnSwitch = false
+        selectedSoundEffect = .click
     }
 }

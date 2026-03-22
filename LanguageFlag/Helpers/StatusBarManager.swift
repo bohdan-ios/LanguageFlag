@@ -21,7 +21,10 @@ final class StatusBarManager {
     private let menuBuilder: StatusBarMenuBuilder
     private let menuDelegate = MenuDelegate()
     private var previousModel: KeyboardLayoutNotification?
-    private lazy var preferencesWindowController = PreferencesWindowController()
+    private let soundManager: SoundManager
+    private lazy var preferencesWindowController: PreferencesWindowController = {
+        PreferencesWindowController(soundManager: soundManager)
+    }()
     private let preferences = UserPreferences.shared
     #if FEATURE_ANALYTICS
     private let analytics = LayoutAnalytics.shared
@@ -30,9 +33,11 @@ final class StatusBarManager {
 
     // MARK: - Initialization
     init(
+        soundManager: SoundManager,
         layoutImageContainer: LayoutImageContainer = LayoutImageContainer.shared,
         menuBuilder: StatusBarMenuBuilder = StatusBarMenuBuilder()
     ) {
+        self.soundManager = soundManager
         self.layoutImageContainer = layoutImageContainer
         self.menuBuilder = menuBuilder
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)

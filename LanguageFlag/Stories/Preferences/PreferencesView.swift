@@ -6,6 +6,8 @@ import SwiftUI
 /// Kept separate so that PreferencesView.body never re-runs due to UserPreferences changes.
 struct PreferencesView: View {
 
+    let soundManager: SoundManager
+
     @StateObject private var preferences = UserPreferences.shared
 
     var body: some View {
@@ -16,13 +18,16 @@ struct PreferencesView: View {
             showCapsLockIndicator: $preferences.showCapsLockIndicator,
             bypassClick: $preferences.bypassClick,
             showDockIndicator: $preferences.showDockIndicator,
+            playSoundOnSwitch: $preferences.playSoundOnSwitch,
+            selectedSoundEffect: $preferences.selectedSoundEffect,
             opacity: $preferences.opacity,
             animationStyle: $preferences.animationStyle,
             animationDuration: $preferences.animationDuration,
             displayDuration: $preferences.displayDuration,
             resetAnimationOnChange: $preferences.resetAnimationOnChange,
             showShortcuts: $preferences.showShortcuts,
-            onReset: { UserPreferences.shared.resetToDefaults() }
+            onReset: { UserPreferences.shared.resetToDefaults() },
+            soundManager: soundManager
         )
     }
 }
@@ -40,6 +45,8 @@ private struct PreferencesContentView: View {
     @Binding var showCapsLockIndicator: Bool
     @Binding var bypassClick: Bool
     @Binding var showDockIndicator: Bool
+    @Binding var playSoundOnSwitch: Bool
+    @Binding var selectedSoundEffect: SoundEffect
     @Binding var opacity: Double
     @Binding var animationStyle: AnimationStyle
     @Binding var animationDuration: Double
@@ -47,6 +54,7 @@ private struct PreferencesContentView: View {
     @Binding var resetAnimationOnChange: Bool
     @Binding var showShortcuts: Bool
     let onReset: () -> Void
+    let soundManager: SoundManager
 
     @State private var selectedPane: PreferencePane = .general
 
@@ -76,7 +84,10 @@ private struct PreferencesContentView: View {
                 showCapsLockIndicator: $showCapsLockIndicator,
                 bypassClick: $bypassClick,
                 showDockIndicator: $showDockIndicator,
-                onReset: onReset
+                playSoundOnSwitch: $playSoundOnSwitch,
+                selectedSoundEffect: $selectedSoundEffect,
+                onReset: onReset,
+                soundManager: soundManager
             )
 
         case .appearance:
@@ -122,6 +133,6 @@ private struct PreferencesContentView: View {
 struct PreferencesView_Previews: PreviewProvider {
 
     static var previews: some View {
-        PreferencesView()
+        PreferencesView(soundManager: SoundManager())
     }
 }

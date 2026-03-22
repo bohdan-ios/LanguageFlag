@@ -11,8 +11,11 @@ struct GeneralPreferencesPane: View {
     @Binding var showCapsLockIndicator: Bool
     @Binding var bypassClick: Bool
     @Binding var showDockIndicator: Bool
+    @Binding var playSoundOnSwitch: Bool
+    @Binding var selectedSoundEffect: SoundEffect
 
     let onReset: () -> Void
+    let soundManager: SoundManager
 
     @State private var showResetConfirmation = false
 
@@ -151,6 +154,43 @@ struct GeneralPreferencesPane: View {
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .accessibilityIdentifier("dockIndicatorToggle")
+                }
+
+                // Sound on Switch
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Play sound on input switch")
+                        Text("Play a sound when the keyboard layout changes.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        if playSoundOnSwitch {
+                            HStack(spacing: 8) {
+                                Picker("Sound", selection: $selectedSoundEffect) {
+                                    ForEach(SoundEffect.allCases, id: \.self) { effect in
+                                        Text(effect.displayName).tag(effect)
+                                    }
+                                }
+                                .labelsHidden()
+
+                                Button {
+                                    soundManager.previewSound(selectedSoundEffect)
+                                } label: {
+                                    Image(systemName: "play.circle")
+                                }
+                                .buttonStyle(.borderless)
+                                .help("Preview sound")
+                            }
+                            .padding(.top, 4)
+                        }
+                    }
+
+                    Spacer()
+
+                    Toggle("Play sound on input switch", isOn: $playSoundOnSwitch)
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .accessibilityIdentifier("playSoundToggle")
                 }
 
                 // Launch at Login Toggle
