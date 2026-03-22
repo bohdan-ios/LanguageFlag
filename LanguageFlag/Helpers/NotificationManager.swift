@@ -22,7 +22,8 @@ extension NotificationManager {
             self,
             selector: #selector(handleInputSourceChange),
             name: NSNotification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String),
-            object: nil
+            object: nil,
+            suspensionBehavior: .deliverImmediately
         )
     }
 

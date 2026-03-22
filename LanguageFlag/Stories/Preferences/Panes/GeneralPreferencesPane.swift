@@ -11,6 +11,7 @@ struct GeneralPreferencesPane: View {
     @Binding var showCapsLockIndicator: Bool
     @Binding var bypassClick: Bool
     @Binding var showDockIndicator: Bool
+
     let onReset: () -> Void
 
     @State private var showResetConfirmation = false
