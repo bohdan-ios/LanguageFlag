@@ -181,6 +181,8 @@ struct GeneralPreferencesPane: View {
                                 }
                                 .buttonStyle(.borderless)
                                 .help("Preview sound")
+
+                                Spacer()
                             }
                             .padding(.top, 4)
                         }
