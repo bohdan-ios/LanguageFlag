@@ -172,6 +172,7 @@ struct GeneralPreferencesPane: View {
                                     }
                                 }
                                 .labelsHidden()
+                                .pickerStyle(.menu)
 
                                 Button {
                                     soundManager.previewSound(selectedSoundEffect)
