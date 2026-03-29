@@ -48,6 +48,7 @@ private extension SoundManager {
         // Copy the cached sound so it can be played even if already playing
         guard let sound = cache[effect]?.copy() as? NSSound else { return }
 
+        sound.volume = Float(preferences.soundVolume)
         sound.play()
     }
 }

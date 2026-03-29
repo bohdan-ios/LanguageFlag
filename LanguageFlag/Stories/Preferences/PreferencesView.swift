@@ -20,6 +20,7 @@ struct PreferencesView: View {
             showDockIndicator: $preferences.showDockIndicator,
             playSoundOnSwitch: $preferences.playSoundOnSwitch,
             selectedSoundEffect: $preferences.selectedSoundEffect,
+            soundVolume: $preferences.soundVolume,
             opacity: $preferences.opacity,
             animationStyle: $preferences.animationStyle,
             animationDuration: $preferences.animationDuration,
@@ -47,6 +48,7 @@ private struct PreferencesContentView: View {
     @Binding var showDockIndicator: Bool
     @Binding var playSoundOnSwitch: Bool
     @Binding var selectedSoundEffect: SoundEffect
+    @Binding var soundVolume: Double
     @Binding var opacity: Double
     @Binding var animationStyle: AnimationStyle
     @Binding var animationDuration: Double
@@ -86,6 +88,7 @@ private struct PreferencesContentView: View {
                 showDockIndicator: $showDockIndicator,
                 playSoundOnSwitch: $playSoundOnSwitch,
                 selectedSoundEffect: $selectedSoundEffect,
+                soundVolume: $soundVolume,
                 onReset: onReset,
                 soundManager: soundManager
             )

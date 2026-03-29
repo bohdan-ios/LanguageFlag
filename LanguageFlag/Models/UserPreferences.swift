@@ -131,6 +131,7 @@ final class UserPreferences: ObservableObject {
         static let showDockIndicator = "showDockIndicator"
         static let playSoundOnSwitch = "playSoundOnSwitch"
         static let selectedSoundEffect = "selectedSoundEffect"
+        static let soundVolume = "soundVolume"
     }
 
     // MARK: - Published Properties
@@ -206,6 +207,10 @@ final class UserPreferences: ObservableObject {
         }
     }
 
+    @Published var soundVolume: Double {
+        didSet { defaults.set(soundVolume, forKey: Keys.soundVolume) }
+    }
+
     // MARK: - Initialization
     private init() {
         self.defaults = .standard
@@ -223,6 +228,7 @@ final class UserPreferences: ObservableObject {
         self.windowSize = .medium
         self.animationStyle = .fade
         self.selectedSoundEffect = .click
+        self.soundVolume = 0.7
 
         loadSavedPreferences()
     }
@@ -244,6 +250,7 @@ final class UserPreferences: ObservableObject {
         self.windowSize = .medium
         self.animationStyle = .fade
         self.selectedSoundEffect = .click
+        self.soundVolume = 0.7
 
         loadSavedPreferences()
     }
@@ -260,6 +267,7 @@ final class UserPreferences: ObservableObject {
         self.bypassClick = defaults.object(forKey: Keys.bypassClick) as? Bool ?? true
         self.showDockIndicator = defaults.object(forKey: Keys.showDockIndicator) as? Bool ?? false
         self.playSoundOnSwitch = defaults.object(forKey: Keys.playSoundOnSwitch) as? Bool ?? false
+        self.soundVolume = defaults.object(forKey: Keys.soundVolume) as? Double ?? 0.7
 
         // Decode complex types
         if
@@ -314,5 +322,6 @@ final class UserPreferences: ObservableObject {
         showDockIndicator = false
         playSoundOnSwitch = false
         selectedSoundEffect = .click
+        soundVolume = 0.7
     }
 }

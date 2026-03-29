@@ -75,7 +75,20 @@
       "Bash(brew install:*)",
       "Bash(while read:*)",
       "Bash(do pngcrush:*)",
-      "Bash(find \"/Users/lion/Projects/LanguageFlag/LanguageFlag/Supporting files/Assets.xcassets/Flags\" -name \"*.png\" -exec cat {})"
+      "Bash(find \"/Users/lion/Projects/LanguageFlag/LanguageFlag/Supporting files/Assets.xcassets/Flags\" -name \"*.png\" -exec cat {})",
+      "Bash(git add:*)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)",
+      "Bash(gh run:*)",
+      "Bash(gh release:*)",
+      "Bash(curl -sL \"https://github.com/bohdan-ios/LanguageFlag/releases/download/v1.5/LanguageFlag-1.5.zip\")",
+      "Bash(shasum -a 256)",
+      "Bash(find /Users/lion/Projects/LanguageFlag -maxdepth 3 -type f \\\\\\(-name *.xcodeproj -o -name *.xcworkspace \\\\\\))",
+      "Bash(ls -d /Users/lion/Projects/LanguageFlag/*.xcodeproj /Users/lion/Projects/LanguageFlag/*.xcworkspace)",
+      "Bash(ls -d /Users/lion/Projects/LanguageFlag/*.xcodeproj)",
+      "Bash(cat /Users/lion/Projects/LanguageFlag/LanguageFlag/Configuration/*.xcconfig)",
+      "Bash(find . -path ./build -prune -o -path ./dist -prune -o -name *.pbxproj -prune -o -type f -name *Build*)",
+      "Bash(git ls-remote:*)"
     ]
   }
 }

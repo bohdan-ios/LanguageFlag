@@ -13,11 +13,14 @@ struct GeneralPreferencesPane: View {
     @Binding var showDockIndicator: Bool
     @Binding var playSoundOnSwitch: Bool
     @Binding var selectedSoundEffect: SoundEffect
+    @Binding var soundVolume: Double
 
     let onReset: () -> Void
     let soundManager: SoundManager
 
     @State private var showResetConfirmation = false
+    @State private var previewDebounceTask: Task<Void, Never>? = nil
+    @State private var lastNonZeroVolume: Double = 0.7
 
     // MARK: - Views
     var body: some View {
@@ -160,7 +163,8 @@ struct GeneralPreferencesPane: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Play sound on input switch")
-                        Text("Play a sound when the keyboard layout changes.")
+
+                        Text("Play a sound when the keyboard layout changes. Volume is relative to your system volume — 70% here means 70% of whatever your Mac is set to.")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
@@ -173,6 +177,7 @@ struct GeneralPreferencesPane: View {
                                 }
                                 .labelsHidden()
                                 .pickerStyle(.menu)
+                                .onChange(of: selectedSoundEffect) { _ in soundManager.previewSound(selectedSoundEffect) }
 
                                 Button {
                                     soundManager.previewSound(selectedSoundEffect)
@@ -185,6 +190,44 @@ struct GeneralPreferencesPane: View {
                                 Spacer()
                             }
                             .padding(.top, 4)
+
+                            HStack(spacing: 8) {
+                                Button {
+                                    if soundVolume > 0 {
+                                        lastNonZeroVolume = soundVolume
+                                        soundVolume = 0
+                                    } else {
+                                        soundVolume = lastNonZeroVolume
+                                    }
+                                } label: {
+                                    Image(systemName: soundVolume == 0 ? "speaker.slash.fill" : "speaker.fill")
+                                }
+                                .buttonStyle(.borderless)
+                                .foregroundColor(.secondary)
+                                .help(soundVolume == 0 ? "Unmute" : "Mute")
+
+                                Slider(value: $soundVolume, in: 0...1, step: 0.25)
+                                    .frame(width: 120)
+                                    .onChange(of: soundVolume) { newValue in
+                                        if newValue > 0 { lastNonZeroVolume = newValue }
+                                        previewDebounceTask?.cancel()
+                                        previewDebounceTask = Task {
+                                            try? await Task.sleep(nanoseconds: 150_000_000)
+                                            guard !Task.isCancelled else { return }
+                                            soundManager.previewSound(selectedSoundEffect)
+                                        }
+                                    }
+
+                                Image(systemName: "speaker.wave.3.fill")
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 16)
+
+                                Text("\(Int(soundVolume * 100))%")
+                                    .foregroundColor(.secondary)
+                                    .monospacedDigit()
+                                    .frame(width: 36, alignment: .leading)
+                            }
+                            .padding(.top, 2)
                         }
                     }
 
@@ -194,6 +237,9 @@ struct GeneralPreferencesPane: View {
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .accessibilityIdentifier("playSoundToggle")
+                        .onChange(of: playSoundOnSwitch) { newValue in
+                            if newValue { soundManager.previewSound(selectedSoundEffect) }
+                        }
                 }
 
                 // Launch at Login Toggle
